@@ -5,8 +5,8 @@ import java.awt.Component;
 public interface PUIInitializable {
 	/**
 	 * 
-	 * @param component
+	 * @param frame
 	 */
-	public void initUI(Component c);
+	public void initUI(PUIFrame c);
 }
 
