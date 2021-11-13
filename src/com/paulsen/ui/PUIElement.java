@@ -8,36 +8,32 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelListener;
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class PUIElement { // PaulsenUserInterfaceIntegratedElement
 
-    public static volatile ArrayList<PUIElement> registeredElements = new ArrayList<PUIElement>();
+    // Static
+    public static volatile CopyOnWriteArrayList<PUIElement> registeredElements = new CopyOnWriteArrayList<PUIElement>();
     public static boolean darkUIMode = false;
     public static Color darkBG_1 = new Color(47, 47, 47), darkBG_2 = new Color(57, 57, 57),
             darkOutline = new Color(81, 81, 81), darkText = new Color(235, 235, 235),
             darkSelected = new Color(196, 196, 196);
 
-    public enum ElementAlignment {
-        HORIZONTAL, VERTICAL
-    }
 
     protected int x = 0, y = 0, w = 0, h = 0;
-    private int drawLayer = 0;
-    private int interactionLayer = 0;
     protected Color backgroundColor = Color.LIGHT_GRAY;
-
     protected PUIPaintable paintInvoke, hoverOverlay, pressOverlay;
     protected PUIFrame frame;
     protected PUICore core;
-
     protected ArrayList<PUIAction> actions = new ArrayList<>();
     protected ArrayList<MouseListener> mouseListeners = new ArrayList<>();
     protected ArrayList<MouseMotionListener> mouseMotionListeners = new ArrayList<>();
     protected ArrayList<MouseWheelListener> mouseWheelListeners = new ArrayList<>();
     protected Object metaData;
-
     protected boolean updateFrameOnEvent = true, paintOverOnHover = true, paintOverOnPress = true, enabled = true;
-
+    protected boolean blockRaycast = true;
+    private int drawLayer = 0;
+    private int interactionLayer = 0;
     // TEMP-vars
     // pressed -> is pressed on Screen
     // isCurrentlyPressing -> is pressing on Element
@@ -189,6 +185,19 @@ public class PUIElement { // PaulsenUserInterfaceIntegratedElement
         }
     }
 
+    /**
+     * Is used by the Eventsystem to determine if a position of the screen is part of this element
+     * <p>
+     * Is useful to overwrite if a new Element, based on PUIElement, is created that is not rectangular (e.g Circle, Polygon).
+     * So that the EventSystem knows how to handle incomming MouseClicks on this Element
+     *
+     * @param p
+     * @return TRUE if p in Frame-Space is part of the element and FALSE if not.
+     */
+    public boolean contains(Point p) {
+        return getBounds().contains(p);
+    }
+
     public ArrayList<PUIAction> getActionListeners() {
         return actions;
     }
@@ -301,17 +310,33 @@ public class PUIElement { // PaulsenUserInterfaceIntegratedElement
         return enabled;
     }
 
-    public int getDrawLayer() {
-        return drawLayer;
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
-    public int getInteractionLayer() {
-        return interactionLayer;
+    public boolean blocksRaycast() {
+        return blockRaycast;
+    }
+
+    /**
+     *
+     * @param doesBlockRaycast if set to false: when pressed => the eventchain doesnt stop => elements on layers behind this Button can be triggered as well
+     */
+    public void setRaycastable(boolean doesBlockRaycast) {
+        this.blockRaycast = doesBlockRaycast;
+    }
+
+    public int getDrawLayer() {
+        return drawLayer;
     }
 
     public void setDrawLayer(int drawLayer) {
         this.drawLayer = drawLayer;
         frame.rearrangeElements();
+    }
+
+    public int getInteractionLayer() {
+        return interactionLayer;
     }
 
     public void setInteractionLayer(int interactionLayer) {
@@ -338,10 +363,6 @@ public class PUIElement { // PaulsenUserInterfaceIntegratedElement
 
     public ArrayList<MouseListener> getMouseListeners() {
         return mouseListeners;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
     }
 
     public Color getBackgroundColor() {
@@ -396,12 +417,16 @@ public class PUIElement { // PaulsenUserInterfaceIntegratedElement
         return getUserSelection(title, s);
     }
 
+    public Object getMetadata() {
+        return metaData;
+    }
+
     public void setMetadata(Object o) {
         metaData = o;
     }
 
-    public Object getMetadata() {
-        return metaData;
+    public enum ElementAlignment {
+        HORIZONTAL, VERTICAL
     }
 
 }

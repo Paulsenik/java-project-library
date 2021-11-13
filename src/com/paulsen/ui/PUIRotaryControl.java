@@ -6,18 +6,14 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashSet;
 
 public class PUIRotaryControl extends PUIElement {
-
-    private ArrayList<Runnable> valueUpdateAction = new ArrayList<Runnable>();
 
     protected float valueLength = 0.5f;
     protected int rotationArea = 270;
     protected int valueThickness = 2;
     protected float mouseMultiplicator = 0.005f;
-
+    private ArrayList<Runnable> valueUpdateAction = new ArrayList<Runnable>();
     private float value = .5f;
     private Color valueColor = Color.GRAY;
     private Color backgroundColor = Color.LIGHT_GRAY;
@@ -140,6 +136,14 @@ public class PUIRotaryControl extends PUIElement {
 
         Point[] p = {new Point((int) nX, (int) nY), new Point((int) innerX, (int) innerY)};
         return p;
+    }
+
+    /**
+     * only allows events in a oval area.
+     */
+    @Override
+    public boolean contains(Point p) {
+        return new Point(x + w / 2, y + h / 2).distanceSq(p.x, p.y) <= (w / 2) * (w / 2);
     }
 
     @Override

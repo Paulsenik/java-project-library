@@ -5,10 +5,6 @@ import com.paulsen.ui.PUIElement.ElementAlignment;
 
 public class Main {
 
-    public static void main(String[] args) {
-        new Main();
-    }
-
     public Main() {
 
         // initialize variables before using them in update/paint
@@ -26,6 +22,8 @@ public class Main {
                 }
             }
         });
+        // if set to false: when pressed the eventchain doesnt stop => elements on layers behind this Button can be triggered as well
+        darkmodeButton.setRaycastable(false);
 
         PUIScrollPanel sp = new PUIScrollPanel(f);
 
@@ -43,7 +41,23 @@ public class Main {
         PUIRotaryControl rc = new PUIRotaryControl(f, 1);
 
         PUISlider slider = new PUISlider(f);
+        slider.setValue(0.5f);
         slider.setAlignment(ElementAlignment.HORIZONTAL);
+        slider.addValueUpdateAction(new Runnable() {
+            @Override
+            public void run() {
+                rc.setValueLength(slider.getValue());
+            }
+        });
+
+        PUISlider slider2 = new PUISlider(f);
+        slider2.setAlignment(ElementAlignment.HORIZONTAL);
+        slider2.addValueUpdateAction(new Runnable() {
+            @Override
+            public void run() {
+                rc.setValueThickness((int) (67* slider2.getValue()));
+            }
+        });
 
         // add test-Buttons for scrollpanel
         for (int i = 1; i <= 10; i++) {
@@ -77,9 +91,14 @@ public class Main {
 
         // Set Position of other non-relative Elements
         darkmodeButton.setBounds(50, 50, 300, 100);
-        slider.setBounds(50, 200, 300, 100);
+        slider.setBounds(50, 200, 300, 50);
+        slider2.setBounds(50, 250, 300, 50);
 
         f.updateElements();
+    }
+
+    public static void main(String[] args) {
+        new Main();
     }
 
 }

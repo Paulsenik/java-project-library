@@ -2,10 +2,25 @@ package com.paulsen.ui;
 
 import javax.management.InvalidAttributeValueException;
 import java.awt.event.*;
-import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public final class PUICore {
+
+    private static CopyOnWriteArrayList<PUICore> registeredCores = new CopyOnWriteArrayList<>();
+    private PUIFrame f;
+    // registered Elements for managing inputs from user
+    private volatile CopyOnWriteArrayList<PUIElement> elements = new CopyOnWriteArrayList<>();
+
+    public PUICore(PUIFrame f) throws InvalidAttributeValueException {
+        for (PUICore core : registeredCores)
+            if (core.f == f)
+                throw new InvalidAttributeValueException("This Component has already been registered!");
+
+        registeredCores.add(this);
+        this.f = f;
+        init();
+    }
 
     /**
      * @return PUICore that has component <code>c</code> or <code>null</code> if
@@ -16,23 +31,6 @@ public final class PUICore {
             if (core.f == f)
                 return core;
         return null;
-    }
-
-    private static ArrayList<PUICore> registeredCores = new ArrayList<>();
-
-    private PUIFrame f;
-    // registered Elements for managing inputs from user
-    private volatile ArrayList<PUIElement> elements = new ArrayList<>();
-
-    public PUICore(PUIFrame f) throws InvalidAttributeValueException {
-        for (PUICore core : registeredCores)
-            if (core.f == f)
-                throw new InvalidAttributeValueException("This Component has already been registered!");
-
-        registeredCores.add(this);
-        this.f = f;
-
-        init();
     }
 
     private void init() {
@@ -47,8 +45,12 @@ public final class PUICore {
             public void mousePressed(MouseEvent e) {
                 int firstHitLayer = -1; //2D-Raycast from top to bottom
                 for (PUIElement elem : elements)
-                    if ((firstHitLayer == -1 || firstHitLayer == elem.getInteractionLayer()) && elem.getBounds().contains(e.getPoint())) {
-                        firstHitLayer = elem.getInteractionLayer();
+                    if ((firstHitLayer == -1 || firstHitLayer == elem.getInteractionLayer()) && elem.contains(e.getPoint())) {
+                        if (elem.blocksRaycast()) {
+                            firstHitLayer = elem.getInteractionLayer();
+                        }else{
+                            System.out.println("let through");
+                        }
                         for (MouseListener listener : elem.getMouseListeners())
                             listener.mousePressed(e);
                     } else if ((firstHitLayer != -1 && firstHitLayer != elem.getInteractionLayer())) {
@@ -93,8 +95,9 @@ public final class PUICore {
             public void mouseWheelMoved(MouseWheelEvent e) {
                 int firstHitLayer = -1; //2D-Raycast from top to bottom
                 for (PUIElement elem : elements)
-                    if ((firstHitLayer == -1 || firstHitLayer == elem.getInteractionLayer()) && elem.getBounds().contains(e.getPoint())) {
-                        firstHitLayer = elem.getInteractionLayer();
+                    if ((firstHitLayer == -1 || firstHitLayer == elem.getInteractionLayer()) && elem.contains(e.getPoint())) {
+                        if (elem.blocksRaycast())
+                            firstHitLayer = elem.getInteractionLayer();
                         for (MouseWheelListener listener : elem.getMouseWheelListeners())
                             listener.mouseWheelMoved(e);
                     } else if ((firstHitLayer != -1 && firstHitLayer != elem.getInteractionLayer())) {
