@@ -15,6 +15,7 @@ public class PUIScrollPanel extends PUIElement {
     private volatile ArrayList<PUIElement> elements = new ArrayList<PUIElement>();
     private boolean fixedElements = true, useMouseWheel = true;
     private int sliderWidth = 70;
+    private int elementSpace_Left = 0, elementSpace_Right = 0, elementSpace_Top = 0, elementSpace_Bottom = 0;
 
     private ElementAlignment alignment = ElementAlignment.VERTICAL;
 
@@ -108,11 +109,18 @@ public class PUIScrollPanel extends PUIElement {
             if (fixedElements) { // snap to grid
                 for (int i = 0; i < (elements.size() < showedElements ? elements.size() : showedElements)
                         && (elements.size() > i + showIndex); i++) {
+
+                    PUIElement e = elements.get(i + showIndex);
                     if (alignment == ElementAlignment.VERTICAL) {
-                        elements.get(i + showIndex).setBounds(x, (int) (y + eHeight * i), w - sliderWidth,
-                                (int) eHeight);
+
+                        // Vertical
+                        e.setBounds(x + elementSpace_Left, (int) (y + eHeight * i) + elementSpace_Top, w - sliderWidth - elementSpace_Left - elementSpace_Right, (int) eHeight - elementSpace_Top - elementSpace_Bottom);
+
                     } else if (alignment == ElementAlignment.HORIZONTAL) {
-                        elements.get(i + showIndex).setBounds((int) (x + eWidth * i), y, (int) eWidth, h - sliderWidth);
+
+                        // Horizontal
+                        e.setBounds((int) (x + eWidth * i), y, (int) eWidth, h - sliderWidth);
+
                     }
                     elements.get(i + showIndex).setEnabled(true);
                 }
@@ -124,6 +132,48 @@ public class PUIScrollPanel extends PUIElement {
 //			updateElements();
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Finds the given Element
+     *
+     * @param element
+     * @return values from 0.0 to 1.0 depending o the location of the searched Element
+     */
+    public float find(PUIElement element) {
+        if (element != null)
+            for (int i = 0; i < elements.size(); i++)
+                if (elements.get(i) == element)
+                    return Math.min((Math.max(i - showedElements / 2, 0f)) / (elements.size() - showedElements), 1f);
+
+        return -1; // PUIElement could not be found
+    }
+
+    /**
+     * Automatically centers Element in the UI
+     *
+     * @param elementIndex to center
+     */
+    public void center(int elementIndex) {
+        center(elements.get(elementIndex));
+    }
+
+    /**
+     * Automatically centers Element in the UI
+     *
+     * @param element to center
+     */
+    public void center(PUIElement element) {
+        if (element != null)
+            setSliderValue(find(element));
+    }
+
+    public void setElementSpacing(int left, int right, int top, int bottom) {
+        elementSpace_Left = Math.max(left, 0);
+        elementSpace_Right = Math.max(right, 0);
+        elementSpace_Top = Math.max(top, 0);
+        elementSpace_Bottom = Math.max(bottom, 0);
+        updateElements();
     }
 
     public boolean isFixedElements() {
@@ -258,6 +308,14 @@ public class PUIScrollPanel extends PUIElement {
 
     public void setSliderWidth(int sliderWidth) {
         this.sliderWidth = sliderWidth;
+    }
+
+    public float getSliderValue() {
+        return slider.getValue();
+    }
+
+    public void setSliderValue(float value) {
+        slider.setValue(value);
     }
 
     public int getShowedElements() {

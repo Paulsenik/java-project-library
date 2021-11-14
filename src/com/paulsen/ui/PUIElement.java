@@ -10,7 +10,7 @@ import java.awt.event.MouseWheelListener;
 import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class PUIElement { // PaulsenUserInterfaceIntegratedElement
+public class PUIElement extends PUICanvas { // PaulsenUserInterfaceIntegratedElement
 
     // Static
     public static volatile CopyOnWriteArrayList<PUIElement> registeredElements = new CopyOnWriteArrayList<PUIElement>();
@@ -22,7 +22,7 @@ public class PUIElement { // PaulsenUserInterfaceIntegratedElement
 
     protected int x = 0, y = 0, w = 0, h = 0;
     protected Color backgroundColor = Color.LIGHT_GRAY;
-    protected PUIPaintable paintInvoke, hoverOverlay, pressOverlay;
+    protected PUIPaintable hoverOverlay, pressOverlay;
     protected PUIFrame frame;
     protected PUICore core;
     protected ArrayList<PUIAction> actions = new ArrayList<>();
@@ -32,7 +32,6 @@ public class PUIElement { // PaulsenUserInterfaceIntegratedElement
     protected Object metaData;
     protected boolean updateFrameOnEvent = true, paintOverOnHover = true, paintOverOnPress = true, enabled = true;
     protected boolean blockRaycast = true;
-    private int drawLayer = 0;
     private int interactionLayer = 0;
     // TEMP-vars
     // pressed -> is pressed on Screen
@@ -40,12 +39,14 @@ public class PUIElement { // PaulsenUserInterfaceIntegratedElement
     private boolean hovered = false, pressed = false, isCurrentlyPressing = false;
 
     public PUIElement(PUIFrame f) {
+        super(f, null);
         this.frame = f;
         init();
         initCore();
     }
 
     public PUIElement(PUIFrame f, int layer) {
+        super(f, null, layer);
         this.frame = f;
         init();
         initCore();
@@ -105,7 +106,7 @@ public class PUIElement { // PaulsenUserInterfaceIntegratedElement
             }
         });
 
-        paintInvoke = new PUIPaintable() {
+        paint = new PUIPaintable() {
             @Override
             public void paint(Graphics g, int x, int y, int w, int h) {
                 if (darkUIMode && backgroundColor == Color.LIGHT_GRAY) {
@@ -135,8 +136,6 @@ public class PUIElement { // PaulsenUserInterfaceIntegratedElement
                 g.fillRect(x, y, w, h);
             }
         };
-        if (frame != null)
-            frame.add(this);
     }
 
     private void initCore() {
@@ -161,6 +160,7 @@ public class PUIElement { // PaulsenUserInterfaceIntegratedElement
         }
     }
 
+    @Override
     public synchronized void draw(Graphics g) {
         if (g == null)
             return;
@@ -171,8 +171,8 @@ public class PUIElement { // PaulsenUserInterfaceIntegratedElement
         } else
             hovered = false;
 
-        if (paintInvoke != null) {
-            paintInvoke.paint(g, x, y, w, h);
+        if (paint != null) {
+            paint.paint(g, x, y, w, h);
         }
         if (hovered) {
             if (hovered && !pressed && paintOverOnHover) {
@@ -258,10 +258,6 @@ public class PUIElement { // PaulsenUserInterfaceIntegratedElement
         return h;
     }
 
-    public void setDraw(PUIPaintable paintInvoke) {
-        this.paintInvoke = paintInvoke;
-    }
-
     public void setHoverOverlay(PUIPaintable paintInvoke) {
         hoverOverlay = paintInvoke;
     }
@@ -319,17 +315,13 @@ public class PUIElement { // PaulsenUserInterfaceIntegratedElement
     }
 
     /**
-     *
      * @param doesBlockRaycast if set to false: when pressed => the eventchain doesnt stop => elements on layers behind this Button can be triggered as well
      */
     public void setRaycastable(boolean doesBlockRaycast) {
         this.blockRaycast = doesBlockRaycast;
     }
 
-    public int getDrawLayer() {
-        return drawLayer;
-    }
-
+    @Override
     public void setDrawLayer(int drawLayer) {
         this.drawLayer = drawLayer;
         frame.rearrangeElements();

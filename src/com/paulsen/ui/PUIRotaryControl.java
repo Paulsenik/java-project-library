@@ -36,7 +36,7 @@ public class PUIRotaryControl extends PUIElement {
     }
 
     private void init() {
-        paintInvoke = new PUIPaintable() {
+        paint = new PUIPaintable() {
             @Override
             public void paint(Graphics g, int x, int y, int w, int h) {
                 if (w < 0)

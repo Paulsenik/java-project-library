@@ -13,7 +13,7 @@ public class PUIFrame extends JFrame {
     private int maxFrameRate = 30;
 
     // registered Elements for managing drawing elements
-    private volatile ArrayList<PUIElement> elements = new ArrayList<>();
+    private volatile ArrayList<PUICanvas> elements = new ArrayList<>();
 
     private volatile PUIUpdatable updateElements;
     private volatile PUIPaintable paint; // called by canvas
@@ -22,8 +22,9 @@ public class PUIFrame extends JFrame {
     private int w = 100, h = 100;
     private String displayName = "PUIFrame"; // only for init
     private boolean hasInit = false, continuousDraw = false;
+    private int minUpdateDelay = 0;
 
-    public PUIFrame(PUIInitializable puiInitializable) {
+    public PUIFrame() {
         super();
         constructorInit();
     }
@@ -79,10 +80,12 @@ public class PUIFrame extends JFrame {
                     paint.paint(g, 0, 0, w, h);
 
                 // Prevent Concurrent-Modification-Errors
-                ArrayList<PUIElement> tempEl = new ArrayList<>(elements);
+                ArrayList<PUICanvas> tempEl = new ArrayList<>(elements);
                 // Paints Elements
-                for (PUIElement el : tempEl) {
-                    if (el != null)
+                for (PUICanvas el : tempEl) {
+                    if (!(el instanceof PUIElement))
+                        g.setColor(Color.black);
+                    if (el != null && el.isVisible())
                         el.draw(g);
                 }
             }
@@ -90,8 +93,6 @@ public class PUIFrame extends JFrame {
 
         add(canvas);
     }
-
-    private int minUpdateDelay = 0;
 
     private void initTimer() {
         new Thread(new Runnable() {
@@ -161,7 +162,7 @@ public class PUIFrame extends JFrame {
         return hasInit;
     }
 
-    public synchronized void add(PUIElement element) {
+    public synchronized void add(PUICanvas element) {
         if (element != null && !elements.contains(element)) {
             elements.add(element);
             rearrangeElements();
@@ -248,9 +249,9 @@ public class PUIFrame extends JFrame {
      * sets Draw-Order
      */
     public void rearrangeElements() {
-        Comparator<PUIElement> comp = new Comparator<PUIElement>() {
+        Comparator<PUICanvas> comp = new Comparator<PUICanvas>() {
             @Override
-            public int compare(PUIElement o1, PUIElement o2) {
+            public int compare(PUICanvas o1, PUICanvas o2) {
                 if (o1.getDrawLayer() < o2.getDrawLayer())
                     return -1;
                 if (o1.getDrawLayer() > o2.getDrawLayer())

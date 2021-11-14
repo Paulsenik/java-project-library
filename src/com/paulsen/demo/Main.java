@@ -3,12 +3,25 @@ package com.paulsen.demo;
 import com.paulsen.ui.*;
 import com.paulsen.ui.PUIElement.ElementAlignment;
 
+import java.awt.*;
+
 public class Main {
 
     public Main() {
 
         // initialize variables before using them in update/paint
         PUIFrame f = new PUIFrame("Project-Library Demo", 600, 600);
+
+
+        // Drawing a rectangle in the background
+        PUICanvas canvas = new PUICanvas(f, new PUIPaintable() {
+            @Override
+            public void paint(Graphics g, int x, int y, int w, int h) {
+                g.setColor(new Color(100, 100, 100));
+                g.fillRoundRect(40, 40, w - 80, h - 80, 20, 20);
+            }
+        }, -1);
+
 
         PUIText darkmodeButton = new PUIText(f, "LIGHT", 2);
         darkmodeButton.addActionListener(new PUIAction() {
@@ -55,7 +68,7 @@ public class Main {
         slider2.addValueUpdateAction(new Runnable() {
             @Override
             public void run() {
-                rc.setValueThickness((int) (67* slider2.getValue()));
+                rc.setValueThickness((int) (67 * slider2.getValue()));
             }
         });
 
@@ -66,10 +79,15 @@ public class Main {
                 @Override
                 public void run(PUIElement that) {
                     f.setTitle(((PUIText) that).getText());
+
+                    // automatically centers clicked Element in the UI
+                    sp.center(that);
                 }
             });
             sp.addElement(t);
         }
+        // comment out if the size of the element inside of the panel should be further limited
+//        sp.setElementSpacing(6,0,3,3);
 
         // prevent different colors when hovering/pressing
         for (PUIElement e : PUIElement.registeredElements) {

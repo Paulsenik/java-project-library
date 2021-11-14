@@ -48,8 +48,6 @@ public final class PUICore {
                     if ((firstHitLayer == -1 || firstHitLayer == elem.getInteractionLayer()) && elem.contains(e.getPoint())) {
                         if (elem.blocksRaycast()) {
                             firstHitLayer = elem.getInteractionLayer();
-                        }else{
-                            System.out.println("let through");
                         }
                         for (MouseListener listener : elem.getMouseListeners())
                             listener.mousePressed(e);
