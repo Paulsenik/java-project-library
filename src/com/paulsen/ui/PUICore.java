@@ -2,7 +2,10 @@ package com.paulsen.ui;
 
 import javax.management.InvalidAttributeValueException;
 import java.awt.event.*;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public final class PUICore {
@@ -103,6 +106,15 @@ public final class PUICore {
                     }
             }
         });
+
+        // init java-GBC
+        new Timer().scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                if (PUIElement.useGBC)
+                    System.gc();
+            }
+        }, 0, 10000);
     }
 
     public void addElement(PUIElement e) {
@@ -130,7 +142,11 @@ public final class PUICore {
                     return -1;
                 if (o1.getInteractionLayer() < o2.getInteractionLayer())
                     return 1;
-                return 0;
+
+                // same layer but different time
+                if (o1.getCreationID() < o2.getCreationID())
+                    return -1;
+                return 1;
             }
         };
         elements.sort(comp);
@@ -139,6 +155,10 @@ public final class PUICore {
 //        for (PUIElement e : elements) {
 //            System.out.println(" " + e.getInteractionLayer());
 //        }
+    }
+
+    public ArrayList<PUIElement> getElements() {
+        return new ArrayList<>(elements);
     }
 
 }

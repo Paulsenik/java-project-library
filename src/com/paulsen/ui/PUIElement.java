@@ -13,6 +13,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class PUIElement extends PUICanvas { // PaulsenUserInterfaceIntegratedElement
 
     // Static
+    public static volatile boolean useGBC = false; // signals PUICore to use System.gbc()
     public static volatile CopyOnWriteArrayList<PUIElement> registeredElements = new CopyOnWriteArrayList<PUIElement>();
     public static boolean darkUIMode = false;
     public static Color darkBG_1 = new Color(47, 47, 47), darkBG_2 = new Color(57, 57, 57),
@@ -30,7 +31,7 @@ public class PUIElement extends PUICanvas { // PaulsenUserInterfaceIntegratedEle
     protected ArrayList<MouseMotionListener> mouseMotionListeners = new ArrayList<>();
     protected ArrayList<MouseWheelListener> mouseWheelListeners = new ArrayList<>();
     protected Object metaData;
-    protected boolean updateFrameOnEvent = true, paintOverOnHover = true, paintOverOnPress = true, enabled = true;
+    protected boolean repaintFrameOnEvent = true, paintOverOnHover = true, paintOverOnPress = true, enabled = true;
     protected boolean blockRaycast = true;
     private int interactionLayer = 0;
     // TEMP-vars
@@ -108,7 +109,7 @@ public class PUIElement extends PUICanvas { // PaulsenUserInterfaceIntegratedEle
 
         paint = new PUIPaintable() {
             @Override
-            public void paint(Graphics g, int x, int y, int w, int h) {
+            public void paint(Graphics2D g, int x, int y, int w, int h) {
                 if (darkUIMode && backgroundColor == Color.LIGHT_GRAY) {
                     g.setColor(darkBG_1);
                     g.fillRect(x, y, w, h);
@@ -124,14 +125,14 @@ public class PUIElement extends PUICanvas { // PaulsenUserInterfaceIntegratedEle
         };
         hoverOverlay = new PUIPaintable() {
             @Override
-            public void paint(Graphics g, int x, int y, int w, int h) {
+            public void paint(Graphics2D g, int x, int y, int w, int h) {
                 g.setColor(new Color(100, 100, 100, 100));
                 g.fillRect(x, y, w, h);
             }
         };
         pressOverlay = new PUIPaintable() {
             @Override
-            public void paint(Graphics g, int x, int y, int w, int h) {
+            public void paint(Graphics2D g, int x, int y, int w, int h) {
                 g.setColor(new Color(100, 100, 100, 200));
                 g.fillRect(x, y, w, h);
             }
@@ -161,7 +162,7 @@ public class PUIElement extends PUICanvas { // PaulsenUserInterfaceIntegratedEle
     }
 
     @Override
-    public synchronized void draw(Graphics g) {
+    public synchronized void draw(Graphics2D g) {
         if (g == null)
             return;
 
@@ -210,8 +211,8 @@ public class PUIElement extends PUICanvas { // PaulsenUserInterfaceIntegratedEle
                 if (r != null)
                     r.run(this);
 
-        if (updateFrameOnEvent && frame != null) {
-            frame.updateElements();
+        if (repaintFrameOnEvent && frame != null) {
+            frame.repaint();
         }
     }
 
@@ -287,11 +288,11 @@ public class PUIElement extends PUICanvas { // PaulsenUserInterfaceIntegratedEle
     }
 
     public void doUpdateFrameOnEvent(boolean updateFrameOnEvent) {
-        this.updateFrameOnEvent = updateFrameOnEvent;
+        this.repaintFrameOnEvent = updateFrameOnEvent;
     }
 
     public boolean isUpdateFrameOnEvent() {
-        return updateFrameOnEvent;
+        return repaintFrameOnEvent;
     }
 
     public boolean isPressed() {
@@ -315,9 +316,18 @@ public class PUIElement extends PUICanvas { // PaulsenUserInterfaceIntegratedEle
     }
 
     /**
+     * Releases element from core & register-list
+     */
+    public void release() {
+        core.removeElement(this);
+        registeredElements.remove(this);
+        useGBC = true;
+    }
+
+    /**
      * @param doesBlockRaycast if set to false: when pressed => the eventchain doesnt stop => elements on layers behind this Button can be triggered as well
      */
-    public void setRaycastable(boolean doesBlockRaycast) {
+    public void doBlockRaycast(boolean doesBlockRaycast) {
         this.blockRaycast = doesBlockRaycast;
     }
 

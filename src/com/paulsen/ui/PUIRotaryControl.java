@@ -10,8 +10,8 @@ import java.util.ArrayList;
 public class PUIRotaryControl extends PUIElement {
 
     protected float valueLength = 0.5f;
-    protected int rotationArea = 270;
-    protected int valueThickness = 2;
+    protected float rotationArea = 270; // in degrees
+    protected float valueThickness = 20; // in degrees
     protected float mouseMultiplicator = 0.005f;
     private ArrayList<Runnable> valueUpdateAction = new ArrayList<Runnable>();
     private float value = .5f;
@@ -38,7 +38,7 @@ public class PUIRotaryControl extends PUIElement {
     private void init() {
         paint = new PUIPaintable() {
             @Override
-            public void paint(Graphics g, int x, int y, int w, int h) {
+            public void paint(Graphics2D g, int x, int y, int w, int h) {
                 if (w < 0)
                     w = -w;
                 if (h < 0)
@@ -64,27 +64,28 @@ public class PUIRotaryControl extends PUIElement {
                 else
                     g.setColor(valueColor);
 
-                // TODO rewrite
-                for (float i = (float) (value - valueThickness * 0.01); i < (float) (value
-                        + valueThickness * 0.01); i += (.1f / w)) {
-                    Point[] p = getRotPoints(i);
+                // Value-Visual
+                g.fillArc(x, y, w, h, (int) (360 - ((rotationArea * value + (360 - rotationArea) / 2 + 90) + valueThickness / 2)), (int) valueThickness);
 
-                    g.drawLine(p[0].x, p[0].y, p[1].x, p[1].y);
+                // Overpaint part of ^ , to visualize valueLength
+                if (PUIElement.darkUIMode && backgroundColor == Color.LIGHT_GRAY)
+                    g.setColor(PUIElement.darkBG_1);
+                else
+                    g.setColor(backgroundColor);
 
-                }
-
+                g.fillOval((int) (x + (1.0f - valueLength) * (w / 2)), (int) (y + (1.0f - valueLength) * (h / 2)), (int) (w * (valueLength)), (int) (h * (valueLength)));
             }
         };
         hoverOverlay = new PUIPaintable() {
             @Override
-            public void paint(Graphics g, int x, int y, int w, int h) {
+            public void paint(Graphics2D g, int x, int y, int w, int h) {
                 g.setColor(new Color(100, 100, 100, 100));
                 g.fillOval(x, y, w, h);
             }
         };
         pressOverlay = new PUIPaintable() {
             @Override
-            public void paint(Graphics g, int x, int y, int w, int h) {
+            public void paint(Graphics2D g, int x, int y, int w, int h) {
                 g.setColor(new Color(100, 100, 100, 200));
                 g.fillOval(x, y, w, h);
             }
@@ -123,19 +124,6 @@ public class PUIRotaryControl extends PUIElement {
                 }
             }
         });
-    }
-
-    private Point[] getRotPoints(float value) { // 2Points => outer/inner-point
-        float rotValue = rotationArea * value + (360 - rotationArea) / 2 + 90;
-        float rotH = (float) (Math.sin(Math.toRadians(rotValue)) * w / 2);
-        float rotW = (float) (Math.cos(Math.toRadians(rotValue)) * w / 2);
-        float nX = x + w / 2 + rotW;
-        float nY = y + h / 2 + rotH;
-        float innerX = (x + w / 2) - ((x + w / 2) - nX) * (1f - valueLength);
-        float innerY = (y + h / 2) - ((y + h / 2) - nY) * (1f - valueLength);
-
-        Point[] p = {new Point((int) nX, (int) nY), new Point((int) innerX, (int) innerY)};
-        return p;
     }
 
     /**
@@ -182,19 +170,19 @@ public class PUIRotaryControl extends PUIElement {
         this.valueLength = valueLength;
     }
 
-    public int getRotationArea() {
+    public float getRotationArea() {
         return rotationArea;
     }
 
-    public void setRotationArea(int rotationArea) {
+    public void setRotationArea(float rotationArea) {
         this.rotationArea = rotationArea;
     }
 
-    public int getValueThickness() {
+    public float getValueThickness() {
         return valueThickness;
     }
 
-    public void setValueThickness(int valueThickness) {
+    public void setValueThickness(float valueThickness) {
         this.valueThickness = valueThickness;
     }
 
@@ -239,8 +227,8 @@ public class PUIRotaryControl extends PUIElement {
     }
 
     public void runAllValueUpdateActions() {
-        if (updateFrameOnEvent && frame != null) {
-            frame.updateElements();
+        if (repaintFrameOnEvent && frame != null) {
+            frame.repaint();
         }
 
         if (valueUpdateAction != null)

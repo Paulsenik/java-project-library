@@ -62,7 +62,7 @@ public class PUIFrame extends JFrame {
         canvas = new JLabel() {
             private static final long serialVersionUID = 1L;
 
-            protected void paintComponent(Graphics g) {
+            protected void paintComponent(Graphics g2) {
                 if (!hasInit) {
                     try {
                         Thread.sleep(100);
@@ -71,7 +71,9 @@ public class PUIFrame extends JFrame {
                     repaint();
                 }
 
-                ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                Graphics2D g = ((Graphics2D) g2);
+
+                g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
                 g.setColor(Color.DARK_GRAY);
                 g.fillRect(0, 0, getWidth(), getHeight());
@@ -83,10 +85,14 @@ public class PUIFrame extends JFrame {
                 ArrayList<PUICanvas> tempEl = new ArrayList<>(elements);
                 // Paints Elements
                 for (PUICanvas el : tempEl) {
+                    if (el == null)
+                        continue;
+
                     if (!(el instanceof PUIElement))
                         g.setColor(Color.black);
-                    if (el != null && el.isVisible())
+                    if (el.isVisible()) {
                         el.draw(g);
+                    }
                 }
             }
         };
@@ -172,6 +178,7 @@ public class PUIFrame extends JFrame {
     public synchronized void remove(PUIElement element) {
         if (element != null) {
             elements.remove(element);
+            element.release();
             rearrangeElements();
         }
     }
@@ -256,7 +263,11 @@ public class PUIFrame extends JFrame {
                     return -1;
                 if (o1.getDrawLayer() > o2.getDrawLayer())
                     return 1;
-                return 0;
+
+                // same layer but different time
+                if (o1.getCreationID() < o2.getCreationID())
+                    return 1;
+                return -1;
             }
         };
         elements.sort(comp);

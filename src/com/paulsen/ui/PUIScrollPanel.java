@@ -119,7 +119,7 @@ public class PUIScrollPanel extends PUIElement {
                     } else if (alignment == ElementAlignment.HORIZONTAL) {
 
                         // Horizontal
-                        e.setBounds((int) (x + eWidth * i), y, (int) eWidth, h - sliderWidth);
+                        e.setBounds((int) (x + eWidth * i + elementSpace_Left), y + elementSpace_Top, (int) eWidth - elementSpace_Left - elementSpace_Right, h - sliderWidth - elementSpace_Top - elementSpace_Bottom);
 
                     }
                     elements.get(i + showIndex).setEnabled(true);
@@ -241,7 +241,7 @@ public class PUIScrollPanel extends PUIElement {
     }
 
     @Override
-    public void draw(Graphics g) {
+    public void draw(Graphics2D g) {
         try {
             super.draw(g);
             if (slider != null)

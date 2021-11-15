@@ -4,6 +4,8 @@ import java.awt.*;
 
 public class PUICanvas {
 
+    private final long creationID = System.currentTimeMillis(); // creation time
+
     protected PUIFrame frame;
     protected PUIPaintable paint;
 
@@ -30,7 +32,7 @@ public class PUICanvas {
             frame.add(this);
     }
 
-    public synchronized void draw(Graphics g) {
+    public synchronized void draw(Graphics2D g) {
         if (g != null && frame != null)
             paint.paint(g, 0, 0, frame.w(), frame.h());
     }
@@ -61,5 +63,9 @@ public class PUICanvas {
 
     public void setDrawLayer(int drawLayer) {
         this.drawLayer = drawLayer;
+    }
+
+    public long getCreationID() {
+        return creationID;
     }
 }

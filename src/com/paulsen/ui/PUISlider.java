@@ -37,7 +37,7 @@ public class PUISlider extends PUIElement {
         sliderB = new PUIElement(frame, getDrawLayer());
         sliderB.setDraw(new PUIPaintable() {
             @Override
-            public void paint(Graphics g, int x, int y, int w, int h) {
+            public void paint(Graphics2D g, int x, int y, int w, int h) {
                 if (PUIElement.darkUIMode)
                     g.setColor(PUIElement.darkBG_2);
                 else
@@ -102,7 +102,7 @@ public class PUISlider extends PUIElement {
     }
 
     @Override
-    public void draw(Graphics g) {
+    public void draw(Graphics2D g) {
         super.draw(g);
         sliderB.draw(g);
     }
@@ -173,7 +173,7 @@ public class PUISlider extends PUIElement {
                 if (r != null)
                     r.run();
 
-        if (updateFrameOnEvent && frame != null)
+        if (repaintFrameOnEvent && frame != null)
             frame.updateElements();
     }
 

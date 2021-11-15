@@ -170,7 +170,7 @@ public class PUIText extends PUIElement {
     }
 
     @Override
-    public void draw(Graphics g) {
+    public void draw(Graphics2D g) {
         if (g == null)
             return;
         super.draw(g);
