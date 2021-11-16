@@ -111,8 +111,10 @@ public final class PUICore {
         new Timer().scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                if (PUIElement.useGBC)
+                if (PUIElement.useGBC) {
                     System.gc();
+                    PUIElement.useGBC = false;
+                }
             }
         }, 0, 10000);
     }
