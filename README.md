@@ -68,7 +68,6 @@ by [`Paulsen`](https://github.com/realPaulsen)
 
 ### Planned Improvements / In Development
 
-- Mouse-Update-Bug: When not moving Mouse after click-event, Elements can not be clicked until the Mouse moves again
 - Graph plotter: Plot multiple graphs and analyze them
 - Comments/JavaDoc still missing😬
 

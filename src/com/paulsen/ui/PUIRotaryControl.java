@@ -51,13 +51,6 @@ public class PUIRotaryControl extends PUIElement {
                     g.setColor(backgroundColor);
                 g.fillOval(x, y, w, h);
 
-                // Outline
-                if (PUIElement.darkUIMode)
-                    g.setColor(PUIElement.darkOutline);
-                else
-                    g.setColor(Color.black);
-                g.drawOval(x, y, w, h);
-
                 // value-visual
                 if (PUIElement.darkUIMode && valueColor == Color.GRAY)
                     g.setColor(PUIElement.darkSelected);
@@ -74,6 +67,14 @@ public class PUIRotaryControl extends PUIElement {
                     g.setColor(backgroundColor);
 
                 g.fillOval((int) (x + (1.0f - valueLength) * (w / 2)), (int) (y + (1.0f - valueLength) * (h / 2)), (int) (w * (valueLength)), (int) (h * (valueLength)));
+
+                // Outline
+                if (PUIElement.darkUIMode)
+                    g.setColor(PUIElement.darkOutline);
+                else
+                    g.setColor(Color.black);
+                g.drawOval(x, y, w, h);
+
             }
         };
         hoverOverlay = new PUIPaintable() {

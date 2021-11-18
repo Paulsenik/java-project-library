@@ -50,6 +50,7 @@ public class PUIScrollPanel extends PUIElement {
             @Override
             public void mouseWheelMoved(MouseWheelEvent e) {
                 try {
+                    hovered = contains(e.getPoint());
                     if (useMouseWheel && isHovered()) {
                         if (showedElements < elements.size()) {
                             float value = (float) 1 / (elements.size() - showedElements);

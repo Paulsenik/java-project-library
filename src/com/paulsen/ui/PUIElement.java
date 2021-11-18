@@ -37,7 +37,7 @@ public class PUIElement extends PUICanvas { // PaulsenUserInterfaceIntegratedEle
     // TEMP-vars
     // pressed -> is pressed on Screen
     // isCurrentlyPressing -> is pressing on Element
-    private boolean hovered = false, pressed = false, isCurrentlyPressing = false;
+    protected boolean hovered = false, pressed = false, isCurrentlyPressing = false;
 
     public PUIElement(PUIFrame f) {
         super(f, null);
@@ -60,8 +60,7 @@ public class PUIElement extends PUICanvas { // PaulsenUserInterfaceIntegratedEle
             public void mouseMoved(MouseEvent e) {
                 if (!enabled)
                     return;
-                Point p = e.getPoint();
-                hovered = (p != null && getBounds().contains(p));
+                hovered = contains(e.getPoint());
             }
 
             @Override
@@ -69,13 +68,14 @@ public class PUIElement extends PUICanvas { // PaulsenUserInterfaceIntegratedEle
                 if (!enabled)
                     return;
                 Point p = e.getPoint();
-                hovered = (p != null && getBounds().contains(p));
+                hovered = contains(e.getPoint());
 
             }
         });
         mouseListeners.add(new MouseListener() {
             @Override
             public void mouseReleased(MouseEvent e) {
+                hovered = contains(e.getPoint());
                 pressed = false;
                 isCurrentlyPressing = false;
             }
@@ -149,7 +149,7 @@ public class PUIElement extends PUICanvas { // PaulsenUserInterfaceIntegratedEle
         if (core == null) {
             try {
                 // create new core
-                core = new PUICore(frame);
+                core = PUICore.getInstance(frame);
             } catch (InvalidAttributeValueException e1) {
                 e1.printStackTrace();
                 return;
@@ -165,12 +165,6 @@ public class PUIElement extends PUICanvas { // PaulsenUserInterfaceIntegratedEle
     public synchronized void draw(Graphics2D g) {
         if (g == null)
             return;
-
-        Point p = frame.getMousePosition();
-        if (p != null && getBounds().contains(p)) {
-            hovered = true;
-        } else
-            hovered = false;
 
         if (paint != null) {
             paint.paint(g, x, y, w, h);

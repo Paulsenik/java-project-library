@@ -15,7 +15,10 @@ public final class PUICore {
     // registered Elements for managing inputs from user
     private volatile CopyOnWriteArrayList<PUIElement> elements = new CopyOnWriteArrayList<>();
 
-    public PUICore(PUIFrame f) throws InvalidAttributeValueException {
+    private PUICore() {
+    }
+
+    private PUICore(PUIFrame f) throws InvalidAttributeValueException {
         for (PUICore core : registeredCores)
             if (core.f == f)
                 throw new InvalidAttributeValueException("This Component has already been registered!");
@@ -23,6 +26,10 @@ public final class PUICore {
         registeredCores.add(this);
         this.f = f;
         init();
+    }
+
+    public static PUICore getInstance(PUIFrame f) throws InvalidAttributeValueException {
+        return new PUICore(f);
     }
 
     /**

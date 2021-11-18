@@ -68,6 +68,7 @@ public class PUISlider extends PUIElement {
         getMouseWheelListeners().add(new MouseWheelListener() {
             @Override
             public void mouseWheelMoved(MouseWheelEvent e) {
+                hovered = contains(e.getPoint());
                 if (useMouseWheel && isHovered()) {
                     setValue((float) (e.getWheelRotation() * 0.1 + getValue()));
                 }
