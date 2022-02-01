@@ -58,6 +58,8 @@ You can also ***store basic attributes*** to files and later read them (similar 
    - ***Eclipse:*** `Right-Click Project > Properties > Java Build Path > Add External JARs`
 3. **Start** with your project
 
+**For more see [included Demo](https://github.com/realPaulsen/Java-Project-Library/blob/main/src/com/paulsen/demo/Demo.java)**
+
 (Detailed Tutorial for using the Library comming soon)
 
 ## Project status
