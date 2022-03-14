@@ -13,11 +13,10 @@
 
 `Java-Project-Library` is a library for making small ***Coding-Projects*** of any kind really **fast**.
 
-## Downloads
+## Download
 
 <!--  TODO: Update D-Link after every new Release  -->
-- [![GitHub release (latest by date) ](https://img.shields.io/github/v/release/realPaulsen/Java-Project-Library) (latest)](https://github.com/realPaulsen/Java-Project-Library/releases/download/v1.1.0/Java-Project-Library.jar)
-- [All](https://github.com/realPaulsen/Java-Project-Library/releases)
+- [Latest release ![GitHub release (latest by date) ](https://img.shields.io/github/v/release/realPaulsen/Java-Project-Library)](https://github.com/realPaulsen/Java-Project-Library/releases)
 
 ## Introduction
 
@@ -58,6 +57,8 @@ You can also ***store basic attributes*** to files and later read them (similar 
    - ***IntelliJ:*** `File > Project Structure > Libraries > +`
    - ***Eclipse:*** `Right-Click Project > Properties > Java Build Path > Add External JARs`
 3. **Start** with your project
+
+**For more see [included Demo](https://github.com/realPaulsen/Java-Project-Library/blob/main/src/com/paulsen/demo/Demo.java)**
 
 (Detailed Tutorial for using the Library comming soon)
 
