@@ -29,6 +29,12 @@ public class PUIFrame extends JFrame {
         constructorInit();
     }
 
+    public PUIFrame(String displayName){
+        super();
+        this.displayName = displayName;
+        constructorInit();
+    }
+
     public PUIFrame(int width, int height) {
         super();
         this.w = width;
@@ -213,7 +219,7 @@ public class PUIFrame extends JFrame {
     /**
      * Creates a popup-window which lets u choose one of the Options
      *
-     * @param title
+     * @param title displayed Toptext
      * @param comboBoxInput String-Array of Options
      * @return index from 0 to comboBoxInput.length
      */
@@ -256,7 +262,7 @@ public class PUIFrame extends JFrame {
      * sets Draw-Order
      */
     public void rearrangeElements() {
-        Comparator<PUICanvas> comp = new Comparator<PUICanvas>() {
+        Comparator<PUICanvas> comp = new Comparator<>() {
             @Override
             public int compare(PUICanvas o1, PUICanvas o2) {
                 if (o1.getDrawLayer() < o2.getDrawLayer())

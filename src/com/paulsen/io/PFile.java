@@ -15,15 +15,14 @@ import java.util.Scanner;
  * Class for easier file-access and handling filedata
  * 
  * @author Paul Seidel
- * @version 1.0.4
- * @since 2019-01-01
- * @see Last Updated 2021/06/24
+ * @version 1.0.5
+ * @since 2019-01-01 : Updated 2022-03-14
  */
 
 public class PFile {
 
 	/**
-	 * @param Path
+	 * @param path
 	 * @return Filename without ending and folders, where its located
 	 */
 	public static String getName(String path) {
@@ -67,8 +66,8 @@ public class PFile {
 	/**
 	 * copys file if directory is a new one and renames it
 	 * 
-	 * @param path of File
-	 * @param new  Path to file
+	 * @param file is path of File
+	 * @param target is new Path to File
 	 * @return success
 	 */
 	public static boolean copyFile(String file, String target, boolean replaceIfExists) {
@@ -78,14 +77,13 @@ public class PFile {
 		if (!replaceIfExists) {
 			String addon = " - copy"; // l=8
 			int copyCount = 0;
-			while (new File(nPath).exists()) {
+			while (nPath != null && new File(nPath).exists()) {
 				if (copyCount > 0) { // remove " - copy0"
-					String nnP = "";
-					nnP = remove(nPath, nPath.length() - (addon.length() + PFile.getFileType(nPath).length()) - 2,
+					String nnP = remove(nPath, nPath.length() - (addon.length() + PFile.getFileType(nPath).length()) - 2,
 							nPath.length() + PFile.getFileType(nPath).length());
 					nPath = nnP + "." + PFile.getFileType(nPath);
 				}
-				nPath = PFile.getParentFolder(nPath) + "\\" + PFile.getName(nPath) + addon + copyCount + '.'
+				nPath = PFile.getParentFolder(nPath) + "/" + PFile.getName(nPath) + addon + copyCount + '.'
 						+ PFile.getFileType(nPath);
 				copyCount++;
 			}
@@ -98,7 +96,7 @@ public class PFile {
 			return false;
 		}
 
-		System.out.println("[PFile] :: copyFile :: from " + file + " to " + target);
+//		System.out.println("[PFile] :: copyFile :: from " + file + " to " + target);
 
 		return true;
 	}
@@ -113,7 +111,7 @@ public class PFile {
 	}
 
 	/**
-	 * @param Path
+	 * @param file path
 	 * @return filetype (e.g. "txt" "png" "wav" ...)
 	 */
 	public static String getFileType(String file) {
@@ -135,11 +133,11 @@ public class PFile {
 		File file = new File(path);
 
 		if (file.exists()) {
-			System.out.println("[PFile] :: " + getName(path) + "." + getFileType(path) + " already exists");
+//			System.out.println("[PFile] :: " + getName(path) + "." + getFileType(path) + " already exists");
 		} else {
 			try {
 				file.createNewFile();
-				System.out.println("[PFile] :: " + getName(path) + "." + getFileType(path) + " created");
+//				System.out.println("[PFile] :: " + getName(path) + "." + getFileType(path) + " created");
 			} catch (IOException e) {
 			}
 		}
@@ -168,7 +166,6 @@ public class PFile {
 		}
 		if (lastword.length() != 0) {
 			out.add(lastword);
-			lastword = "";
 		}
 		String array[] = new String[out.size()];
 		for (int i = 0; i < out.size(); i++)
@@ -196,7 +193,6 @@ public class PFile {
 				}
 				if (lastword.length() != 0) {
 					out.add(lastword);
-					lastword = "";
 				}
 			}
 
@@ -230,7 +226,7 @@ public class PFile {
 	 * @return Array of Strings that were seperated with LINES and not with space
 	 */
 	public synchronized String[] getLines() {
-		ArrayList<String> lines = new ArrayList<String>();
+		ArrayList<String> lines = new ArrayList<>();
 
 		if (exists()) {
 			Scanner scn;
@@ -252,14 +248,14 @@ public class PFile {
 	/**
 	 * Overwrites file with inhalt
 	 * 
-	 * @param inhalt
+	 * @param content contains whole fileContent (including linebreaks)
 	 */
-	public synchronized void writeFile(String inhalt) {
+	public synchronized void writeFile(String content) {
 		try {
 			FileWriter fileWriter;
 			fileWriter = new FileWriter(path);
 			PrintWriter printWriter = new PrintWriter(fileWriter);
-			printWriter.print(inhalt);
+			printWriter.print(content);
 			printWriter.close();
 		} catch (IOException e) {
 		}
