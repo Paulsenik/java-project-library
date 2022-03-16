@@ -7,6 +7,10 @@ import java.awt.*;
 
 public class Demo {
 
+    public static void main(String[] args) {
+        new Demo();
+    }
+
     // PUI-Objects
     PUIFrame f;
     PUICanvas canvas;
@@ -64,9 +68,14 @@ public class Demo {
                     sp.setAlignment(ElementAlignment.HORIZONTAL);
 
                     setMatrixElements(true);
+
+                    rc.setEnabled(false);
                 } else {
                     sp.setAlignment(ElementAlignment.VERTICAL);
+
                     setMatrixElements(false);
+
+                    rc.setEnabled(true);
                 }
             }
         });
@@ -101,7 +110,7 @@ public class Demo {
             }
         });
 
-        // add test-Buttons for scrollpanel
+        // add test-Buttons for scrollPanel
         for (int i = 1; i <= 10; i++) {
             PUIText t = new PUIText(f, "" + i);
             t.addActionListener(new PUIAction() {
@@ -145,10 +154,6 @@ public class Demo {
 
         f.updateElements();
 
-    }
-
-    public static void main(String[] args) {
-        new Demo();
     }
 
     public void setMatrixElements(boolean genHalf) {

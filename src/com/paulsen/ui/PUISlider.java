@@ -53,7 +53,7 @@ public class PUISlider extends PUIElement {
         });
         PUIElement.registeredElements.remove(sliderB);
 
-        getMouseMotionListeners().add(new MouseMotionListener() {
+        mouseMotionListeners.add(new MouseMotionListener() {
             @Override
             public void mouseMoved(MouseEvent e) {
             }
@@ -65,7 +65,7 @@ public class PUISlider extends PUIElement {
                 }
             }
         });
-        getMouseWheelListeners().add(new MouseWheelListener() {
+        mouseWheelListeners.add(new MouseWheelListener() {
             @Override
             public void mouseWheelMoved(MouseWheelEvent e) {
                 hovered = contains(e.getPoint());

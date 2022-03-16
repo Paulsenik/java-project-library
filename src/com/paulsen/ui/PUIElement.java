@@ -31,8 +31,9 @@ public class PUIElement extends PUICanvas { // PaulsenUserInterfaceIntegratedEle
     protected CopyOnWriteArrayList<MouseMotionListener> mouseMotionListeners = new CopyOnWriteArrayList<>();
     protected CopyOnWriteArrayList<MouseWheelListener> mouseWheelListeners = new CopyOnWriteArrayList<>();
     protected Object metaData;
-    protected boolean repaintFrameOnEvent = true, paintOverOnHover = true, paintOverOnPress = true, enabled = true;
+    protected boolean repaintFrameOnEvent = true, paintOverOnHover = true, paintOverOnPress = true;
     protected boolean blockRaycast = true;
+    private boolean enabled = true;
     private int interactionLayer = 0;
     // TEMP-vars
     // pressed -> is pressed on Screen
@@ -75,7 +76,8 @@ public class PUIElement extends PUICanvas { // PaulsenUserInterfaceIntegratedEle
         mouseListeners.add(new MouseListener() {
             @Override
             public void mouseReleased(MouseEvent e) {
-                hovered = contains(e.getPoint());
+                if (enabled)
+                    hovered = contains(e.getPoint());
                 pressed = false;
                 isCurrentlyPressing = false;
             }
@@ -163,7 +165,7 @@ public class PUIElement extends PUICanvas { // PaulsenUserInterfaceIntegratedEle
 
     @Override
     public synchronized void draw(Graphics2D g) {
-        if (g == null)
+        if (g == null || !isEnabled())
             return;
 
         if (paint != null) {
@@ -301,6 +303,10 @@ public class PUIElement extends PUICanvas { // PaulsenUserInterfaceIntegratedEle
         return enabled;
     }
 
+    /**
+     * If enabled is set FALSE: The Event-/Listening-System ignores this Element and also doesn't draw it.
+     * @param enabled
+     */
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }

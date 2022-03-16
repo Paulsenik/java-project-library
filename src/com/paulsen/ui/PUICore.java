@@ -52,13 +52,13 @@ public final class PUICore {
             public void mousePressed(MouseEvent e) {
                 int firstHitLayer = -1; //2D-Raycast from top to bottom
                 for (PUIElement elem : elements)
-                    if ((firstHitLayer == -1 || firstHitLayer == elem.getInteractionLayer()) && elem.contains(e.getPoint())) {
+                    if ((firstHitLayer == -1 || firstHitLayer == elem.getInteractionLayer()) && elem.contains(e.getPoint()) && elem.isEnabled()) {
                         if (elem.blocksRaycast()) {
                             firstHitLayer = elem.getInteractionLayer();
                         }
                         for (MouseListener listener : elem.getMouseListeners())
                             listener.mousePressed(e);
-                    } else if ((firstHitLayer != -1 && firstHitLayer != elem.getInteractionLayer())) {
+                    } else if ((firstHitLayer != -1 && firstHitLayer != elem.getInteractionLayer() && elem.isEnabled())) {
                         return; // break from loop because 2DRaycast has been triggered and the layers behind are not reachable
                     }
             }
@@ -66,8 +66,9 @@ public final class PUICore {
             @Override
             public void mouseReleased(MouseEvent e) {
                 for (PUIElement elem : elements)
-                    for (MouseListener listener : elem.getMouseListeners())
-                        listener.mouseReleased(e);
+                    if (elem.isEnabled())
+                        for (MouseListener listener : elem.getMouseListeners())
+                            listener.mouseReleased(e);
             }
 
             @Override
@@ -84,15 +85,17 @@ public final class PUICore {
             @Override
             public void mouseDragged(MouseEvent e) {
                 for (PUIElement elem : elements)
-                    for (MouseMotionListener listener : elem.getMouseMotionListeners())
-                        listener.mouseDragged(e);
+                    if (elem.isEnabled())
+                        for (MouseMotionListener listener : elem.getMouseMotionListeners())
+                            listener.mouseDragged(e);
             }
 
             @Override
             public void mouseMoved(MouseEvent e) {
                 for (PUIElement elem : elements)
-                    for (MouseMotionListener listener : elem.getMouseMotionListeners())
-                        listener.mouseMoved(e);
+                    if (elem.isEnabled())
+                        for (MouseMotionListener listener : elem.getMouseMotionListeners())
+                            listener.mouseMoved(e);
             }
         });
         f.c().addMouseWheelListener(new MouseWheelListener() {
@@ -100,7 +103,7 @@ public final class PUICore {
             public void mouseWheelMoved(MouseWheelEvent e) {
                 int firstHitLayer = -1; //2D-Raycast from top to bottom
                 for (PUIElement elem : elements)
-                    if ((firstHitLayer == -1 || firstHitLayer == elem.getInteractionLayer()) && elem.contains(e.getPoint())) {
+                    if ((firstHitLayer == -1 || firstHitLayer == elem.getInteractionLayer()) && elem.contains(e.getPoint()) && elem.isEnabled()) {
                         if (elem.blocksRaycast())
                             firstHitLayer = elem.getInteractionLayer();
                         for (MouseWheelListener listener : elem.getMouseWheelListeners())
