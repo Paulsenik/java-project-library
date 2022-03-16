@@ -26,10 +26,10 @@ public class PUIElement extends PUICanvas { // PaulsenUserInterfaceIntegratedEle
     protected PUIPaintable hoverOverlay, pressOverlay;
     protected PUIFrame frame;
     protected PUICore core;
-    protected ArrayList<PUIAction> actions = new ArrayList<>();
-    protected ArrayList<MouseListener> mouseListeners = new ArrayList<>();
-    protected ArrayList<MouseMotionListener> mouseMotionListeners = new ArrayList<>();
-    protected ArrayList<MouseWheelListener> mouseWheelListeners = new ArrayList<>();
+    protected CopyOnWriteArrayList<PUIAction> actions = new CopyOnWriteArrayList<>();
+    protected CopyOnWriteArrayList<MouseListener> mouseListeners = new CopyOnWriteArrayList<>();
+    protected CopyOnWriteArrayList<MouseMotionListener> mouseMotionListeners = new CopyOnWriteArrayList<>();
+    protected CopyOnWriteArrayList<MouseWheelListener> mouseWheelListeners = new CopyOnWriteArrayList<>();
     protected Object metaData;
     protected boolean repaintFrameOnEvent = true, paintOverOnHover = true, paintOverOnPress = true, enabled = true;
     protected boolean blockRaycast = true;
@@ -194,7 +194,7 @@ public class PUIElement extends PUICanvas { // PaulsenUserInterfaceIntegratedEle
     }
 
     public ArrayList<PUIAction> getActionListeners() {
-        return actions;
+        return new ArrayList<>(actions);
     }
 
     public void runAllActions() {
@@ -350,15 +350,15 @@ public class PUIElement extends PUICanvas { // PaulsenUserInterfaceIntegratedEle
     }
 
     public ArrayList<MouseMotionListener> getMouseMotionListeners() {
-        return mouseMotionListeners;
+        return new ArrayList<>(mouseMotionListeners);
     }
 
     public ArrayList<MouseWheelListener> getMouseWheelListeners() {
-        return mouseWheelListeners;
+        return new ArrayList<>(mouseWheelListeners);
     }
 
     public ArrayList<MouseListener> getMouseListeners() {
-        return mouseListeners;
+        return new ArrayList<>(mouseListeners);
     }
 
     public Color getBackgroundColor() {

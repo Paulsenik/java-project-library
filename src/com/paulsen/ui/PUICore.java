@@ -2,10 +2,7 @@ package com.paulsen.ui;
 
 import javax.management.InvalidAttributeValueException;
 import java.awt.event.*;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public final class PUICore {

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class PUIFrame extends JFrame {
     private static final long serialVersionUID = 1L;
@@ -13,7 +14,7 @@ public class PUIFrame extends JFrame {
     private int maxFrameRate = 30;
 
     // registered Elements for managing drawing elements
-    private volatile ArrayList<PUICanvas> elements = new ArrayList<>();
+    private volatile CopyOnWriteArrayList<PUICanvas> elements = new CopyOnWriteArrayList<>();
 
     private volatile PUIUpdatable updateElements;
     private volatile PUIPaintable paint; // called by canvas
