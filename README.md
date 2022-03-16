@@ -29,7 +29,8 @@ Features:
 - IO
   - `PFile` & `PFolder`: Advanced controls over Files & Folders
   - `PDataStorage`(similar to json): store/read basic attributes from/to files
-  - `PCustomProtocol`: Manage serial-communication between different programs/devices 
+  - `PCustomProtocol`: Manage communication between different programs/devices 
+  - `PSerialConnection`: Connect to an **Arduino, RaspberryPi** or other USB-Devices and communicate with them
 
 ## Why should I use this Library?
 
@@ -39,16 +40,19 @@ This library solves the problem for people, who are ***not experienced enough wi
 or who don't want to ***invest too much time*** in creating a simple window with buttons, dialogues, user-inputs & graphics.
 
 This Library is ***beginner-friendly*** and allows programmers to create a new ***Window*** and add a ***Button***
-to it with ***two lines*** and still have the possibility to draw on the frame on a pixel-level
+to it with ***two lines*** and still have the possibility to draw other stuff with `PUICanvas` on the frame on a pixel-level
  
 - ### IO-Functionality:
 
 This library solves the problem of writing a lot of code to ***read*** and ***write*** files. It also provides functions
 to get the content in a specific format.
 
-You can get a File as a `One big String`,`Array of Lines` or `Array of Words/Paragraphs`
+With `PFile` you can get a File as a `One big String`,`Array of Lines` or `Array of Words/Paragraphs`
 
 You can also ***store basic attributes*** to files and later read them (similar to json) by using `PDataStorage`.
+
+**USB-Communication** with *an Arduino, RaspberryPi, etc.* is simplified in `PSerialConnection`.
+Developers can simply `connect()` and `disConnect()` a device and attach a `PSerialListener` to read Data from the USB-Attached Device. Use `write(data)` to send data to the device.
 
 ## How do I use it?
 
@@ -62,6 +66,9 @@ You can also ***store basic attributes*** to files and later read them (similar 
 
 (Detailed Tutorial for using the Library comming soon)
 
+## Credit
+The Library [jSerialComm](https://github.com/Fazecast/jSerialComm) is used for USB/Serial communication.
+
 ## Project status
 
 The Library is ***fully functional*** and ![Maintenance](https://img.shields.io/maintenance/yes/2021)
@@ -71,4 +78,7 @@ by [`Paulsen`](https://github.com/realPaulsen)
 
 - Graph plotter: Plot multiple graphs and analyze them
 - Comments/JavaDoc still missing😬
+
+## Build-Notes
+* Import external library [jSerialComm](https://github.com/Fazecast/jSerialComm) for serial/USB-Connection
 
