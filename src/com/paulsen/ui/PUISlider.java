@@ -93,6 +93,12 @@ public class PUISlider extends PUIElement {
     }
 
     @Override
+    public void setEnabled(boolean enabled){
+        super.setEnabled(enabled);
+        sliderB.setEnabled(enabled);
+    }
+
+    @Override
     public void setBounds(int x, int y, int w, int h) {
         super.setBounds(x, y, w, h);
         if (alignment == ElementAlignment.VERTICAL) {

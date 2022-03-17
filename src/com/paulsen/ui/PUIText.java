@@ -171,8 +171,9 @@ public class PUIText extends PUIElement {
 
     @Override
     public void draw(Graphics2D g) {
-        if (g == null)
+        if (g == null || !isEnabled())
             return;
+
         super.draw(g);
         g.setClip(x, y, w, h);
         drawText(g);

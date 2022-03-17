@@ -50,6 +50,9 @@ public class PUIScrollPanel extends PUIElement {
             @Override
             public void mouseWheelMoved(MouseWheelEvent e) {
                 try {
+                    if (!isEnabled())
+                        return;
+
                     hovered = contains(e.getPoint());
                     if (useMouseWheel && isHovered()) {
                         if (showedElements < elements.size()) {
@@ -69,6 +72,9 @@ public class PUIScrollPanel extends PUIElement {
         slider.addValueUpdateAction(new Runnable() {
             @Override
             public void run() {
+                if (!isEnabled())
+                    return;
+
                 updateElements();
                 runAllValueUpdateActions();
             }
@@ -123,7 +129,8 @@ public class PUIScrollPanel extends PUIElement {
                         e.setBounds((int) (x + eWidth * i + elementSpace_Left), y + elementSpace_Top, (int) eWidth - elementSpace_Left - elementSpace_Right, h - sliderWidth - elementSpace_Top - elementSpace_Bottom);
 
                     }
-                    elements.get(i + showIndex).setEnabled(true);
+                    if (isEnabled())
+                        elements.get(i + showIndex).setEnabled(true);
                 }
             } else { // freely
 
@@ -203,6 +210,7 @@ public class PUIScrollPanel extends PUIElement {
         elements.add(element);
         element.doPaintOverOnHover(false);
         element.doPaintOverOnPress(false);
+        element.setLayer(getInteractionLayer());
         PUIElement.registeredElements.remove(element);
         updateElements();
     }
@@ -243,6 +251,9 @@ public class PUIScrollPanel extends PUIElement {
 
     @Override
     public void draw(Graphics2D g) {
+        if (!isEnabled())
+            return;
+
         try {
             super.draw(g);
             if (slider != null)
@@ -341,4 +352,5 @@ public class PUIScrollPanel extends PUIElement {
             slider.setAlignment(ElementAlignment.VERTICAL);
         updateElements();
     }
+
 }

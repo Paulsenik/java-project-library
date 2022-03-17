@@ -50,8 +50,10 @@ public class Demo {
                 PUIElement.darkUIMode = !PUIElement.darkUIMode;
                 if (PUIElement.darkUIMode) {
                     darkmodeButton.setText("DARK");
+                    sp.setEnabled(false); // set any Element as disabled -> No more Interaction and no Visuals with this Element
                 } else {
                     darkmodeButton.setText("LIGHT");
+                    sp.setEnabled(true);
                 }
             }
         });
