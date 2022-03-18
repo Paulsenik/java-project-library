@@ -1,5 +1,7 @@
 # Compiled class file
 *.class
+bin/
+out/
 
 # Log file
 *.log
@@ -18,6 +20,12 @@
 *.zip
 *.tar.gz
 *.rar
+
+# Eclipse Files #
+.settings
+.project
+.cproject
+.classpath
 
 # Projects
 *.classpath
