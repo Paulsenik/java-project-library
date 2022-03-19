@@ -2,6 +2,7 @@ package ooo.paulsen.demo;
 
 import ooo.paulsen.ui.*;
 import ooo.paulsen.ui.PUIElement.ElementAlignment;
+import ooo.paulsen.utils.PSystem;
 
 import java.awt.*;
 
@@ -15,17 +16,21 @@ public class Demo {
     PUIFrame f;
     PUICanvas canvas;
     PUIMatrix matrix;
-    PUIText darkmodeButton;
+    PUIText darkModeButton;
     PUIScrollPanel sp;
     PUICheckBox cb;
     PUIRotaryControl rc;
     PUISlider slider;
     PUISlider slider2;
 
+    String frameTitle;
+
     public Demo() {
 
+        frameTitle = "JPL-Demo - " + PSystem.getUserName() + "'s " + PSystem.getOSType() + "-System from " + PSystem.getUserDisplayLocation();
+
         // initialize frame before creating Elements
-        f = new PUIFrame("Project-Library Demo", 600, 600);
+        f = new PUIFrame(frameTitle, 600, 600);
 
 
         // Drawing a rectangle in the background
@@ -43,22 +48,22 @@ public class Demo {
         setMatrixElements(false);
 
 
-        darkmodeButton = new PUIText(f, "LIGHT", 2);
-        darkmodeButton.addActionListener(new PUIAction() {
+        darkModeButton = new PUIText(f, "LIGHT", 2);
+        darkModeButton.addActionListener(new PUIAction() {
             @Override
             public void run(PUIElement that) {
                 PUIElement.darkUIMode = !PUIElement.darkUIMode;
                 if (PUIElement.darkUIMode) {
-                    darkmodeButton.setText("DARK");
+                    darkModeButton.setText("DARK");
                     sp.setEnabled(false); // set any Element as disabled -> No more Interaction and no Visuals with this Element
                 } else {
-                    darkmodeButton.setText("LIGHT");
+                    darkModeButton.setText("LIGHT");
                     sp.setEnabled(true);
                 }
             }
         });
         // if set to false: when pressed the eventchain doesnt stop => elements on layers behind this Button can be triggered as well
-        darkmodeButton.doBlockRaycast(false);
+        darkModeButton.doBlockRaycast(false);
 
         sp = new PUIScrollPanel(f);
 
@@ -118,10 +123,11 @@ public class Demo {
             t.addActionListener(new PUIAction() {
                 @Override
                 public void run(PUIElement that) {
-                    f.setTitle(((PUIText) that).getText());
 
                     // automatically centers clicked Element in the UI
                     sp.center(that);
+
+                    that.sendUserInfo("You clicked List-Object: " + ((PUIText) that).getText());
                 }
             });
             sp.addElement(t);
@@ -150,7 +156,7 @@ public class Demo {
         });
 
         // Set Position of other non-relative Elements
-        darkmodeButton.setBounds(50, 50, 300, 100);
+        darkModeButton.setBounds(50, 50, 300, 100);
         slider.setBounds(50, 200, 300, 50);
         slider2.setBounds(50, 250, 300, 50);
 

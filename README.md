@@ -99,7 +99,6 @@ by [`Paulsen`](https://github.com/realPaulsen)
 - **Comments**/JavaDoc still missing😬
 - **FixPoints** on PUISlider
 - **Free** movable PUIElements on PUIScrollPanel (without snapped locations)
-- **JOptionPane-Methods** of PUIElement should refer to methods in PUIFrame
 - **BugFixes:**
   - PUICore: when interactionLayer is -1 the element behind gets called as well
 

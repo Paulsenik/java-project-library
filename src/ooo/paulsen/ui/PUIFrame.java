@@ -203,47 +203,6 @@ public class PUIFrame extends JFrame {
         }
     }
 
-    public String getUserInput(String message, String initialValue) {
-        return JOptionPane.showInputDialog(canvas, message, initialValue);
-    }
-
-    public void sendUserError(String message) {
-        JOptionPane.showMessageDialog(canvas, message, "ERROR", JOptionPane.ERROR_MESSAGE);
-    }
-
-    public void sendUserWarning(String message) {
-        JOptionPane.showMessageDialog(canvas, message, "WARNING", JOptionPane.WARNING_MESSAGE);
-    }
-
-    public void sendUserInfo(String message) {
-        JOptionPane.showMessageDialog(canvas, message, "INFO", JOptionPane.INFORMATION_MESSAGE);
-    }
-
-    public boolean getUserConfirm(String message, String title) {
-        return JOptionPane.showConfirmDialog(canvas, message, title, JOptionPane.OK_CANCEL_OPTION,
-                JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION;
-    }
-
-    /**
-     * Creates a popup-window which lets u choose one of the Options
-     *
-     * @param title displayed Toptext
-     * @param comboBoxInput String-Array of Options
-     * @return index from 0 to comboBoxInput.length. <b>If -1:</b> no valid Option was selected
-     */
-    public int getUserSelection(String title, String comboBoxInput[]) {
-        JComboBox<String> box = new JComboBox<>(comboBoxInput);
-        JOptionPane.showMessageDialog(canvas, box, title, JOptionPane.QUESTION_MESSAGE);
-        return box.getSelectedIndex();
-    }
-
-    public int getUserSelection(String title, ArrayList<String> comboBoxInput) {
-        String s[] = new String[comboBoxInput.size()];
-        for (int i = 0; i < s.length; i++)
-            s[i] = comboBoxInput.get(i);
-        return getUserSelection(title, s);
-    }
-
     public int getMaxFrameRate() {
         return maxFrameRate;
     }
@@ -290,6 +249,54 @@ public class PUIFrame extends JFrame {
 //        for (PUIElement e : elements) {
 //            System.out.println(" " + e.getInteractionLayer());
 //        }
+    }
+
+    public String getUserInput(String message, String initialValue) {
+        return JOptionPane.showInputDialog(canvas, message, initialValue);
+    }
+
+    public void sendUserError(String message) {
+        JOptionPane.showMessageDialog(canvas, message, "ERROR", JOptionPane.ERROR_MESSAGE);
+    }
+
+    public void sendUserWarning(String message) {
+        JOptionPane.showMessageDialog(canvas, message, "WARNING", JOptionPane.WARNING_MESSAGE);
+    }
+
+    public void sendUserInfo(String message) {
+        JOptionPane.showMessageDialog(canvas, message, "INFO", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public boolean getUserConfirm(String message, String title) {
+        return JOptionPane.showConfirmDialog(canvas, message, title, JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION;
+    }
+
+    /**
+     * Creates a popup-window which lets u choose one of the Options
+     *
+     * @param title displayed Toptext
+     * @param comboBoxInput String-Array of Options
+     * @return index from 0 to comboBoxInput.length. <b>If -1:</b> no valid Option was selected
+     */
+    public int getUserSelection(String title, String comboBoxInput[]) {
+        JComboBox<String> box = new JComboBox<>(comboBoxInput);
+        JOptionPane.showMessageDialog(canvas, box, title, JOptionPane.QUESTION_MESSAGE);
+        return box.getSelectedIndex();
+    }
+
+    /**
+     * Creates a popup-window which lets u choose one of the Options
+     *
+     * @param title
+     * @param comboBoxInput String-ArrayList of Options
+     * @return index from 0 to comboBoxInput.length
+     */
+    public int getUserSelection(String title, ArrayList<String> comboBoxInput) {
+        String s[] = new String[comboBoxInput.size()];
+        for (int i = 0; i < s.length; i++)
+            s[i] = comboBoxInput.get(i);
+        return getUserSelection(title, s);
     }
 
 }

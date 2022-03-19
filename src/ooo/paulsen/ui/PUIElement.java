@@ -20,6 +20,9 @@ public class PUIElement extends PUICanvas { // PaulsenUserInterfaceIntegratedEle
             darkOutline = new Color(81, 81, 81), darkText = new Color(235, 235, 235),
             darkSelected = new Color(196, 196, 196);
 
+    public enum ElementAlignment {
+        HORIZONTAL, VERTICAL
+    }
 
     protected int x = 0, y = 0, w = 0, h = 0;
     protected Color backgroundColor = Color.LIGHT_GRAY;
@@ -304,6 +307,7 @@ public class PUIElement extends PUICanvas { // PaulsenUserInterfaceIntegratedEle
 
     /**
      * If enabled is set FALSE: The Event-/Listening-System ignores this Element and also doesn't draw it.
+     *
      * @param enabled
      */
     public void setEnabled(boolean enabled) {
@@ -374,25 +378,32 @@ public class PUIElement extends PUICanvas { // PaulsenUserInterfaceIntegratedEle
         this.backgroundColor = backgroundColor;
     }
 
+    public Object getMetadata() {
+        return metaData;
+    }
+
+    public void setMetadata(Object o) {
+        metaData = o;
+    }
+
     public String getUserInput(String message, String initialValue) {
-        return JOptionPane.showInputDialog(frame, message, initialValue);
+        return frame.getUserInput(message, initialValue);
     }
 
     public void sendUserError(String message) {
-        JOptionPane.showMessageDialog(frame, message, "ERROR", JOptionPane.ERROR_MESSAGE);
+        frame.sendUserError(message);
     }
 
     public void sendUserWarning(String message) {
-        JOptionPane.showMessageDialog(frame, message, "WARNING", JOptionPane.WARNING_MESSAGE);
+        frame.sendUserWarning(message);
     }
 
     public void sendUserInfo(String message) {
-        JOptionPane.showMessageDialog(frame, message, "INFO", JOptionPane.INFORMATION_MESSAGE);
+        frame.sendUserInfo(message);
     }
 
     public boolean getUserConfirm(String message, String title) {
-        return JOptionPane.showConfirmDialog(frame, message, title, JOptionPane.OK_CANCEL_OPTION,
-                JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION;
+        return frame.getUserConfirm(message, title);
     }
 
     /**
@@ -403,31 +414,18 @@ public class PUIElement extends PUICanvas { // PaulsenUserInterfaceIntegratedEle
      * @return index from 0 to comboBoxInput.length
      */
     public int getUserSelection(String title, String comboBoxInput[]) {
-        if (frame == null)
-            return -1;
-
-        JComboBox<String> box = new JComboBox<>(comboBoxInput);
-        JOptionPane.showMessageDialog(frame, box, title, JOptionPane.QUESTION_MESSAGE);
-        return box.getSelectedIndex();
+        return frame.getUserSelection(title, comboBoxInput);
     }
 
+    /**
+     * Creates a popup-window which lets u choose one of the Options
+     *
+     * @param title
+     * @param comboBoxInput String-ArrayList of Options
+     * @return index from 0 to comboBoxInput.length
+     */
     public int getUserSelection(String title, ArrayList<String> comboBoxInput) {
-        String s[] = new String[comboBoxInput.size()];
-        for (int i = 0; i < s.length; i++)
-            s[i] = comboBoxInput.get(i);
-        return getUserSelection(title, s);
-    }
-
-    public Object getMetadata() {
-        return metaData;
-    }
-
-    public void setMetadata(Object o) {
-        metaData = o;
-    }
-
-    public enum ElementAlignment {
-        HORIZONTAL, VERTICAL
+          return frame.getUserSelection(title, comboBoxInput);
     }
 
 }

@@ -54,7 +54,7 @@ public final class PUICore {
                             firstHitLayer = elem.getInteractionLayer();
                         }
                         for (MouseListener listener : elem.getMouseListeners())
-                            listener.mousePressed(e);
+                            listener.mouseClicked(e);
                     } else if ((firstHitLayer != -1 && firstHitLayer != elem.getInteractionLayer() && elem.isEnabled())) {
                         return; // break from loop because 2DRaycast has been triggered and the layers behind are not reachable
                     }
