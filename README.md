@@ -1,14 +1,11 @@
 # Java Project Library
 
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/realPaulsen/Java-Project-Library?label=version)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/realPaulsen/Java-Project-Library)
 ![GitHub Release Date](https://img.shields.io/github/release-date/realPaulsen/Java-Project-Library?label=last%20RELEASE)
 ![GitHub last commit](https://img.shields.io/github/last-commit/realPaulsen/Java-Project-Library?label=last%20COMMIT)
 
 ![GitHub](https://img.shields.io/github/license/realPaulsen/Java-Project-Library)
-![GitHub top language](https://img.shields.io/github/languages/top/realPaulsen/Java-Project-Library)
-![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/realPaulsen/Java-Project-Library)
 ![Lines of code](https://img.shields.io/tokei/lines/github/realPaulsen/Java-Project-Library)
-![GitHub all releases](https://img.shields.io/github/downloads/realPaulsen/Java-Project-Library/total)
 
 `Java-Project-Library` is a library for making small ***Coding-Projects*** of any kind really **fast**.
 
@@ -16,7 +13,7 @@
 
 <!--  TODO: Update D-Link after every new Release  -->
 
-- [Latest release ![GitHub release (latest by date) ](https://img.shields.io/github/v/release/realPaulsen/Java-Project-Library)](https://github.com/realPaulsen/Java-Project-Library/releases)
+- [Versions](https://github.com/realPaulsen/Java-Project-Library/releases)
 
 > **All Versions** compiled with **Java 11**
 
@@ -104,5 +101,5 @@ by [`Paulsen`](https://github.com/realPaulsen)
 
 ## Build-Notes
 
-* Import external library [jSerialComm](https://github.com/Fazecast/jSerialComm) for serial/USB-Connection
+* Import latest Build of external library [jSerialComm](https://github.com/Fazecast/jSerialComm) for serial/USB-Connection
 
