@@ -103,15 +103,15 @@ public final class PUICore {
         f.addWindowFocusListener(new WindowFocusListener() {
             @Override
             public void windowGainedFocus(WindowEvent e) {
-            }
-
-            @Override
-            public void windowLostFocus(WindowEvent e) {
                 for (PUIElement elem : elements) {
                     elem.hovered = false;
                     elem.pressed = false;
                     elem.isCurrentlyPressing = false;
                 }
+            }
+
+            @Override
+            public void windowLostFocus(WindowEvent e) {
             }
         });
         f.c().addMouseMotionListener(new MouseMotionListener() {

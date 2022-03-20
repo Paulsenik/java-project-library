@@ -61,7 +61,7 @@ public class PSerialConnection {
             @Override
             public void serialEvent(SerialPortEvent serialPortEvent) {
                 if (serialPortEvent.getEventType() == SerialPort.LISTENING_EVENT_PORT_DISCONNECTED)
-                    disConnect();
+                    disconnect();
             }
         });
 
@@ -69,7 +69,7 @@ public class PSerialConnection {
             @Override
             public void run() {
                 if (isConnected)
-                    disConnect();
+                    disconnect();
             }
         }));
     }
@@ -82,18 +82,20 @@ public class PSerialConnection {
                 Scanner scnIn = new Scanner(port.getInputStream());
 
                 while (port.isOpen() && isConnected && !Thread.currentThread().isInterrupted()) {
-                    try {
-                        String s = scnIn.nextLine();
-                        for (PSerialListener l : listeners) {
-                            if (l != null)
-                                l.readLine(s);
+                    if (scnIn.hasNextLine()) {
+                        try {
+                            String s = scnIn.nextLine();
+                            for (PSerialListener l : listeners) {
+                                if (l != null)
+                                    l.readLine(s);
+                            }
+                        } catch (Exception e) {
                         }
-                    } catch (Exception e) {
                     }
                 }
 
                 if (!port.isOpen()) {
-                    disConnect();
+                    disconnect();
                 }
                 scnIn.close();
 
@@ -132,10 +134,10 @@ public class PSerialConnection {
         return false;
     }
 
-    public boolean disConnect() {
+    public boolean disconnect() {
         if (isConnected) {
             port.closePort();
-            listenerThread.stop();
+            listenerThread.interrupt();
             listenerThread = null;
             isConnected = false;
             return true;
@@ -167,12 +169,6 @@ public class PSerialConnection {
             return port.getSystemPortName();
         }
         return null;
-    }
-
-    @Override
-    public void finalize() {
-        if (isConnected)
-            disConnect();
     }
 
 }
