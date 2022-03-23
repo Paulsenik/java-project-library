@@ -1,7 +1,11 @@
-package ooo.paulsen.ui;
+package ooo.paulsen.ui.core;
+
+import ooo.paulsen.ui.PUIElement;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowFocusListener;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Timer;
@@ -9,9 +13,10 @@ import java.util.TimerTask;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class PUIFrame extends JFrame {
+
     private static final long serialVersionUID = 1L;
 
-    private int maxFrameRate = 30;
+    private int maxRepaintRate;
 
     // registered Elements for managing drawing elements
     private volatile CopyOnWriteArrayList<PUICanvas> elements = new CopyOnWriteArrayList<>();
@@ -22,15 +27,20 @@ public class PUIFrame extends JFrame {
 
     private int w = 100, h = 100;
     private String displayName = "PUIFrame"; // only for init
-    private boolean hasInit = false, continuousDraw = false;
+    private boolean hasInit = false, continuousDraw = false, hasToRepaint = false;
     private int minUpdateDelay = 0;
+
+    // draw-time
+    private long lastRepaint_Start, lastRepaint_End;
+    private long deltaTime; // delta-Frame-Time in millis
+    private long minDeltaTime = Long.MAX_VALUE, maxDeltaTime = Long.MIN_VALUE;
 
     public PUIFrame() {
         super();
         constructorInit();
     }
 
-    public PUIFrame(String displayName){
+    public PUIFrame(String displayName) {
         super();
         this.displayName = displayName;
         constructorInit();
@@ -57,19 +67,39 @@ public class PUIFrame extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
+        initWindowListener();
         initCanvas();
         initTimer();
 
-        setVisible(true);
+        setMaxRepaintRate(30); // set initial value
 
         hasInit = true;
+
+        repaint();
+        setVisible(true);
+    }
+
+    private void initWindowListener() {
+        addWindowFocusListener(new WindowFocusListener() {
+            @Override
+            public void windowGainedFocus(WindowEvent e) {
+                repaint();
+            }
+
+            @Override
+            public void windowLostFocus(WindowEvent e) {
+
+            }
+        });
     }
 
     private void initCanvas() {
         canvas = new JLabel() {
             private static final long serialVersionUID = 1L;
 
+            @Override
             protected void paintComponent(Graphics g2) {
+
                 if (!hasInit) {
                     try {
                         Thread.sleep(100);
@@ -79,6 +109,8 @@ public class PUIFrame extends JFrame {
                 }
 
                 Graphics2D g = ((Graphics2D) g2);
+
+                lastRepaint_Start = System.currentTimeMillis();
 
                 g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
@@ -101,6 +133,15 @@ public class PUIFrame extends JFrame {
                         el.draw(g);
                     }
                 }
+
+                lastRepaint_End = System.currentTimeMillis();
+                deltaTime = lastRepaint_End - lastRepaint_Start;
+
+                minDeltaTime = Math.min(deltaTime, minDeltaTime);
+                maxDeltaTime = Math.max(deltaTime, maxDeltaTime);
+
+                // finished repaint
+                hasToRepaint = false;
             }
         };
 
@@ -112,17 +153,28 @@ public class PUIFrame extends JFrame {
             @Override
             public void run() {
                 while (true) {
+
+                    // Draw as fast as possible
                     if (continuousDraw) {
-                        try {
-                            Thread.sleep(minUpdateDelay);
-                        } catch (InterruptedException e) {
+                        canvas.repaint();
+
+                        // Draw only to the max-Repaint-Rate
+                    } else if (lastRepaint_End + minUpdateDelay < System.currentTimeMillis()) {
+
+                        if (hasToRepaint) {
+                            if (canvas != null) {
+                                canvas.repaint();
+                            }
+                        } else {
+
+                            // wait for first repaint()-call
+                            try {
+                                Thread.sleep(minUpdateDelay);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
                         }
-                        repaint();
-                    } else {
-                        try {
-                            Thread.sleep(100);
-                        } catch (InterruptedException e) {
-                        }
+
                     }
                 }
             }
@@ -198,23 +250,33 @@ public class PUIFrame extends JFrame {
     }
 
     public void repaint() {
-        if (canvas != null) {
-            canvas.repaint();
-        }
+        hasToRepaint = true;
     }
 
-    public int getMaxFrameRate() {
-        return maxFrameRate;
+    public long getMinDeltaTime() {
+        return minDeltaTime;
+    }
+
+    public long getMaxDeltaTime() {
+        return maxDeltaTime;
+    }
+
+    public long getDeltaTime() {
+        return deltaTime;
+    }
+
+    public int getMaxRepaintRate() {
+        return maxRepaintRate;
     }
 
     /**
-     * @param maxFrameRate Values from 1-1000
+     * @param maxRepaintRate Values from 1-1000
      */
-    public void setMaxFrameRate(int maxFrameRate) {
-        if (maxFrameRate < 1 || maxFrameRate > 1000)
+    public void setMaxRepaintRate(int maxRepaintRate) {
+        if (maxRepaintRate < 1 || maxRepaintRate > 1000)
             return;
-        this.maxFrameRate = maxFrameRate;
-        minUpdateDelay = 1000 / maxFrameRate;
+        this.maxRepaintRate = maxRepaintRate;
+        minUpdateDelay = 1000 / maxRepaintRate;
     }
 
     public boolean isContinuousDraw() {
@@ -244,11 +306,6 @@ public class PUIFrame extends JFrame {
             }
         };
         elements.sort(comp);
-
-//        System.out.println("draw Order:");
-//        for (PUIElement e : elements) {
-//            System.out.println(" " + e.getInteractionLayer());
-//        }
     }
 
     public String getUserInput(String message, String initialValue) {
@@ -275,7 +332,7 @@ public class PUIFrame extends JFrame {
     /**
      * Creates a popup-window which lets u choose one of the Options
      *
-     * @param title displayed Toptext
+     * @param title         displayed Toptext
      * @param comboBoxInput String-Array of Options
      * @return index from 0 to comboBoxInput.length. <b>If -1:</b> no valid Option was selected
      */

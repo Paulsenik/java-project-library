@@ -1,7 +1,8 @@
 package ooo.paulsen.ui;
 
+import ooo.paulsen.ui.core.*;
+
 import javax.management.InvalidAttributeValueException;
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -212,6 +213,12 @@ public class PUIElement extends PUICanvas { // PaulsenUserInterfaceIntegratedEle
         if (repaintFrameOnEvent && frame != null) {
             frame.repaint();
         }
+    }
+
+    public void refreshMouseInteraction() {
+        hovered = false;
+        pressed = false;
+        isCurrentlyPressing = false;
     }
 
     public void removeActionListener(PUIAction action) {
@@ -425,7 +432,7 @@ public class PUIElement extends PUICanvas { // PaulsenUserInterfaceIntegratedEle
      * @return index from 0 to comboBoxInput.length
      */
     public int getUserSelection(String title, ArrayList<String> comboBoxInput) {
-          return frame.getUserSelection(title, comboBoxInput);
+        return frame.getUserSelection(title, comboBoxInput);
     }
 
 }

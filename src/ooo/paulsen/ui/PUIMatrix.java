@@ -1,5 +1,7 @@
 package ooo.paulsen.ui;
 
+import ooo.paulsen.ui.core.PUIFrame;
+
 import java.awt.*;
 
 /**

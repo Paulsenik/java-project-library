@@ -2,6 +2,6 @@ package ooo.paulsen.io.serial;
 
 public interface PSerialListener {
 
-    public void readLine(String line);
+    void readLine(String line);
 
 }

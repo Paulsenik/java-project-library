@@ -1,5 +1,7 @@
 package ooo.paulsen.ui;
 
+import ooo.paulsen.ui.core.PUIFrame;
+
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -199,6 +201,7 @@ public class PUIText extends PUIElement {
 
     /**
      * Sets an installed <b>Monospace-Font</b> as the font that is displayed if the PUIText is <b>selectable</b>
+     *
      * @param selectFont Should be a Monospace-Font!!! Due to pixel-alignment with the selected Area (relative to font-size)
      */
     public void setSelectFont(String selectFont) {
@@ -301,4 +304,5 @@ public class PUIText extends PUIElement {
     public void removeMarkerUpdateAction(Runnable markerUpdateAction) {
         markerUpdateActions.remove(markerUpdateAction);
     }
+
 }

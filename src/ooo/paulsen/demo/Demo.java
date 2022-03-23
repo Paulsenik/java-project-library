@@ -2,6 +2,7 @@ package ooo.paulsen.demo;
 
 import ooo.paulsen.ui.*;
 import ooo.paulsen.ui.PUIElement.ElementAlignment;
+import ooo.paulsen.ui.core.*;
 import ooo.paulsen.utils.PSystem;
 
 import java.awt.*;
@@ -88,9 +89,9 @@ public class Demo {
         });
 
         rc = new PUIRotaryControl(f, 1);
-        rc.addValueUpdateAction(new Runnable() {
+        rc.addValueUpdateAction(new PUIAction() {
             @Override
-            public void run() {
+            public void run(PUIElement that) {
                 // RotaryControl changes spacing between elements in PUIScrollPanel & PUIMatrix
                 int space = (int) (rc.getValue() * 7);
                 sp.setElementSpacing(space, space, space * 2, space * 2);
@@ -101,18 +102,18 @@ public class Demo {
         slider = new PUISlider(f);
         slider.setValue(0.5f);
         slider.setAlignment(ElementAlignment.HORIZONTAL);
-        slider.addValueUpdateAction(new Runnable() {
+        slider.addValueUpdateAction(new PUIAction() {
             @Override
-            public void run() {
+            public void run(PUIElement that) {
                 rc.setValueLength(slider.getValue());
             }
         });
 
         slider2 = new PUISlider(f);
         slider2.setAlignment(ElementAlignment.HORIZONTAL);
-        slider2.addValueUpdateAction(new Runnable() {
+        slider2.addValueUpdateAction(new PUIAction() {
             @Override
-            public void run() {
+            public void run(PUIElement that) {
                 rc.setValueThickness((int) (360 * slider2.getValue()));
             }
         });

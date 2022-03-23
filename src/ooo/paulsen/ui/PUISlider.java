@@ -1,5 +1,9 @@
 package ooo.paulsen.ui;
 
+import ooo.paulsen.ui.core.PUIAction;
+import ooo.paulsen.ui.core.PUIFrame;
+import ooo.paulsen.ui.core.PUIPaintable;
+
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
@@ -9,7 +13,7 @@ import java.util.ArrayList;
 
 public class PUISlider extends PUIElement {
 
-    private ArrayList<Runnable> valueUpdateAction = new ArrayList<Runnable>();
+    private ArrayList<PUIAction> valueUpdateAction = new ArrayList<>();
 
     private PUIElement sliderB;
     private ElementAlignment alignment = ElementAlignment.VERTICAL;
@@ -93,7 +97,7 @@ public class PUISlider extends PUIElement {
     }
 
     @Override
-    public void setEnabled(boolean enabled){
+    public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
         sliderB.setEnabled(enabled);
     }
@@ -176,15 +180,15 @@ public class PUISlider extends PUIElement {
 
     public void runAllValueUpdateActions() {
         if (valueUpdateAction != null)
-            for (Runnable r : valueUpdateAction)
+            for (PUIAction r : valueUpdateAction)
                 if (r != null)
-                    r.run();
+                    r.run(this);
 
         if (repaintFrameOnEvent && frame != null)
             frame.updateElements();
     }
 
-    public void addValueUpdateAction(Runnable r) {
+    public void addValueUpdateAction(PUIAction r) {
         valueUpdateAction.add(r);
     }
 
@@ -192,7 +196,7 @@ public class PUISlider extends PUIElement {
         valueUpdateAction.remove(r);
     }
 
-    public ArrayList<Runnable> getValueUpdateActions() {
+    public ArrayList<PUIAction> getValueUpdateActions() {
         return valueUpdateAction;
     }
 
@@ -225,4 +229,5 @@ public class PUISlider extends PUIElement {
     public void useMouseWheel(boolean useWithMouseWheel) {
         this.useMouseWheel = useWithMouseWheel;
     }
+
 }

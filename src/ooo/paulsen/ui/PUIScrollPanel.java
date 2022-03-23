@@ -1,5 +1,8 @@
 package ooo.paulsen.ui;
 
+import ooo.paulsen.ui.core.PUIAction;
+import ooo.paulsen.ui.core.PUIFrame;
+
 import java.awt.*;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
@@ -7,12 +10,13 @@ import java.awt.event.MouseWheelListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.ConcurrentModificationException;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class PUIScrollPanel extends PUIElement {
 
-    private ArrayList<Runnable> valueUpdateAction = new ArrayList<Runnable>();
+    private CopyOnWriteArrayList<PUIAction> valueUpdateAction = new CopyOnWriteArrayList<>();
 
-    private volatile ArrayList<PUIElement> elements = new ArrayList<PUIElement>();
+    private volatile CopyOnWriteArrayList<PUIElement> elements = new CopyOnWriteArrayList<>();
     private boolean fixedElements = true, useMouseWheel = true;
     private int sliderWidth = 70;
     private int elementSpace_Left = 0, elementSpace_Right = 0, elementSpace_Top = 0, elementSpace_Bottom = 0;
@@ -69,9 +73,9 @@ public class PUIScrollPanel extends PUIElement {
                 }
             }
         });
-        slider.addValueUpdateAction(new Runnable() {
+        slider.addValueUpdateAction(new PUIAction() {
             @Override
-            public void run() {
+            public void run(PUIElement that) {
                 if (!isEnabled())
                     return;
 
@@ -232,13 +236,18 @@ public class PUIScrollPanel extends PUIElement {
         }
     }
 
+    /**
+     * removes all Elements from Frame and clears its own list
+     */
     public void clearElements() {
+        for (PUIElement e : elements)
+            e.release();
         elements.clear();
         updateElements();
     }
 
     public ArrayList<PUIElement> getElements() {
-        return elements;
+        return new ArrayList<>(elements);
     }
 
     @Override
@@ -297,21 +306,21 @@ public class PUIScrollPanel extends PUIElement {
 
     public void runAllValueUpdateActions() {
         if (valueUpdateAction != null)
-            for (Runnable r : valueUpdateAction)
+            for (PUIAction r : valueUpdateAction)
                 if (r != null)
-                    r.run();
+                    r.run(this);
     }
 
-    public void addValueUpdateAction(Runnable r) {
+    public void addValueUpdateAction(PUIAction r) {
         valueUpdateAction.add(r);
     }
 
-    public void removeValueUpdateAction(Runnable r) {
+    public void removeValueUpdateAction(PUIAction r) {
         valueUpdateAction.remove(r);
     }
 
-    public ArrayList<Runnable> getValueUpdateActions() {
-        return valueUpdateAction;
+    public ArrayList<PUIAction> getValueUpdateActions() {
+        return new ArrayList<>(valueUpdateAction);
     }
 
     public int getSliderWidth() {

@@ -1,11 +1,16 @@
 package ooo.paulsen.ui;
 
+import ooo.paulsen.ui.core.PUIAction;
+import ooo.paulsen.ui.core.PUIFrame;
+import ooo.paulsen.ui.core.PUIPaintable;
+
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class PUIRotaryControl extends PUIElement {
 
@@ -13,7 +18,7 @@ public class PUIRotaryControl extends PUIElement {
     protected float rotationArea = 270; // in degrees
     protected float valueThickness = 20; // in degrees
     protected float mouseMultiplicator = 0.005f;
-    private ArrayList<Runnable> valueUpdateAction = new ArrayList<Runnable>();
+    private CopyOnWriteArrayList<PUIAction> valueUpdateAction = new CopyOnWriteArrayList<>();
     private float value = .5f;
     private Color valueColor = Color.GRAY;
     private Color backgroundColor = Color.LIGHT_GRAY;
@@ -159,7 +164,11 @@ public class PUIRotaryControl extends PUIElement {
     }
 
     public void setValue(float value) {
+        this.value = (value > 1 ? 1 : (value < 0 ? 0 : value));
         runAllValueUpdateActions();
+    }
+
+    public void setValue_NoUpdate(float value) {
         this.value = (value > 1 ? 1 : (value < 0 ? 0 : value));
     }
 
@@ -233,21 +242,21 @@ public class PUIRotaryControl extends PUIElement {
         }
 
         if (valueUpdateAction != null)
-            for (Runnable r : valueUpdateAction)
+            for (PUIAction r : valueUpdateAction)
                 if (r != null)
-                    r.run();
+                    r.run(this);
     }
 
-    public void addValueUpdateAction(Runnable r) {
+    public void addValueUpdateAction(PUIAction r) {
         valueUpdateAction.add(r);
     }
 
-    public void removeValueUpdateAction(Runnable r) {
+    public void removeValueUpdateAction(PUIAction r) {
         valueUpdateAction.remove(r);
     }
 
-    public ArrayList<Runnable> getValueUpdateActions() {
-        return valueUpdateAction;
+    public ArrayList<PUIAction> getValueUpdateActions() {
+        return new ArrayList<PUIAction>(valueUpdateAction);
     }
 
 }

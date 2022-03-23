@@ -1,4 +1,4 @@
-package ooo.paulsen.ui;
+package ooo.paulsen.ui.core;
 
 import java.awt.*;
 

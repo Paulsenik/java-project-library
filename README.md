@@ -92,12 +92,14 @@ by [`Paulsen`](https://github.com/realPaulsen)
 
 ### Planned Improvements / In Development
 
-- **Graph plotter**: Plot multiple graphs and analyze them
-- **Comments**/JavaDoc still missing😬
+- **BugFixes:**
+    - Make `run()` of **PConsole** _semi-blocking_ instead of _full-blocking_. In case the Console/Terminal wants an input the run() would be blocked forever
+- Make `PUIElement` **abstract** and create `PUIButton` to replace the parent-class of the other Elements
 - **FixPoints** on PUISlider
 - **Free** movable PUIElements on PUIScrollPanel (without snapped locations)
-- **BugFixes:**
-  - PUICore: when interactionLayer is -1 the element behind gets called as well
+- **Graph plotter**: Plot multiple graphs and analyze them
+- **Comments**/JavaDoc still missing😬
+
 
 ## Build-Notes
 

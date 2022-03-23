@@ -1,5 +1,8 @@
 package ooo.paulsen.ui;
 
+import ooo.paulsen.ui.core.PUIAction;
+import ooo.paulsen.ui.core.PUIFrame;
+
 import java.awt.*;
 
 public class PUICheckBox extends PUIElement {

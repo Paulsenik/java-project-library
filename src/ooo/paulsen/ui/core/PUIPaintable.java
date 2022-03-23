@@ -1,4 +1,4 @@
-package ooo.paulsen.ui;
+package ooo.paulsen.ui.core;
 
 import java.awt.*;
 
@@ -11,5 +11,5 @@ public interface PUIPaintable {
 	 * @param w width
 	 * @param h height
 	 */
-	public void paint(Graphics2D g, int x, int y, int w, int h);
+	void paint(Graphics2D g, int x, int y, int w, int h);
 }

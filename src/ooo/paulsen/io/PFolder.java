@@ -32,7 +32,7 @@ public class PFolder {
     }
 
     public static boolean isFile(String path) {
-        if(path == null)
+        if (path == null)
             return false;
         for (int i = path.length() - 1; i >= 0; i--) {
             if (path.charAt(i) == '/' || path.charAt(i) == ((char) 92))
@@ -61,7 +61,7 @@ public class PFolder {
     }
 
     /**
-     * @param path of Folder
+     * @param path     of Folder
      * @param fileType of Files (if is null => Filetypes will be ignored)
      * @return
      */
