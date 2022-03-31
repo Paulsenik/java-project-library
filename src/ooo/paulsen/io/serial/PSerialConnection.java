@@ -45,6 +45,7 @@ public class PSerialConnection {
     private OutputStream out;
 
     private Thread listenerThread;
+    private Runnable disconnectEvent;
     private boolean isConnected = false;
 
     private void initSerial(SerialPort port) {
@@ -60,8 +61,11 @@ public class PSerialConnection {
 
             @Override
             public void serialEvent(SerialPortEvent serialPortEvent) {
-                if (serialPortEvent.getEventType() == SerialPort.LISTENING_EVENT_PORT_DISCONNECTED)
+                if (serialPortEvent.getEventType() == SerialPort.LISTENING_EVENT_PORT_DISCONNECTED) {
                     disconnect();
+                    if (disconnectEvent != null)
+                        disconnectEvent.run();
+                }
             }
         });
 
@@ -91,6 +95,11 @@ public class PSerialConnection {
                             }
                         } catch (Exception e) {
                         }
+                    }
+                    try {
+                        Thread.sleep(1);
+                    } catch (InterruptedException e) {
+                        return;
                     }
                 }
 
@@ -128,9 +137,9 @@ public class PSerialConnection {
                 isConnected = true;
                 return true;
             } else
-                System.err.println("--port could not be opened");
+                System.err.println("[PSerialConnection] :: port could not be opened");
         } else
-            System.err.println("--already connected to something");
+            System.err.println("[PSerialConnection] :: already connected to something");
         return false;
     }
 
@@ -148,6 +157,10 @@ public class PSerialConnection {
 
     public boolean isConnected() {
         return isConnected;
+    }
+
+    public void setDisconnectEvent(Runnable r){
+        disconnectEvent = r;
     }
 
     public synchronized boolean addListener(PSerialListener listener) {

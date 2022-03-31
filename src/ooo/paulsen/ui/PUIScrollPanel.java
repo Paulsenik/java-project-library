@@ -237,11 +237,13 @@ public class PUIScrollPanel extends PUIElement {
     }
 
     /**
-     * removes all Elements from Frame and clears its own list
+     * removes all Elements from Core, Frame and clears its own List
      */
     public void clearElements() {
-        for (PUIElement e : elements)
+        for (PUIElement e : elements) {
             e.release();
+            frame.remove(e);
+        }
         elements.clear();
         updateElements();
     }
@@ -302,6 +304,13 @@ public class PUIScrollPanel extends PUIElement {
     @Override
     public void setBounds(int w, int h) {
         setBounds(x, y, w, h);
+    }
+
+    @Override
+    public void release() {
+        super.release();
+        clearElements();
+        frame.remove(slider);
     }
 
     public void runAllValueUpdateActions() {

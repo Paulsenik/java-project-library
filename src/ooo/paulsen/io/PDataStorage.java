@@ -85,16 +85,25 @@ public class PDataStorage {
 
     private ArrayList<DataVariable> variables = new ArrayList<>();
 
-//	public static void main(String[] args) {
-//		PDataStorage ds = new PDataStorage();
-
-//		ds.add("teststring", "asdfe4[]");
-//		ds.save("testfile.paulsen");
-
-//		ds.read("testfile.paulsen");
-//		String s = ds.getString("teststring");
-//		System.out.println(s);
-//	}
+//    public static void main(String[] args) {
+//
+//        PDataStorage ds = new PDataStorage();
+//
+//        ds.add("string", "asdöfljk");
+//        ds.add("int", 0);
+//        ds.add("long", 0L);
+//        ds.add("float", 0.0f);
+//        ds.add("bool", false);
+//        ds.save("testfile.paulsen");
+//
+//        ds = new PDataStorage();
+//        ds.read("testfile.paulsen");
+//        System.out.println(ds.getString("string"));
+//        System.out.println(ds.getInteger("int"));
+//        System.out.println(ds.getLong("long"));
+//        System.out.println(ds.getFloat("float"));
+//        System.out.println(ds.getBoolean("bool"));
+//    }
 
     public void save(String path) {
         PFile file = new PFile(path);
@@ -107,11 +116,14 @@ public class PDataStorage {
     }
 
     /**
-     * Reads dataStorage-file and stores all Data in this object
+     * Reads dataStorage-file and stores all Data in this object.
+     * <br>
+     * Ignores Variables with no valid value
      *
      * @param path
+     * @throws IllegalArgumentException when file does not meet the expectations of this format
      */
-    public void read(String path) {
+    public void read(String path) throws IllegalArgumentException {
         if (PFolder.isFolder(path))
             return;
 
@@ -123,7 +135,6 @@ public class PDataStorage {
         String variableName = "";
         String data = "";
 
-        loop:
         for (int i = 0; i < file.length(); i++) {
             char c = file.charAt(i);
 
@@ -145,8 +156,7 @@ public class PDataStorage {
                         currentDataType = DataType.BOOLEAN;
                         break;
                     default:
-                        System.err.println("[DataStorage]::could not identify datatype '" + c + "' at pos " + i);
-                        break loop;
+                        throw new IllegalArgumentException("could not identify datatype '\" + c + \"' at pos " + i);
                 }
                 hasBeenDataType = true;
                 i++; // jump over [
@@ -160,8 +170,13 @@ public class PDataStorage {
                 if (c != ']') {
                     data += c;
                 } else {
-                    addData(currentDataType, variableName.replace("^<<^", "[").replace("^>>^", "]"),
-                            data.replace("^<<^", "[").replace("^>>^", "]"));
+                    try {
+                        addData(currentDataType, variableName.replace("^<<^", "[").replace("^>>^", "]"),
+                                data.replace("^<<^", "[").replace("^>>^", "]"));
+                    } catch (IllegalArgumentException e) {
+                    } catch (Exception e) {
+                        throw e;
+                    }
                     variableName = "";
                     data = "";
                     hasBeenDataType = false;
@@ -172,12 +187,19 @@ public class PDataStorage {
         }
     }
 
-    public boolean addData(DataType type, String name, String data) {
+    public boolean addData(DataType type, String name, String data) throws IllegalArgumentException {
         try {
             switch (type) {
                 case BOOLEAN:
-                    add(name, Boolean.valueOf(data));
-                    break;
+                    if (data != null) {
+                        if (data.toLowerCase().equals("true"))
+                            add(name, true);
+                        else if (data.toLowerCase().equals("false"))
+                            add(name, false);
+                        else
+                            throw new IllegalArgumentException("Could not find \"" + type + " " + name + "\"");
+                        break;
+                    }
                 case FLOAT:
                     add(name, Float.valueOf(data));
                     break;
@@ -188,15 +210,14 @@ public class PDataStorage {
                     add(name, Long.valueOf(data));
                     break;
                 case STRING:
-                    add(name, String.valueOf(data));
+                    add(name, data == null ? "" : String.valueOf(data));
                     break;
                 default:
                     System.err.println("[DataStorage]::UNKNOWN datatype!");
                     return false;
             }
         } catch (Exception e) {
-            System.err.println("[DataStorage]::Some error occured when adding data!");
-            e.printStackTrace();
+            throw new IllegalArgumentException("Can not parse the data into this DataType!");
         }
         return true;
     }
@@ -221,31 +242,31 @@ public class PDataStorage {
         variables.add(new DataVariable(name, data));
     }
 
-    public Object get(DataType type, String name) {
+    public Object get(DataType type, String name) throws IllegalArgumentException {
         for (DataVariable v : variables) {
             if (v.dt == type && v.name.equals(name))
                 return v.obj;
         }
-        return null;
+        throw new IllegalArgumentException("Could not find \"" + type + " " + name + "\"");
     }
 
-    public String getString(String name) {
+    public String getString(String name) throws IllegalArgumentException {
         return (String) get(DataType.STRING, name);
     }
 
-    public long getLong(String name) {
+    public long getLong(String name) throws IllegalArgumentException {
         return (long) get(DataType.LONG, name);
     }
 
-    public int getInteger(String name) {
+    public int getInteger(String name) throws IllegalArgumentException {
         return (int) get(DataType.INTEGER, name);
     }
 
-    public float getFloat(String name) {
+    public float getFloat(String name) throws IllegalArgumentException {
         return (float) get(DataType.FLOAT, name);
     }
 
-    public boolean getBoolean(String name) {
+    public boolean getBoolean(String name) throws IllegalArgumentException {
         return (boolean) get(DataType.BOOLEAN, name);
     }
 

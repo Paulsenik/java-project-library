@@ -86,8 +86,6 @@ public final class PUICore {
     }
 
     private void init() {
-        System.out.println("init PUICore");
-
         f.c().addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {

@@ -162,6 +162,12 @@ public class PUISlider extends PUIElement {
         sliderB.doPaintOverOnHover(paintOverOnHover);
     }
 
+    @Override
+    public void release() {
+        super.release();
+        frame.remove(sliderB);
+    }
+
     public float getValue() {
         return sliderValue;
     }
