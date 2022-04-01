@@ -1,11 +1,15 @@
 package ooo.paulsen.demo;
 
+import ooo.paulsen.io.serial.PSerialConnection;
+import ooo.paulsen.io.serial.PSerialListener;
 import ooo.paulsen.ui.*;
 import ooo.paulsen.ui.PUIElement.ElementAlignment;
 import ooo.paulsen.ui.core.*;
 import ooo.paulsen.utils.PSystem;
 
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 public class Demo {
 
@@ -26,6 +30,8 @@ public class Demo {
 
     String frameTitle;
 
+    PSerialConnection usb;
+
     public Demo() {
 
         frameTitle = "JPL-Demo - " + PSystem.getUserName() + "'s " + PSystem.getOSType() + "-System from " + PSystem.getUserDisplayLocation();
@@ -33,6 +39,35 @@ public class Demo {
         // initialize frame before creating Elements
         f = new PUIFrame(frameTitle, 600, 600);
 
+        f.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_U) {
+                    if (usb != null)
+                        usb.disconnect();
+
+                    int index = f.getUserSelection("Select USB", PSerialConnection.getSerialPorts());
+                    usb = new PSerialConnection(PSerialConnection.getSerialPorts()[index]);
+                    usb.connect();
+                    usb.addListener(new PSerialListener() {
+                        @Override
+                        public void readLine(String line) {
+                            System.out.println("USB: " + line);
+                        }
+                    });
+                }
+            }
+        });
 
         // Drawing a rectangle in the background
         canvas = new PUICanvas(f, new PUIPaintable() {
