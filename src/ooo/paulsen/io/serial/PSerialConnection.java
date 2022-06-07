@@ -147,7 +147,8 @@ public class PSerialConnection {
         if (isConnected) {
             port.closePort();
             try {
-                listenerThread.interrupt();
+                if (listenerThread != null)
+                    listenerThread.interrupt();
             } catch (SecurityException e) {
                 System.err.println("[PSerialConnection] :: Couldn't interrupt thread");
             }

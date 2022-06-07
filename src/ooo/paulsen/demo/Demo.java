@@ -42,7 +42,7 @@ public class Demo {
             PInstance p = new PInstance(8123);
         } catch (BindException e) {
             System.out.println("Already runs");
-            JOptionPane.showMessageDialog(null,"Port 6434 already taken by another Process","Instance already running",JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null,"Port 8123 already taken by another Process","Instance already running",JOptionPane.INFORMATION_MESSAGE);
             System.exit(0);
         } catch (IOException e) {
             throw new RuntimeException(e);
