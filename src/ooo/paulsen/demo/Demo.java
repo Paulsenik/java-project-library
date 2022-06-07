@@ -5,11 +5,15 @@ import ooo.paulsen.io.serial.PSerialListener;
 import ooo.paulsen.ui.*;
 import ooo.paulsen.ui.PUIElement.ElementAlignment;
 import ooo.paulsen.ui.core.*;
+import ooo.paulsen.utils.PInstance;
 import ooo.paulsen.utils.PSystem;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.IOException;
+import java.net.BindException;
 
 public class Demo {
 
@@ -22,7 +26,7 @@ public class Demo {
     PUICanvas canvas;
     PUIMatrix matrix;
     PUIText darkModeButton;
-    PUIScrollPanel sp;
+    PUIList sp;
     PUICheckBox cb;
     PUIRotaryControl rc;
     PUISlider slider;
@@ -33,6 +37,16 @@ public class Demo {
     PSerialConnection usb;
 
     public Demo() {
+
+        try {
+            PInstance p = new PInstance(8123);
+        } catch (BindException e) {
+            System.out.println("Already runs");
+            JOptionPane.showMessageDialog(null,"Port 6434 already taken by another Process","Instance already running",JOptionPane.INFORMATION_MESSAGE);
+            System.exit(0);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         frameTitle = "JPL-Demo - " + PSystem.getUserName() + "'s " + PSystem.getOSType() + "-System from " + PSystem.getUserDisplayLocation();
 
@@ -101,7 +115,7 @@ public class Demo {
         // if set to false: when pressed the eventchain doesnt stop => elements on layers behind this Button can be triggered as well
         darkModeButton.doBlockRaycast(false);
 
-        sp = new PUIScrollPanel(f);
+        sp = new PUIList(f);
 
         cb = new PUICheckBox(f);
         cb.addActionListener(new PUIAction() {

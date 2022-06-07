@@ -87,18 +87,23 @@ The Library [jSerialComm](https://github.com/Fazecast/jSerialComm) is used for U
 
 ## Project status
 
-The Library is ***fully functional*** and ![Maintenance](https://img.shields.io/maintenance/yes/2021)
+The Library is ***fully functional*** and ![Maintenance](https://img.shields.io/maintenance/yes/2022)
 by [`Paulsen`](https://github.com/realPaulsen)
 
-### Planned Improvements / In Development
+### TODOs & In-Progress
 
-- **BugFixes:**
-    - Make `run()` of **PConsole** _semi-blocking_ instead of _full-blocking_. In case the Console/Terminal wants an input the run() would be blocked forever
-- Make `PUIElement` **abstract** and create `PUIButton` to replace the parent-class of the other Elements
-- **FixPoints** on PUISlider
-- **Free** movable PUIElements on PUIScrollPanel (without snapped locations)
-- **Graph plotter**: Plot multiple graphs and analyze them
-- **Comments**/JavaDoc still missing😬
+- **BugFixes**
+  - ...
+- **Changes**
+  - Make `run()` of **PConsole** _semi-blocking_ instead of _full-blocking_. In case the Console/Terminal wants an input the run() would be blocked forever
+  - Make `PUIElement` **abstract** and create `PUIButton` to replace the parent-class of the other Elements
+  - **FixPoints** on PUISlider
+  - **Free** movable PUIElements on PUIScrollPanel (without snapped locations)
+- **Additions**
+  - **Graph plotter**: Plot multiple graphs and analyze them
+  - **Built-In **File-Browser** based on PUIList
+  - **Comments**/JavaDoc still missing😬
+
 
 
 ## Build-Notes

@@ -37,20 +37,38 @@ public class PUIFrame extends JFrame {
 
     public PUIFrame() {
         super();
-        constructorInit();
+        constructorInit(true);
+    }
+
+    public PUIFrame(boolean showFrame) {
+        super();
+        constructorInit(showFrame);
     }
 
     public PUIFrame(String displayName) {
         super();
         this.displayName = displayName;
-        constructorInit();
+        constructorInit(true);
+    }
+
+    public PUIFrame(String displayName, boolean showFrame) {
+        super();
+        this.displayName = displayName;
+        constructorInit(showFrame);
     }
 
     public PUIFrame(int width, int height) {
         super();
         this.w = width;
         this.h = height;
-        constructorInit();
+        constructorInit(true);
+    }
+
+    public PUIFrame(int width, int height, boolean showFrame) {
+        super();
+        this.w = width;
+        this.h = height;
+        constructorInit(showFrame);
     }
 
     public PUIFrame(String displayName, int width, int height) {
@@ -58,10 +76,18 @@ public class PUIFrame extends JFrame {
         this.displayName = displayName;
         this.w = width;
         this.h = height;
-        constructorInit();
+        constructorInit(true);
     }
 
-    private void constructorInit() {
+    public PUIFrame(String displayName, int width, int height, boolean showFrame){
+        super();
+        this.displayName = displayName;
+        this.w = width;
+        this.h = height;
+        constructorInit(showFrame);
+    }
+
+    private void constructorInit(boolean showFrame) {
         setTitle(displayName);
         setSize(w, h);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -76,7 +102,7 @@ public class PUIFrame extends JFrame {
         hasInit = true;
 
         repaint();
-        setVisible(true);
+        setVisible(showFrame);
     }
 
     private void initWindowListener() {

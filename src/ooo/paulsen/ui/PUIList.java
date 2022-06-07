@@ -12,7 +12,7 @@ import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class PUIScrollPanel extends PUIElement {
+public class PUIList extends PUIElement {
 
     private CopyOnWriteArrayList<PUIAction> valueUpdateAction = new CopyOnWriteArrayList<>();
 
@@ -28,13 +28,13 @@ public class PUIScrollPanel extends PUIElement {
 
     private PUISlider slider;
 
-    public PUIScrollPanel(PUIFrame f) {
+    public PUIList(PUIFrame f) {
         super(f);
 
         init();
     }
 
-    public PUIScrollPanel(PUIFrame f, int layer) {
+    public PUIList(PUIFrame f, int layer) {
         super(f);
 
         init();
@@ -65,7 +65,7 @@ public class PUIScrollPanel extends PUIElement {
 
                             // Check if elements in list are hovered over
                             for (PUIElement elem : elements)
-                                for (MouseMotionListener ml : elem.mouseMotionListeners)
+                                for (MouseMotionListener ml : elem.getMouseMotionListeners())
                                     ml.mouseMoved(e);
                         }
                     }

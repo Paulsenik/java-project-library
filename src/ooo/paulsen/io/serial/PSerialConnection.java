@@ -146,7 +146,11 @@ public class PSerialConnection {
     public boolean disconnect() {
         if (isConnected) {
             port.closePort();
-            listenerThread.interrupt();
+            try {
+                listenerThread.interrupt();
+            } catch (SecurityException e) {
+                System.err.println("[PSerialConnection] :: Couldn't interrupt thread");
+            }
             listenerThread = null;
             isConnected = false;
             return true;
@@ -159,7 +163,7 @@ public class PSerialConnection {
         return isConnected;
     }
 
-    public void setDisconnectEvent(Runnable r){
+    public void setDisconnectEvent(Runnable r) {
         disconnectEvent = r;
     }
 
