@@ -13,7 +13,6 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.IOException;
-import java.net.BindException;
 
 public class Demo {
 
@@ -39,13 +38,20 @@ public class Demo {
     public Demo() {
 
         try {
-            PInstance p = new PInstance(8123);
-        } catch (BindException e) {
-            System.out.println("Already runs");
-            JOptionPane.showMessageDialog(null,"Port 8123 already taken by another Process","Instance already running",JOptionPane.INFORMATION_MESSAGE);
-            System.exit(0);
+            PInstance p = new PInstance(8123, new Runnable() {
+                @Override
+                public void run() {
+                    System.out.println("Focus that thing! Someone tried to open this exact program once again");
+                    f.setVisible(true);
+                    f.setState(JFrame.NORMAL);
+                    f.toFront();
+                    f.requestFocus();
+                }
+            });
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            System.out.println("Already runs");
+            JOptionPane.showMessageDialog(null, "Port 8123 already taken by another Process", "Instance already running", JOptionPane.INFORMATION_MESSAGE);
+            System.exit(0);
         }
 
         frameTitle = "JPL-Demo - " + PSystem.getUserName() + "'s " + PSystem.getOSType() + "-System from " + PSystem.getUserDisplayLocation();
