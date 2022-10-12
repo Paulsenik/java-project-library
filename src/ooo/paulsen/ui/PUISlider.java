@@ -42,17 +42,11 @@ public class PUISlider extends PUIElement {
         sliderB.setDraw(new PUIPaintable() {
             @Override
             public void paint(Graphics2D g, int x, int y, int w, int h) {
-                if (darkUIMode)
-                    g.setColor(darkBG_2);
-                else
-                    g.setColor(Color.GRAY);
-                g.fillRect(x, y, w, h);
+                g.setColor(color(2));
+                g.fillRoundRect(x, y, w, h, arcWidth, arcHeight);
 
-                if (darkUIMode)
-                    g.setColor(darkOutline);
-                else
-                    g.setColor(Color.LIGHT_GRAY);
-                g.drawRect(x, y, w, h);
+                g.setColor(color(3));
+                g.drawRoundRect(x, y, w, h, arcWidth, arcHeight);
             }
         });
         registeredElements.remove(sliderB);
@@ -106,9 +100,9 @@ public class PUISlider extends PUIElement {
     public void setBounds(int x, int y, int w, int h) {
         super.setBounds(x, y, w, h);
         if (alignment == ElementAlignment.VERTICAL) {
-            sliderB.setBounds(x, (int) (y + (h - sliderSize) * sliderValue), w, sliderSize);
+            sliderB.setBounds(x + 1, (int) (y + (h - sliderSize) * sliderValue) + 1, w - 2, sliderSize - 2);
         } else if (alignment == ElementAlignment.HORIZONTAL) {
-            sliderB.setBounds((int) (x + (w - sliderSize) * sliderValue), y, sliderSize, h);
+            sliderB.setBounds((int) (x + (w - sliderSize) * sliderValue) + 1, y + 1, sliderSize - 2, h - 2);
         }
     }
 

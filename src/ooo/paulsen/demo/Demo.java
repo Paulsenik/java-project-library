@@ -35,6 +35,9 @@ public class Demo {
 
     PSerialConnection usb;
 
+    private boolean isDarkmode = true;
+    private Color[] otherMode = {Color.white, Color.BLACK, Color.darkGray, Color.lightGray};
+
     public Demo() {
 
         try {
@@ -104,17 +107,28 @@ public class Demo {
         setMatrixElements(false);
 
 
-        darkModeButton = new PUIText(f, "LIGHT", 2);
+        darkModeButton = new PUIText(f, "DARK", 2);
         darkModeButton.addActionListener(new PUIAction() {
             @Override
             public void run(PUIElement that) {
-                PUIElement.darkUIMode = !PUIElement.darkUIMode;
-                if (PUIElement.darkUIMode) {
-                    darkModeButton.setText("DARK");
-                    sp.setEnabled(false); // set any Element as disabled -> No more Interaction and no Visuals with this Element
-                } else {
+                if (isDarkmode) {
+
+                    //swapping colors
+                    Color temp[] = otherMode;
+                    otherMode = PUIElement.default_colors;
+                    PUIElement.default_colors = temp;
+
+                    isDarkmode = false;
                     darkModeButton.setText("LIGHT");
-                    sp.setEnabled(true);
+                } else {
+
+                    //swapping colors
+                    Color temp[] = otherMode;
+                    otherMode = PUIElement.default_colors;
+                    PUIElement.default_colors = temp;
+
+                    isDarkmode = true;
+                    darkModeButton.setText("DARK");
                 }
             }
         });
@@ -214,7 +228,7 @@ public class Demo {
         // Set Position of other non-relative Elements
         darkModeButton.setBounds(50, 50, 300, 100);
         slider.setBounds(50, 200, 300, 50);
-        slider2.setBounds(50, 250, 300, 50);
+        slider2.setBounds(50, 251, 300, 50);
 
         f.updateElements();
 

@@ -9,6 +9,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class PUIElement extends PUICanvas { // PaulsenUserInterfaceIntegratedElement
@@ -16,17 +17,19 @@ public class PUIElement extends PUICanvas { // PaulsenUserInterfaceIntegratedEle
     // Static
     public static volatile boolean useGBC = false; // signals PUICore to use System.gbc()
     public static volatile CopyOnWriteArrayList<PUIElement> registeredElements = new CopyOnWriteArrayList<PUIElement>();
-    public static boolean darkUIMode = false;
-    public static Color darkBG_1 = new Color(47, 47, 47), darkBG_2 = new Color(57, 57, 57),
-            darkOutline = new Color(81, 81, 81), darkText = new Color(235, 235, 235),
-            darkSelected = new Color(196, 196, 196);
+    public static volatile Color[] default_colors = new Color[]{
+            new Color(47, 47, 47), // BG
+            new Color(196, 196, 196), // Text
+            new Color(57, 57, 57), // BG_accent
+            new Color(81, 81, 81) // Text_accent
+    };
 
     public enum ElementAlignment {
         HORIZONTAL, VERTICAL
     }
 
-    protected int x = 0, y = 0, w = 0, h = 0;
-    protected Color backgroundColor = Color.LIGHT_GRAY;
+    protected int x = 0, y = 0, w = 0, h = 0, arcWidth = 15, arcHeight = 15;
+    protected volatile Color colors[] = new Color[0];
     protected PUIPaintable hoverOverlay, pressOverlay;
     protected PUIFrame frame;
     protected PUICore core;
@@ -63,15 +66,13 @@ public class PUIElement extends PUICanvas { // PaulsenUserInterfaceIntegratedEle
         mouseMotionListeners.add(new MouseMotionListener() {
             @Override
             public void mouseMoved(MouseEvent e) {
-                if (!enabled)
-                    return;
+                if (!enabled) return;
                 hovered = contains(e.getPoint());
             }
 
             @Override
             public void mouseDragged(MouseEvent e) {
-                if (!enabled)
-                    return;
+                if (!enabled) return;
                 Point p = e.getPoint();
                 hovered = contains(e.getPoint());
 
@@ -80,16 +81,14 @@ public class PUIElement extends PUICanvas { // PaulsenUserInterfaceIntegratedEle
         mouseListeners.add(new MouseListener() {
             @Override
             public void mouseReleased(MouseEvent e) {
-                if (enabled)
-                    hovered = contains(e.getPoint());
+                if (enabled) hovered = contains(e.getPoint());
                 pressed = false;
                 isCurrentlyPressing = false;
             }
 
             @Override
             public void mousePressed(MouseEvent e) {
-                if (!enabled)
-                    return;
+                if (!enabled) return;
                 if (!pressed && hovered) {
                     Point p = e.getPoint();
                     if (p != null && getBounds().contains(p)) {
@@ -116,31 +115,25 @@ public class PUIElement extends PUICanvas { // PaulsenUserInterfaceIntegratedEle
         paint = new PUIPaintable() {
             @Override
             public void paint(Graphics2D g, int x, int y, int w, int h) {
-                if (darkUIMode && backgroundColor == Color.LIGHT_GRAY) {
-                    g.setColor(darkBG_1);
-                    g.fillRect(x, y, w, h);
-                    g.setColor(darkOutline);
-                    g.drawRect(x, y, w, h);
-                } else {
-                    g.setColor(backgroundColor);
-                    g.fillRect(x, y, w, h);
-                    g.setColor(new Color(50, 50, 50));
-                    g.drawRect(x, y, w, h);
-                }
+                g.setColor(getBackgroundColor());
+                g.fillRoundRect(x, y, w, h, arcWidth, arcHeight);
+
+                g.setColor(color(2));
+                g.drawRoundRect(x, y, w, h, arcWidth, arcHeight);
             }
         };
         hoverOverlay = new PUIPaintable() {
             @Override
             public void paint(Graphics2D g, int x, int y, int w, int h) {
                 g.setColor(new Color(100, 100, 100, 100));
-                g.fillRect(x, y, w, h);
+                g.fillRoundRect(x, y, w, h, arcWidth, arcHeight);
             }
         };
         pressOverlay = new PUIPaintable() {
             @Override
             public void paint(Graphics2D g, int x, int y, int w, int h) {
                 g.setColor(new Color(100, 100, 100, 200));
-                g.fillRect(x, y, w, h);
+                g.fillRoundRect(x, y, w, h, arcWidth, arcHeight);
             }
         };
     }
@@ -169,19 +162,16 @@ public class PUIElement extends PUICanvas { // PaulsenUserInterfaceIntegratedEle
 
     @Override
     public synchronized void draw(Graphics2D g) {
-        if (g == null || !isEnabled())
-            return;
+        if (g == null || !isEnabled()) return;
 
         if (paint != null) {
             paint.paint(g, x, y, w, h);
         }
         if (hovered) {
             if (hovered && !pressed && paintOverOnHover) {
-                if (hoverOverlay != null)
-                    hoverOverlay.paint(g, x, y, w, h);
+                if (hoverOverlay != null) hoverOverlay.paint(g, x, y, w, h);
             } else if (pressed && paintOverOnPress) {
-                if (pressOverlay != null)
-                    pressOverlay.paint(g, x, y, w, h);
+                if (pressOverlay != null) pressOverlay.paint(g, x, y, w, h);
             }
         }
     }
@@ -205,10 +195,8 @@ public class PUIElement extends PUICanvas { // PaulsenUserInterfaceIntegratedEle
 
     public void runAllActions() {
 
-        if (actions != null)
-            for (PUIAction r : actions)
-                if (r != null)
-                    r.run(this);
+        if (actions != null) for (PUIAction r : actions)
+            if (r != null) r.run(this);
 
         if (repaintFrameOnEvent && frame != null) {
             frame.repaint();
@@ -359,10 +347,8 @@ public class PUIElement extends PUICanvas { // PaulsenUserInterfaceIntegratedEle
     public void setLayer(int l) {
         drawLayer = l;
         interactionLayer = l;
-        if (core != null)
-            core.rearrangeElements();
-        if (frame != null)
-            frame.rearrangeElements();
+        if (core != null) core.rearrangeElements();
+        if (frame != null) frame.rearrangeElements();
     }
 
     public ArrayList<MouseMotionListener> getMouseMotionListeners() {
@@ -378,11 +364,56 @@ public class PUIElement extends PUICanvas { // PaulsenUserInterfaceIntegratedEle
     }
 
     public Color getBackgroundColor() {
-        return backgroundColor;
+        return color(0);
+    }
+
+    public Color getTextColor() {
+        return color(1);
     }
 
     public void setBackgroundColor(Color backgroundColor) {
-        this.backgroundColor = backgroundColor;
+        setColor(0, backgroundColor);
+    }
+
+    public Color color(int index) {
+        if (colors.length > index) {
+            return colors[index];
+        }
+        if (default_colors.length > index) {
+            return default_colors[index];
+        }
+        return null;
+    }
+
+    public void setColor(int index, Color color) {
+        if (colors.length > index) {
+            colors[index] = color;
+        } else {
+            colors = Arrays.copyOf(colors, index + 1);
+            colors[index] = color;
+        }
+    }
+
+    /**
+     * @return Default-Color of the library - Null if the Could does not exist
+     */
+    public static Color getDefaultColor(int index) {
+        if (default_colors.length > index) {
+            return default_colors[index];
+        }
+        return null;
+    }
+
+    /*
+    Sets Default-Color of the library
+     */
+    public static void setDefaultColor(int index, Color color) {
+        if (default_colors.length > index) {
+            default_colors[index] = color;
+        } else {
+            default_colors = Arrays.copyOf(default_colors, index + 1);
+            default_colors[index] = color;
+        }
     }
 
     public Object getMetadata() {

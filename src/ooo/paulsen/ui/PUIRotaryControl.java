@@ -20,8 +20,6 @@ public class PUIRotaryControl extends PUIElement {
     protected float mouseMultiplicator = 0.005f;
     private CopyOnWriteArrayList<PUIAction> valueUpdateAction = new CopyOnWriteArrayList<>();
     private float value = .5f;
-    private Color valueColor = Color.GRAY;
-    private Color backgroundColor = Color.LIGHT_GRAY;
     private ElementAlignment alignment = ElementAlignment.VERTICAL;
     private boolean useMouseWheel = true;
 
@@ -50,34 +48,22 @@ public class PUIRotaryControl extends PUIElement {
                     h = -h;
 
                 // BG
-                if (darkUIMode && backgroundColor == Color.LIGHT_GRAY)
-                    g.setColor(darkBG_1);
-                else
-                    g.setColor(backgroundColor);
+                g.setColor(getBackgroundColor());
                 g.fillOval(x, y, w, h);
 
                 // value-visual
-                if (darkUIMode && valueColor == Color.GRAY)
-                    g.setColor(darkSelected);
-                else
-                    g.setColor(valueColor);
+                g.setColor(getTextColor());
 
                 // Value-Visual
                 g.fillArc(x, y, w, h, (int) (360 - ((rotationArea * value + (360 - rotationArea) / 2 + 90) + valueThickness / 2)), (int) valueThickness);
 
                 // Overpaint part of ^ , to visualize valueLength
-                if (darkUIMode && backgroundColor == Color.LIGHT_GRAY)
-                    g.setColor(darkBG_1);
-                else
-                    g.setColor(backgroundColor);
+                g.setColor(getBackgroundColor());
 
                 g.fillOval((int) (x + (1.0f - valueLength) * (w / 2)), (int) (y + (1.0f - valueLength) * (h / 2)), (int) (w * (valueLength)), (int) (h * (valueLength)));
 
                 // Outline
-                if (darkUIMode)
-                    g.setColor(darkOutline);
-                else
-                    g.setColor(Color.black);
+                g.setColor(getBackgroundColor());
                 g.drawOval(x, y, w, h);
 
             }
@@ -196,28 +182,12 @@ public class PUIRotaryControl extends PUIElement {
         this.valueThickness = valueThickness;
     }
 
-    public Color getValueColor() {
-        return valueColor;
-    }
-
-    public void setValueColor(Color valueColor) {
-        this.valueColor = valueColor;
-    }
-
     public boolean isMouseWheelUsed() {
         return useMouseWheel;
     }
 
     public void setUseMouseWheel(boolean useMouseWheel) {
         this.useMouseWheel = useMouseWheel;
-    }
-
-    public Color getBackgroundColor() {
-        return backgroundColor;
-    }
-
-    public void setBackgroundColor(Color backgroundColor) {
-        this.backgroundColor = backgroundColor;
     }
 
     public float getMouseMultiplicator() {

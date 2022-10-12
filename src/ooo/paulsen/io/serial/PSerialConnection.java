@@ -30,7 +30,7 @@ public class PSerialConnection {
     // Private Constructor
     public PSerialConnection(SerialPort port) {
         if (port == null)
-            throw new SerialPortInvalidPortException("Port can not be null!");
+            throw new SerialPortInvalidPortException("Port can not be null!", null);
         initSerial(port);
     }
 

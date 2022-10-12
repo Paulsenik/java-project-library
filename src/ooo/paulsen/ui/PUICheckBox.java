@@ -37,11 +37,8 @@ public class PUICheckBox extends PUIElement {
         if (!activated)
             return;
 
-        if (darkUIMode)
-            g.setColor(darkSelected);
-        else
-            g.setColor(Color.green);
-        g.fillOval(x + w / 10, y + h / 10, w - w / 5, h - h / 5);
+        g.setColor(getTextColor());
+        g.fillRoundRect(x + w / 10, y + h / 10, w - w / 5, h - h / 5, arcWidth, arcHeight);
     }
 
 }

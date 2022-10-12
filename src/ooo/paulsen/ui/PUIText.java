@@ -27,7 +27,6 @@ public class PUIText extends PUIElement {
             "MingLiU_HKSCS-ExtB", "MS Gothic", "NSimSun", "SimSun", "SimSun-ExtB"};
 
     private ArrayList<Runnable> markerUpdateActions = new ArrayList<Runnable>();
-    private Color textColor = Color.black, selectedColor = Color.orange;
     private String text;
     private boolean isTextCropped = false;
     private int markerA = 0, markerB = 0;
@@ -126,7 +125,7 @@ public class PUIText extends PUIElement {
             return;
 
         if (selectable) {
-            g.setColor(selectedColor);
+            g.setColor(color(3));
             int tempX = 0, tempW = 0;
             if (markerA > markerB) {
                 tempX = (int) (x + markerB * h * characterSpacingFactor - h / 10);
@@ -139,10 +138,8 @@ public class PUIText extends PUIElement {
             g.fillRect((tempX < x ? x : tempX) + 1, y + 1, tempW - 1, h - 1);
 
             isTextCropped = false;
-            if (darkUIMode && textColor == Color.black)
-                g.setColor(darkText);// old:new Color(160, 160, 160)
-            else
-                g.setColor(textColor);
+            g.setColor(getTextColor());
+
             g.setFont(new Font(selectFont, Font.PLAIN, h));
             for (int i = 0; i < text.length(); i++) {
                 // prevent overflow
@@ -155,10 +152,8 @@ public class PUIText extends PUIElement {
                         (int) (y + h * 0.85));
             }
         } else { // Normal Text Display with Clipping Area
-            if (darkUIMode && textColor == Color.black)
-                g.setColor(darkText);
-            else
-                g.setColor(textColor);
+
+            g.setColor(getTextColor());
             g.setFont(new Font(normalFont, Font.PLAIN, h));
             g.drawString(text, x, (int) (y + h * 0.85));
         }
@@ -256,14 +251,6 @@ public class PUIText extends PUIElement {
         this.markerB = selectEnd > text.length() ? text.length() : (selectEnd < 0 ? 0 : selectEnd);
         if (prev != markerB)
             runAllMarkerUpdateActions();
-    }
-
-    public Color getTextColor() {
-        return textColor;
-    }
-
-    public void setTextColor(Color textColor) {
-        this.textColor = textColor;
     }
 
     public boolean isSelectable() {
