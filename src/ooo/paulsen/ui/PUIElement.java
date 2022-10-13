@@ -371,6 +371,10 @@ public class PUIElement extends PUICanvas { // PaulsenUserInterfaceIntegratedEle
         return color(1);
     }
 
+    public void setTextColor(Color textColor) {
+        setColor(1, textColor);
+    }
+
     public void setBackgroundColor(Color backgroundColor) {
         setColor(0, backgroundColor);
     }
