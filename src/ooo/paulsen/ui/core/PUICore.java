@@ -13,10 +13,10 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public final class PUICore {
 
-    private static CopyOnWriteArrayList<PUICore> registeredCores = new CopyOnWriteArrayList<>();
+    private static final CopyOnWriteArrayList<PUICore> registeredCores = new CopyOnWriteArrayList<>();
     private PUIFrame f;
     // registered Elements for managing inputs from user
-    private volatile CopyOnWriteArrayList<PUIElement> elements = new CopyOnWriteArrayList<>();
+    private final CopyOnWriteArrayList<PUIElement> elements = new CopyOnWriteArrayList<>();
 
     private PUICore() {
     }
@@ -51,30 +51,15 @@ public final class PUICore {
 
         PUIElement e1 = new PUIText(f, -1);
         e1.setBounds(0, 0, 100, 100);
-        e1.addActionListener(new PUIAction() {
-            @Override
-            public void run(PUIElement that) {
-                System.out.println("1");
-            }
-        });
+        e1.addActionListener(that -> System.out.println("1"));
 
         PUIElement e2 = new PUIText(f, -2);
         e2.setBounds(50, 50, 100, 100);
-        e2.addActionListener(new PUIAction() {
-            @Override
-            public void run(PUIElement that) {
-                System.out.println("2");
-            }
-        });
+        e2.addActionListener(that -> System.out.println("2"));
 
         PUIElement e3 = new PUIText(f, -3);
         e3.setBounds(10, 50, 90, 100);
-        e3.addActionListener(new PUIAction() {
-            @Override
-            public void run(PUIElement that) {
-                System.out.println("3");
-            }
-        });
+        e3.addActionListener(that -> System.out.println("3"));
 
         new Timer().scheduleAtFixedRate(new TimerTask() {
             @Override
@@ -177,21 +162,18 @@ public final class PUICore {
                     }
             }
         });
-        f.c().addMouseWheelListener(new MouseWheelListener() {
-            @Override
-            public void mouseWheelMoved(MouseWheelEvent e) {
-                Integer firstHitLayer = null; //2D-Raycast from top to bottom
-                for (PUIElement elem : elements)
-                    if ((firstHitLayer == null || firstHitLayer == elem.getInteractionLayer()) && elem.contains(e.getPoint()) && elem.isEnabled()) {
-                        if (elem.blocksRaycast()) {
-                            firstHitLayer = elem.getInteractionLayer();
-                        }
-                        for (MouseWheelListener listener : elem.getMouseWheelListeners())
-                            listener.mouseWheelMoved(e);
-                    } else if ((firstHitLayer != null && firstHitLayer != elem.getInteractionLayer() && elem.isEnabled())) {
-                        return; // break from loop because 2DRaycast has been triggered and the layers behind are not reachable
+        f.c().addMouseWheelListener(e -> {
+            Integer firstHitLayer = null; //2D-Raycast from top to bottom
+            for (PUIElement elem : elements)
+                if ((firstHitLayer == null || firstHitLayer == elem.getInteractionLayer()) && elem.contains(e.getPoint()) && elem.isEnabled()) {
+                    if (elem.blocksRaycast()) {
+                        firstHitLayer = elem.getInteractionLayer();
                     }
-            }
+                    for (MouseWheelListener listener : elem.getMouseWheelListeners())
+                        listener.mouseWheelMoved(e);
+                } else if ((firstHitLayer != null && firstHitLayer != elem.getInteractionLayer() && elem.isEnabled())) {
+                    return; // break from loop because 2DRaycast has been triggered and the layers behind are not reachable
+                }
         });
 
         // init java-GBC
@@ -224,26 +206,19 @@ public final class PUICore {
      * Sorts Elements by interactionlayer
      */
     public void rearrangeElements() {
-        Comparator<PUIElement> comp = new Comparator<PUIElement>() {
-            @Override
-            public int compare(PUIElement o1, PUIElement o2) {
-                if (o1.getInteractionLayer() > o2.getInteractionLayer())
-                    return -1;
-                if (o1.getInteractionLayer() < o2.getInteractionLayer())
-                    return 1;
-
-                // same layer but different time
-                if (o1.getCreationID() < o2.getCreationID())
-                    return -1;
+        Comparator<PUIElement> comp = (o1, o2) -> {
+            if (o1.getInteractionLayer() > o2.getInteractionLayer())
+                return -1;
+            if (o1.getInteractionLayer() < o2.getInteractionLayer())
                 return 1;
-            }
+
+            // same layer but different time
+            if (o1.getCreationID() < o2.getCreationID())
+                return -1;
+            return 1;
         };
         elements.sort(comp);
 
-//        System.out.println("layer:");
-//        for (PUIElement e : elements) {
-//            System.out.println(" " + e.getInteractionLayer());
-//        }
     }
 
     public ArrayList<PUIElement> getElements() {

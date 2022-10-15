@@ -17,11 +17,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class PSerialConnection {
 
     /**
-     * @return list of systemPortNames of available serialports
+     * @return list of systemPortNames of available serialPorts
      */
     public static String[] getSerialPorts() {
         SerialPort[] temp = SerialPort.getCommPorts();
-        String s[] = new String[temp.length];
+        String[] s = new String[temp.length];
         for (int i = 0; i < temp.length; i++)
             s[i] = temp[i].getSystemPortName();
         return s;
@@ -39,7 +39,7 @@ public class PSerialConnection {
         initSerial(SerialPort.getCommPort(systemPortName));
     }
 
-    private CopyOnWriteArrayList<PSerialListener> listeners = new CopyOnWriteArrayList<>();
+    private final CopyOnWriteArrayList<PSerialListener> listeners = new CopyOnWriteArrayList<>();
 
     private SerialPort port;
     private OutputStream out;
@@ -69,46 +69,41 @@ public class PSerialConnection {
             }
         });
 
-        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-            @Override
-            public void run() {
-                if (isConnected)
-                    disconnect();
-            }
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            if (isConnected)
+                disconnect();
         }));
     }
 
     // should only be called from connect()
     private void initThread() {
-        listenerThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Scanner scnIn = new Scanner(port.getInputStream());
+        listenerThread = new Thread(() -> {
+            Scanner scnIn = new Scanner(port.getInputStream());
 
-                while (port.isOpen() && isConnected && !Thread.currentThread().isInterrupted()) {
-                    if (scnIn.hasNextLine()) {
-                        try {
-                            String s = scnIn.nextLine();
-                            for (PSerialListener l : listeners) {
-                                if (l != null)
-                                    l.readLine(s);
-                            }
-                        } catch (Exception e) {
-                        }
-                    }
+            while (port.isOpen() && isConnected && !Thread.currentThread().isInterrupted()) {
+                if (scnIn.hasNextLine()) {
                     try {
-                        Thread.sleep(1);
-                    } catch (InterruptedException e) {
-                        return;
+                        String s = scnIn.nextLine();
+                        for (PSerialListener l : listeners) {
+                            if (l != null)
+                                l.readLine(s);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }
-
-                if (!port.isOpen()) {
-                    disconnect();
+                try {
+                    Thread.sleep(1);
+                } catch (InterruptedException e) {
+                    return;
                 }
-                scnIn.close();
-
             }
+
+            if (!port.isOpen()) {
+                disconnect();
+            }
+            scnIn.close();
+
         });
         listenerThread.start();
     }
@@ -118,7 +113,6 @@ public class PSerialConnection {
      *
      * @param data as String
      * @return true when transmission was successful
-     * @throws IOException
      */
     public boolean write(String data) throws IOException {
         if (isConnected && out != null) {

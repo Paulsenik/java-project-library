@@ -1,7 +1,6 @@
 package ooo.paulsen.demo;
 
 import ooo.paulsen.io.serial.PSerialConnection;
-import ooo.paulsen.io.serial.PSerialListener;
 import ooo.paulsen.ui.*;
 import ooo.paulsen.ui.PUIElement.ElementAlignment;
 import ooo.paulsen.ui.core.*;
@@ -22,26 +21,27 @@ public class Demo {
 
     // PUI-Objects
     PUIFrame f;
-    PUICanvas canvas;
-    PUIMatrix matrix;
-    PUIText darkModeButton;
+    final PUICanvas canvas;
+    final PUIMatrix matrix;
+    final PUIText darkModeButton;
     PUIList list;
-    PUICheckBox cb;
+    final PUICheckBox cb;
     PUIRotaryControl rc;
-    PUISlider slider;
-    PUISlider slider2;
+    final PUISlider slider;
+    final PUISlider slider2;
 
-    String frameTitle;
+    final String frameTitle;
 
     PSerialConnection usb;
+    PInstance p;
 
-    private boolean isDarkmode = true;
+    private boolean isDarkMode = true;
     private Color[] otherMode = {Color.white, Color.BLACK, Color.darkGray, Color.lightGray};
 
     public Demo() {
 
         try {
-            PInstance p = new PInstance(8123, () -> {
+            p = new PInstance(8123, () -> {
                 System.out.println("Focus that thing! Someone tried to open this exact program once again");
                 f.setVisible(true);
                 f.setState(JFrame.NORMAL);
@@ -79,23 +79,15 @@ public class Demo {
                     int index = f.getUserSelection("Select USB", PSerialConnection.getSerialPorts());
                     usb = new PSerialConnection(PSerialConnection.getSerialPorts()[index]);
                     usb.connect();
-                    usb.addListener(new PSerialListener() {
-                        @Override
-                        public void readLine(String line) {
-                            System.out.println("USB: " + line);
-                        }
-                    });
+                    usb.addListener(line -> System.out.println("USB: " + line));
                 }
             }
         });
 
         // Drawing a rectangle in the background
-        canvas = new PUICanvas(f, new PUIPaintable() {
-            @Override
-            public void paint(Graphics2D g, int x, int y, int w, int h) {
-                g.setColor(new Color(100, 100, 100));
-                g.fillRoundRect(40, 40, w - 80, h - 80, 20, 20);
-            }
+        canvas = new PUICanvas(f, (g, x, y, w, h) -> {
+            g.setColor(new Color(100, 100, 100));
+            g.fillRoundRect(40, 40, w - 80, h - 80, 20, 20);
         }, -1);
 
         // Scaling Matrix
@@ -105,105 +97,83 @@ public class Demo {
 
 
         darkModeButton = new PUIText(f, "DARK", 2);
-        darkModeButton.addActionListener(new PUIAction() {
-            @Override
-            public void run(PUIElement that) {
-                if (isDarkmode) {
+        darkModeButton.addActionListener(that -> {
+            if (isDarkMode) {
 
-                    //swapping colors
-                    Color temp[] = otherMode;
-                    otherMode = PUIElement.default_colors;
-                    PUIElement.default_colors = temp;
+                //swapping colors
+                Color[] temp = otherMode;
+                otherMode = PUIElement.default_colors;
+                PUIElement.default_colors = temp;
 
-                    list.showSlider(false);
+                list.showSlider(false);
 
-                    isDarkmode = false;
-                    darkModeButton.setText("LIGHT");
-                } else {
+                isDarkMode = false;
+                darkModeButton.setText("LIGHT");
+            } else {
 
-                    //swapping colors
-                    Color temp[] = otherMode;
-                    otherMode = PUIElement.default_colors;
-                    PUIElement.default_colors = temp;
+                //swapping colors
+                Color[] temp = otherMode;
+                otherMode = PUIElement.default_colors;
+                PUIElement.default_colors = temp;
 
-                    list.showSlider(true);
+                list.showSlider(true);
 
-                    isDarkmode = true;
-                    darkModeButton.setText("DARK");
-                }
+                isDarkMode = true;
+                darkModeButton.setText("DARK");
             }
         });
-        // if set to false: when pressed the eventchain doesnt stop => elements on layers behind this Button can be triggered as well
+        // if set to false: when pressed the EventChain doesn't stop => elements on layers behind this Button can be triggered as well
         darkModeButton.doBlockRaycast(false);
 
         list = new PUIList(f);
 
         cb = new PUICheckBox(f);
-        cb.addActionListener(new PUIAction() {
-            @Override
-            public void run(PUIElement that) {
-                if (list.getAlignment() == ElementAlignment.VERTICAL) {
-                    list.setAlignment(ElementAlignment.HORIZONTAL);
+        cb.addActionListener(that -> {
+            if (list.getAlignment() == ElementAlignment.VERTICAL) {
+                list.setAlignment(ElementAlignment.HORIZONTAL);
 
-                    setMatrixElements(true);
+                setMatrixElements(true);
 
-                    rc.setEnabled(false);
-                } else {
-                    list.setAlignment(ElementAlignment.VERTICAL);
+                rc.setEnabled(false);
+            } else {
+                list.setAlignment(ElementAlignment.VERTICAL);
 
-                    setMatrixElements(false);
+                setMatrixElements(false);
 
-                    rc.setEnabled(true);
-                }
+                rc.setEnabled(true);
             }
         });
 
         rc = new PUIRotaryControl(f, 1);
-        rc.addValueUpdateAction(new PUIAction() {
-            @Override
-            public void run(PUIElement that) {
-                // RotaryControl changes spacing between elements in PUIScrollPanel & PUIMatrix
-                int space = (int) (rc.getValue() * 7);
-                list.setElementSpacing(space, space, space * 2, space * 2);
-                matrix.setElementSpacing(space, space, space, space);
-            }
+        rc.addValueUpdateAction(that -> {
+            // RotaryControl changes spacing between elements in PUIScrollPanel & PUIMatrix
+            int space = (int) (rc.getValue() * 7);
+            list.setElementSpacing(space, space, space * 2, space * 2);
+            matrix.setElementSpacing(space, space, space, space);
         });
 
         slider = new PUISlider(f);
         slider.setValue(0.5f);
         slider.setAlignment(ElementAlignment.HORIZONTAL);
-        slider.addValueUpdateAction(new PUIAction() {
-            @Override
-            public void run(PUIElement that) {
-                rc.setValueLength(slider.getValue());
-            }
-        });
+        slider.addValueUpdateAction(that -> rc.setValueLength(slider.getValue()));
 
         slider2 = new PUISlider(f);
         slider2.setAlignment(ElementAlignment.HORIZONTAL);
-        slider2.addValueUpdateAction(new PUIAction() {
-            @Override
-            public void run(PUIElement that) {
-                rc.setValueThickness((int) (360 * slider2.getValue()));
-            }
-        });
+        slider2.addValueUpdateAction(that -> rc.setValueThickness((int) (360 * slider2.getValue())));
 
         // add test-Buttons for scrollPanel
         for (int i = 1; i <= 10; i++) {
             PUIText t = new PUIText(f, "" + i);
-            t.addActionListener(new PUIAction() {
-                @Override
-                public void run(PUIElement that) {
+            t.addActionListener(that -> {
 
-                    // automatically centers clicked Element in the UI
-                    list.center(that);
+                // automatically centers clicked Element in the UI
+                list.center(that);
 
-                    that.sendUserInfo("You clicked List-Object: " + ((PUIText) that).getText());
-                }
+                that.sendUserInfo("You clicked List-Object: " + ((PUIText) that).getText());
             });
             list.addElement(t);
         }
-        // comment out if the size of the element inside of the panel should be further limited
+        // comment out if the size of the element inside the panel should be further limited
 //        sp.setElementSpacing(6,0,3,3);
 
         // prevent different colors when hovering/pressing
@@ -212,18 +182,16 @@ public class Demo {
             e.doPaintOverOnPress(false);
         }
 
-        f.setUpdateElements(new PUIUpdatable() { // initialize updateMethod
-            @Override
-            public void update(int w, int h) {
+        // initialize updateMethod
+        f.setUpdateElements((w, h) -> {
 
-                // Element-Positions can also be defined relative by using width & height variables
+            // Element-Positions can also be defined relative by using width & height variables
 
-                cb.setBounds(w - 150, 50, 100, 100);// relative
-                rc.setBounds(w - 150, 200, 100, 100);// relative
-                list.setBounds(50, h - 200, 300, 150); // relative
+            cb.setBounds(w - 150, 50, 100, 100);// relative
+            rc.setBounds(w - 150, 200, 100, 100);// relative
+            list.setBounds(50, h - 200, 300, 150); // relative
 
-                matrix.setBounds(390, 340, w - 440, h - 390);// relative
-            }
+            matrix.setBounds(390, 340, w - 440, h - 390);// relative
         });
 
         // Set Position of other non-relative Elements
@@ -246,30 +214,17 @@ public class Demo {
             for (int i = 0; i < 4; i++)
                 for (int j = (i % 2 == 0 ? 0 : 1); j < 8; j += 2) {
                     PUIElement e = new PUIText(f, i + "," + j);
-                    e.addActionListener(new PUIAction() {
-                        @Override
-                        public void run(PUIElement that) {
-                            that.getFrame().setTitle(((PUIText) that).getText());
-                        }
-                    });
+                    e.addActionListener(that -> that.getFrame().setTitle(((PUIText) that).getText()));
                     matrix.setElement(e, i, j);
                 }
         else
             for (int i = 0; i < 4; i++)
                 for (int j = 0; j < 8; j++) {
                     PUIElement e = new PUIText(f, i + "," + j);
-                    e.addActionListener(new PUIAction() {
-                        @Override
-                        public void run(PUIElement that) {
-                            that.getFrame().setTitle(((PUIText) that).getText());
-                        }
-                    });
+                    e.addActionListener(that -> that.getFrame().setTitle(((PUIText) that).getText()));
                     matrix.setElement(e, i, j);
                 }
 
-        // Checking MemoryOptimizations
-//        System.out.println("Core-Elements: " + PUICore.getCore(f).getElements().size());
-//        System.out.println("Registered-Elements: " + PUIElement.registeredElements.size());
         f.updateElements();
     }
 

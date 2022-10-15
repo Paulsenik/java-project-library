@@ -70,7 +70,7 @@ Use `write(data)` to send data to the device.
 **For more see 
 [included Demo](https://github.com/realPaulsen/Java-Project-Library/blob/main/src/com/paulsen/demo/Demo.java)**
 
-(Detailed Tutorial for using the Library comming soon)
+(Detailed Tutorial for using the Library coming soon)
 
 ## Troubleshooting
 
@@ -105,5 +105,5 @@ by [`Paulsen`](https://github.com/realPaulsen)
 
 ## Build-Notes
 
-* Import latest Build of external library [jSerialComm](https://github.com/Fazecast/jSerialComm) for serial/USB-Connection
+* Import the latest Build of external library [jSerialComm](https://github.com/Fazecast/jSerialComm) for serial/USB-Connection
 

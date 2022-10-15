@@ -18,37 +18,36 @@ import java.util.Scanner;
 public class PFile {
 
     /**
-     * @param path
      * @return Filename without ending and folders, where its located
      */
     public static String getName(String path) {
-        String s = "";
+        StringBuilder s = new StringBuilder();
         boolean hasBeenType = false;
         for (int i = path.length() - 1; i >= 0; i--) {
             if (hasBeenType) {
                 if (path.charAt(i) == '/' || path.charAt(i) == ((char) 92)) {
-                    return s;
+                    return s.toString();
                 } else {
-                    s = path.charAt(i) + s;
+                    s.insert(0, path.charAt(i));
                 }
             } else {
                 if (path.charAt(i) == '.')
                     hasBeenType = true;
             }
         }
-        return s;
+        return s.toString();
     }
 
     public static String getNameAndType(String path) {
-        String s = "";
+        StringBuilder s = new StringBuilder();
         for (int i = path.length() - 1; i >= 0; i--) {
             if (path.charAt(i) == '/' || path.charAt(i) == ((char) 92)) {
-                return s;
+                return s.toString();
             } else {
-                s = path.charAt(i) + s;
+                s.insert(0, path.charAt(i));
             }
         }
-        return s;
+        return s.toString();
     }
 
     public static String getParentFolder(String path) {
@@ -87,7 +86,7 @@ public class PFile {
 
         try {
             Files.copy(new File(file).toPath(), new File(nPath).toPath(), StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) {
+        } catch (IOException | NullPointerException e) {
             System.err.println("[PFile] :: copyFile :: an error occured trying to copy from " + file + " to " + target);
             return false;
         }
@@ -98,12 +97,12 @@ public class PFile {
     }
 
     private static String remove(String s, int a, int b) {
-        String sN = "";
+        StringBuilder sN = new StringBuilder();
         for (int i = 0; i < s.length(); i++) {
             if (!(i >= a && i < b))
-                sN += s.charAt(i);
+                sN.append(s.charAt(i));
         }
-        return sN;
+        return sN.toString();
     }
 
     /**
@@ -111,26 +110,24 @@ public class PFile {
      * @return filetype (e.g. "txt" "png" "wav" ...)
      */
     public static String getFileType(String file) {
-        String fileType = "";
+        StringBuilder fileType = new StringBuilder();
         for (int i = file.length() - 1; i >= 0; i--) {
             if (file.charAt(i) == '.') {
-                return fileType;
+                return fileType.toString();
             } else {
-                fileType = file.charAt(i) + fileType;
+                fileType.insert(0, file.charAt(i));
             }
         }
         return null;
     }
 
-    private String path;
+    private final String path;
 
     public PFile(String path) {
         this.path = path;
         File file = new File(path);
 
-        if (file.exists()) {
-//			System.out.println("[PFile] :: " + getName(path) + "." + getFileType(path) + " already exists");
-        } else {
+        if (!file.exists()) {
             try {
                 file.createNewFile();
 //				System.out.println("[PFile] :: " + getName(path) + "." + getFileType(path) + " created");
@@ -149,21 +146,21 @@ public class PFile {
     public static String[] getParagraphs(String s) {
         ArrayList<String> out = new ArrayList<>();
 
-        String lastword = "";
+        StringBuilder lastword = new StringBuilder();
         for (int i = 0; i < s.length(); i++) {
             if (!(s.charAt(i) == ' ')) {
-                lastword += s.charAt(i);
-            } else if (!lastword.trim().isEmpty()) {
-                out.add(lastword);
-                lastword = "";
+                lastword.append(s.charAt(i));
+            } else if (!lastword.toString().trim().isEmpty()) {
+                out.add(lastword.toString());
+                lastword = new StringBuilder();
             } else {
-                lastword = "";
+                lastword = new StringBuilder();
             }
         }
         if (lastword.length() != 0) {
-            out.add(lastword);
+            out.add(lastword.toString());
         }
-        String array[] = new String[out.size()];
+        String[] array = new String[out.size()];
         for (int i = 0; i < out.size(); i++)
             array[i] = out.get(i);
         return array;
@@ -174,25 +171,25 @@ public class PFile {
      */
     public synchronized String[] getAllParagraphs() {
         if (exists()) {
-            String s[] = getLines();
+            String[] s = getLines();
             ArrayList<String> out = new ArrayList<>();
 
             for (String line : s) {
-                String lastword = "";
+                StringBuilder lastword = new StringBuilder();
                 for (int i = 0; i < line.length(); i++) {
                     if (!(line.charAt(i) == ' ')) {
-                        lastword += line.charAt(i);
+                        lastword.append(line.charAt(i));
                     } else {
-                        out.add(lastword);
-                        lastword = "";
+                        out.add(lastword.toString());
+                        lastword = new StringBuilder();
                     }
                 }
                 if (lastword.length() != 0) {
-                    out.add(lastword);
+                    out.add(lastword.toString());
                 }
             }
 
-            String array[] = new String[out.size()];
+            String[] array = new String[out.size()];
             for (int i = 0; i < out.size(); i++)
                 array[i] = out.get(i);
             return array;
@@ -204,18 +201,18 @@ public class PFile {
      * @return File as one String
      */
     public synchronized String getFileAsString() {
-        String s = "";
+        StringBuilder s = new StringBuilder();
         if (exists()) {
             Scanner scn;
             try {
                 scn = new Scanner(new File(path));
                 while (scn.hasNextLine())
-                    s += scn.nextLine();
+                    s.append(scn.nextLine());
                 scn.close();
-            } catch (FileNotFoundException e) {
+            } catch (FileNotFoundException ignored) {
             }
         }
-        return s;
+        return s.toString();
     }
 
     /**
@@ -231,11 +228,11 @@ public class PFile {
                 while (scn.hasNextLine())
                     lines.add(scn.nextLine());
                 scn.close();
-            } catch (FileNotFoundException e) {
+            } catch (FileNotFoundException ignored) {
             }
         }
 
-        String l[] = new String[lines.size()];
+        String[] l = new String[lines.size()];
         for (int i = 0; i < lines.size(); i++)
             l[i] = lines.get(i);
         return l;
@@ -253,7 +250,7 @@ public class PFile {
             PrintWriter printWriter = new PrintWriter(fileWriter);
             printWriter.print(content);
             printWriter.close();
-        } catch (IOException e) {
+        } catch (IOException ignored) {
         }
     }
 

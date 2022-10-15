@@ -30,10 +30,7 @@ public class PCustomProtocol {
         if (s.startsWith(IDENTIFIER + BLOCK_START) && s.endsWith(String.valueOf(BLOCK_END))) {
             String message = removeStart(s, IDENTIFIER.length());
             // Message can only contain BLOCK_START && BLOCK_END once
-            if (count(message, BLOCK_START) != 1 || count(message, BLOCK_END) != 1) {
-                return false;
-            }
-            return true;
+            return count(message, BLOCK_START) == 1 && count(message, BLOCK_END) == 1;
         }
         return false;
     }
@@ -47,10 +44,10 @@ public class PCustomProtocol {
             String message = removeStart(trimEnd(trimStart(input)), IDENTIFIER.length());
 
             // remove block-character and fill replcements
-            String mN = "";
+            StringBuilder mN = new StringBuilder();
             for (int i = 1; i < message.length() - 1; i++)
-                mN += message.charAt(i);
-            message = mN.replace(START_REPLACEMENT, String.valueOf(BLOCK_START)).replace(END_REPLACEMENT,
+                mN.append(message.charAt(i));
+            message = mN.toString().replace(START_REPLACEMENT, String.valueOf(BLOCK_START)).replace(END_REPLACEMENT,
                     String.valueOf(BLOCK_END));
 
             return message;
@@ -68,34 +65,34 @@ public class PCustomProtocol {
     }
 
     private static String trimStart(String sIn) {
-        String s = "";
+        StringBuilder s = new StringBuilder();
         boolean hasBeenStart = false;
         for (int i = 0; i < sIn.length(); i++) {
             if (sIn.charAt(i) != ' ')
                 hasBeenStart = true;
             if (hasBeenStart)
-                s += sIn.charAt(i);
+                s.append(sIn.charAt(i));
         }
-        return s;
+        return s.toString();
     }
 
     private static String removeStart(String in, int length) {
-        String s = "";
+        StringBuilder s = new StringBuilder();
         for (int i = length; i < in.length(); i++)
-            s += in.charAt(i);
-        return s;
+            s.append(in.charAt(i));
+        return s.toString();
     }
 
     private static String trimEnd(String sIn) {
-        String s = "";
+        StringBuilder s = new StringBuilder();
         boolean hasBeenEnd = false;
         for (int i = sIn.length() - 1; i >= 0; i--) {
             if (sIn.charAt(i) != ' ')
                 hasBeenEnd = true;
             if (hasBeenEnd)
-                s = sIn.charAt(i) + s;
+                s.insert(0, sIn.charAt(i));
         }
-        return s;
+        return s.toString();
     }
 
     private static int count(String s, char c) {

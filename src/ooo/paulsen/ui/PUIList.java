@@ -14,17 +14,19 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class PUIList extends PUIElement {
 
-    private CopyOnWriteArrayList<PUIAction> valueUpdateAction = new CopyOnWriteArrayList<>();
+    private final CopyOnWriteArrayList<PUIAction> valueUpdateAction = new CopyOnWriteArrayList<>();
 
-    private volatile CopyOnWriteArrayList<PUIElement> elements = new CopyOnWriteArrayList<>();
-    private boolean fixedElements = true, useMouseWheel = true, showSlider = true;
+    private final CopyOnWriteArrayList<PUIElement> elements = new CopyOnWriteArrayList<>();
+    private boolean fixedElements = true;
+    private boolean useMouseWheel = true;
+    private boolean showSlider = true;
     private int sliderWidth = 70;
     private int elementSpace_Left = 0, elementSpace_Right = 0, elementSpace_Top = 0, elementSpace_Bottom = 0;
 
     private ElementAlignment alignment = ElementAlignment.VERTICAL;
 
     // only used if fixedElements=true
-    private int showedElements = 5, showIndex = 0;
+    private int showedElements = 5;
 
     private PUISlider slider;
 
@@ -50,38 +52,32 @@ public class PUIList extends PUIElement {
         slider.setAlignment(ElementAlignment.VERTICAL);
         slider.doPaintOverOnHover(false);
         slider.doPaintOverOnPress(false);
-        mouseWheelListeners.add(new MouseWheelListener() {
-            @Override
-            public void mouseWheelMoved(MouseWheelEvent e) {
-                try {
-                    if (!isEnabled())
-                        return;
-
-                    hovered = contains(e.getPoint());
-                    if (useMouseWheel && isHovered()) {
-                        if (showedElements < elements.size()) {
-                            float value = (float) 1 / (elements.size() - showedElements);
-                            slider.setValue((float) (e.getWheelRotation() * (value) + slider.getValue()));
-
-                            // Check if elements in list are hovered over
-                            for (PUIElement elem : elements)
-                                for (MouseMotionListener ml : elem.getMouseMotionListeners())
-                                    ml.mouseMoved(e);
-                        }
-                    }
-                } catch (ConcurrentModificationException e2) {
-                }
-            }
-        });
-        slider.addValueUpdateAction(new PUIAction() {
-            @Override
-            public void run(PUIElement that) {
+        mouseWheelListeners.add(e -> {
+            try {
                 if (!isEnabled())
                     return;
 
-                updateElements();
-                runAllValueUpdateActions();
+                hovered = contains(e.getPoint());
+                if (useMouseWheel && isHovered()) {
+                    if (showedElements < elements.size()) {
+                        float value = (float) 1 / (elements.size() - showedElements);
+                        slider.setValue(e.getWheelRotation() * (value) + slider.getValue());
+
+                        // Check if elements in list are hovered over
+                        for (PUIElement elem : elements)
+                            for (MouseMotionListener ml : elem.getMouseMotionListeners())
+                                ml.mouseMoved(e);
+                    }
+                }
+            } catch (ConcurrentModificationException e2) {
             }
+        });
+        slider.addValueUpdateAction(that -> {
+            if (!isEnabled())
+                return;
+
+            updateElements();
+            runAllValueUpdateActions();
         });
     }
 
@@ -102,7 +98,7 @@ public class PUIList extends PUIElement {
 
             int maxShowIndex = elements.size() - showedElements;
             int nShowIndex = (int) (slider.getValue() * maxShowIndex);
-            showIndex = (nShowIndex < 0 ? 0 : nShowIndex);
+            int showIndex = (Math.max(nShowIndex, 0));
 
             if (showSlider)
                 if (!elements.isEmpty()) {
@@ -111,7 +107,7 @@ public class PUIList extends PUIElement {
                                 / (elements.size() > showedElements ? elements.size() : showedElements) * h));
                     } else if (alignment == ElementAlignment.HORIZONTAL) {
                         slider.setSliderSize((int) ((float) showedElements
-                                / (elements.size() > showedElements ? elements.size() : showedElements) * w));
+                                / (Math.max(elements.size(), showedElements)) * w));
                     }
                 }
 
@@ -119,7 +115,7 @@ public class PUIList extends PUIElement {
             float eWidth = (float) w / showedElements;
 
             if (fixedElements) { // snap to grid
-                for (int i = 0; i < (elements.size() < showedElements ? elements.size() : showedElements)
+                for (int i = 0; i < (Math.min(elements.size(), showedElements))
                         && (elements.size() > i + showIndex); i++) {
 
                     PUIElement e = elements.get(i + showIndex);
@@ -150,7 +146,6 @@ public class PUIList extends PUIElement {
     /**
      * Finds the given Element
      *
-     * @param element
      * @return values from 0.0 to 1.0 depending o the location of the searched Element
      */
     public float find(PUIElement element) {
@@ -194,9 +189,9 @@ public class PUIList extends PUIElement {
     }
 
     // TODO Feature
-//	public void setFixedElements(boolean fixedElements) {
-//		this.fixedElements = fixedElements;
-//	}
+	public void setFixedElements(boolean fixedElements) {
+		this.fixedElements = fixedElements;
+	}
 
     public void showSlider(boolean value) {
         if (showSlider != value) {
@@ -283,10 +278,9 @@ public class PUIList extends PUIElement {
             if (slider != null)
                 slider.draw(g);
 
-            if (elements != null)
-                for (PUIElement e : elements)
-                    if (e != null && e.isEnabled())
-                        e.draw(g);
+            for (PUIElement e : elements)
+                if (e != null && e.isEnabled())
+                    e.draw(g);
         } catch (ConcurrentModificationException e) {
             draw(g);
         }
@@ -327,10 +321,9 @@ public class PUIList extends PUIElement {
     }
 
     public void runAllValueUpdateActions() {
-        if (valueUpdateAction != null)
-            for (PUIAction r : valueUpdateAction)
-                if (r != null)
-                    r.run(this);
+        for (PUIAction r : valueUpdateAction)
+            if (r != null)
+                r.run(this);
     }
 
     public void addValueUpdateAction(PUIAction r) {

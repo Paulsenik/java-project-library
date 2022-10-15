@@ -44,13 +44,13 @@ public class PFolder {
     }
 
     public static String getName(String path) {
-        String s = "";
+        StringBuilder s = new StringBuilder();
         for (int i = path.length() - 1; i >= 0; i--) {
             if (path.charAt(i) == '/' || path.charAt(i) == ((char) 92))
                 break;
-            s = path.charAt(i) + s;
+            s.insert(0, path.charAt(i));
         }
-        return s;
+        return s.toString();
     }
 
     public static boolean deleteFolder(String path) {
@@ -63,7 +63,6 @@ public class PFolder {
     /**
      * @param path     of Folder
      * @param fileType of Files (if is null => Filetypes will be ignored)
-     * @return
      */
     public static String[] getFiles(String path, String fileType) {
         String[] s = new File(path).list();
@@ -76,14 +75,14 @@ public class PFolder {
                 if (fileType == null || temp.endsWith(fileType))
                     list.add(path + "/" + temp);
 
-        String sN[] = new String[list.size()];
+        String[] sN = new String[list.size()];
         for (int i = 0; i < sN.length; i++)
             sN[i] = list.get(i);
         return sN;
     }
 
     public static String[] getSubFolders(String path) {
-        String s[] = new File(path).list();
+        String[] s = new File(path).list();
         if (s == null || s.length == 0)
             return null;
 
@@ -92,7 +91,7 @@ public class PFolder {
             if (!isFile(temp))
                 list.add(path + "/" + temp);
 
-        String sN[] = new String[list.size()];
+        String[] sN = new String[list.size()];
         for (int i = 0; i < sN.length; i++) {
             sN[i] = list.get(i);
         }
@@ -106,13 +105,8 @@ public class PFolder {
     public static ArrayList<File> getAllFoldersOfRoot(File folder) {
 
         if (folder != null) {
-            File[] children = folder.listFiles(new FilenameFilter() {
-                @Override
-                public boolean accept(File dir, String name) {
-                    return PFolder.isFolder(name);
-                }
-            });
-            if (children != null || (children != null && children.length == 0)) {
+            File[] children = folder.listFiles((dir, name) -> PFolder.isFolder(name));
+            if (children != null) {
                 ArrayList<File> sum = new ArrayList<>();
 
                 Collections.addAll(sum, children);

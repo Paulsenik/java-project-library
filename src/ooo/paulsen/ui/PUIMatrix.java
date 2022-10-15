@@ -11,8 +11,9 @@ import java.awt.*;
 public class PUIMatrix extends PUIElement {
 
 
-    protected int columns, rows;
-    protected volatile PUIElement elements[][];
+    protected final int columns;
+    protected final int rows;
+    protected volatile PUIElement[][] elements;
     private int elementSpace_Left = 0, elementSpace_Right = 0, elementSpace_Top = 0, elementSpace_Bottom = 0;
 
     public PUIMatrix(PUIFrame f, int columns, int rows) {
@@ -41,10 +42,10 @@ public class PUIMatrix extends PUIElement {
     public synchronized void draw(Graphics2D g) {
 //        super.draw(g);
         if (elements != null)
-            for (int i = 0; i < elements.length; i++)
-                for (int j = 0; j < elements[i].length; j++)
-                    if (elements[i][j] != null)
-                        elements[i][j].draw(g);
+            for (PUIElement[] element : elements)
+                for (int j = 0; j < element.length; j++)
+                    if (element[j] != null)
+                        element[j].draw(g);
     }
 
     private void updateElements() {
@@ -66,7 +67,7 @@ public class PUIMatrix extends PUIElement {
      */
     public synchronized void reset() {
         synchronized (elements) {
-            for (PUIElement E[] : elements)
+            for (PUIElement[] E : elements)
                 for (PUIElement e : E)
                     frame.remove(e);
 

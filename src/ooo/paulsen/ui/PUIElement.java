@@ -16,7 +16,7 @@ public class PUIElement extends PUICanvas { // PaulsenUserInterfaceIntegratedEle
 
     // Static
     public static volatile boolean useGBC = false; // signals PUICore to use System.gbc()
-    public static volatile CopyOnWriteArrayList<PUIElement> registeredElements = new CopyOnWriteArrayList<PUIElement>();
+    public static final CopyOnWriteArrayList<PUIElement> registeredElements = new CopyOnWriteArrayList<>();
     public static volatile Color[] default_colors = new Color[]{
             new Color(58, 58, 58), // BG
             new Color(196, 196, 196), // Text
@@ -28,15 +28,20 @@ public class PUIElement extends PUICanvas { // PaulsenUserInterfaceIntegratedEle
         HORIZONTAL, VERTICAL
     }
 
-    protected int x = 0, y = 0, w = 0, h = 0, arcWidth = 15, arcHeight = 15;
-    protected volatile Color colors[] = new Color[0];
+    protected int x = 0;
+    protected int y = 0;
+    protected int w = 0;
+    protected int h = 0;
+    protected final int arcWidth = 15;
+    protected final int arcHeight = 15;
+    protected volatile Color[] colors = new Color[0];
     protected PUIPaintable hoverOverlay, pressOverlay;
-    protected PUIFrame frame;
+    protected final PUIFrame frame;
     protected PUICore core;
-    protected CopyOnWriteArrayList<PUIAction> actions = new CopyOnWriteArrayList<>();
-    protected CopyOnWriteArrayList<MouseListener> mouseListeners = new CopyOnWriteArrayList<>();
-    protected CopyOnWriteArrayList<MouseMotionListener> mouseMotionListeners = new CopyOnWriteArrayList<>();
-    protected CopyOnWriteArrayList<MouseWheelListener> mouseWheelListeners = new CopyOnWriteArrayList<>();
+    protected final CopyOnWriteArrayList<PUIAction> actions = new CopyOnWriteArrayList<>();
+    protected final CopyOnWriteArrayList<MouseListener> mouseListeners = new CopyOnWriteArrayList<>();
+    protected final CopyOnWriteArrayList<MouseMotionListener> mouseMotionListeners = new CopyOnWriteArrayList<>();
+    protected final CopyOnWriteArrayList<MouseWheelListener> mouseWheelListeners = new CopyOnWriteArrayList<>();
     protected Object metaData;
     protected boolean repaintFrameOnEvent = true, paintOverOnHover = true, paintOverOnPress = true;
     protected boolean blockRaycast = true;
@@ -91,7 +96,7 @@ public class PUIElement extends PUICanvas { // PaulsenUserInterfaceIntegratedEle
                 if (!enabled) return;
                 if (!pressed && hovered) {
                     Point p = e.getPoint();
-                    if (p != null && getBounds().contains(p)) {
+                    if (getBounds().contains(p)) {
                         isCurrentlyPressing = true;
                         runAllActions();
                     }
@@ -112,29 +117,20 @@ public class PUIElement extends PUICanvas { // PaulsenUserInterfaceIntegratedEle
             }
         });
 
-        paint = new PUIPaintable() {
-            @Override
-            public void paint(Graphics2D g, int x, int y, int w, int h) {
-                g.setColor(getBackgroundColor());
-                g.fillRoundRect(x, y, w, h, arcWidth, arcHeight);
+        paint = (g, x, y, w, h) -> {
+            g.setColor(getBackgroundColor());
+            g.fillRoundRect(x, y, w, h, arcWidth, arcHeight);
 
-                g.setColor(color(2));
-                g.drawRoundRect(x, y, w, h, arcWidth, arcHeight);
-            }
+            g.setColor(color(2));
+            g.drawRoundRect(x, y, w, h, arcWidth, arcHeight);
         };
-        hoverOverlay = new PUIPaintable() {
-            @Override
-            public void paint(Graphics2D g, int x, int y, int w, int h) {
-                g.setColor(new Color(100, 100, 100, 100));
-                g.fillRoundRect(x, y, w, h, arcWidth, arcHeight);
-            }
+        hoverOverlay = (g, x, y, w, h) -> {
+            g.setColor(new Color(100, 100, 100, 100));
+            g.fillRoundRect(x, y, w, h, arcWidth, arcHeight);
         };
-        pressOverlay = new PUIPaintable() {
-            @Override
-            public void paint(Graphics2D g, int x, int y, int w, int h) {
-                g.setColor(new Color(100, 100, 100, 200));
-                g.fillRoundRect(x, y, w, h, arcWidth, arcHeight);
-            }
+        pressOverlay = (g, x, y, w, h) -> {
+            g.setColor(new Color(100, 100, 100, 200));
+            g.fillRoundRect(x, y, w, h, arcWidth, arcHeight);
         };
     }
 
@@ -155,9 +151,7 @@ public class PUIElement extends PUICanvas { // PaulsenUserInterfaceIntegratedEle
             }
         }
 
-        if (core != null) {
-            core.addElement(this);
-        }
+        core.addElement(this);
     }
 
     @Override
@@ -168,7 +162,7 @@ public class PUIElement extends PUICanvas { // PaulsenUserInterfaceIntegratedEle
             paint.paint(g, x, y, w, h);
         }
         if (hovered) {
-            if (hovered && !pressed && paintOverOnHover) {
+            if (!pressed && paintOverOnHover) {
                 if (hoverOverlay != null) hoverOverlay.paint(g, x, y, w, h);
             } else if (pressed && paintOverOnPress) {
                 if (pressOverlay != null) pressOverlay.paint(g, x, y, w, h);
@@ -182,7 +176,6 @@ public class PUIElement extends PUICanvas { // PaulsenUserInterfaceIntegratedEle
      * Is useful to overwrite if a new Element, based on PUIElement, is created that is not rectangular (e.g Circle, Polygon).
      * So that the EventSystem knows how to handle incomming MouseClicks on this Element
      *
-     * @param p
      * @return TRUE if p in Frame-Space is part of the element and FALSE if not.
      */
     public boolean contains(Point p) {
@@ -195,7 +188,7 @@ public class PUIElement extends PUICanvas { // PaulsenUserInterfaceIntegratedEle
 
     public void runAllActions() {
 
-        if (actions != null) for (PUIAction r : actions)
+        for (PUIAction r : actions)
             if (r != null) r.run(this);
 
         if (repaintFrameOnEvent && frame != null) {
@@ -303,7 +296,6 @@ public class PUIElement extends PUICanvas { // PaulsenUserInterfaceIntegratedEle
     /**
      * If enabled is set FALSE: The Event-/Listening-System ignores this Element and also doesn't draw it.
      *
-     * @param enabled
      */
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
@@ -390,12 +382,10 @@ public class PUIElement extends PUICanvas { // PaulsenUserInterfaceIntegratedEle
     }
 
     public void setColor(int index, Color color) {
-        if (colors.length > index) {
-            colors[index] = color;
-        } else {
+        if (colors.length <= index) {
             colors = Arrays.copyOf(colors, index + 1);
-            colors[index] = color;
         }
+        colors[index] = color;
     }
 
     /**
@@ -412,12 +402,10 @@ public class PUIElement extends PUICanvas { // PaulsenUserInterfaceIntegratedEle
     Sets Default-Color of the library
      */
     public static void setDefaultColor(int index, Color color) {
-        if (default_colors.length > index) {
-            default_colors[index] = color;
-        } else {
+        if (default_colors.length <= index) {
             default_colors = Arrays.copyOf(default_colors, index + 1);
-            default_colors[index] = color;
         }
+        default_colors[index] = color;
     }
 
     public Object getMetadata() {
@@ -451,18 +439,16 @@ public class PUIElement extends PUICanvas { // PaulsenUserInterfaceIntegratedEle
     /**
      * Creates a popup-window which lets u choose one of the Options
      *
-     * @param title
      * @param comboBoxInput String-Array of Options
      * @return index from 0 to comboBoxInput.length
      */
-    public int getUserSelection(String title, String comboBoxInput[]) {
+    public int getUserSelection(String title, String[] comboBoxInput) {
         return frame.getUserSelection(title, comboBoxInput);
     }
 
     /**
      * Creates a popup-window which lets u choose one of the Options
      *
-     * @param title
      * @param comboBoxInput String-ArrayList of Options
      * @return index from 0 to comboBoxInput.length
      */

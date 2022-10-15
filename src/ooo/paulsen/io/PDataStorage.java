@@ -8,11 +8,11 @@ public class PDataStorage {
         STRING, LONG, INTEGER, FLOAT, BOOLEAN
     }
 
-    public class DataVariable {
+    public static class DataVariable {
 
-        private String name;
-        private Object obj;
-        private DataType dt;
+        private final String name;
+        private final Object obj;
+        private final DataType dt;
 
         public DataVariable(String name, String d) {
             this.name = name;
@@ -83,36 +83,16 @@ public class PDataStorage {
 
     }
 
-    private ArrayList<DataVariable> variables = new ArrayList<>();
-
-//    public static void main(String[] args) {
-//
-//        PDataStorage ds = new PDataStorage();
-//
-//        ds.add("string", "asdöfljk");
-//        ds.add("int", 0);
-//        ds.add("long", 0L);
-//        ds.add("float", 0.0f);
-//        ds.add("bool", false);
-//        ds.save("testfile.paulsen");
-//
-//        ds = new PDataStorage();
-//        ds.read("testfile.paulsen");
-//        System.out.println(ds.getString("string"));
-//        System.out.println(ds.getInteger("int"));
-//        System.out.println(ds.getLong("long"));
-//        System.out.println(ds.getFloat("float"));
-//        System.out.println(ds.getBoolean("bool"));
-//    }
+    private final ArrayList<DataVariable> variables = new ArrayList<>();
 
     public void save(String path) {
         PFile file = new PFile(path);
-        String s = "";
+        StringBuilder s = new StringBuilder();
 
         for (DataVariable v : variables)
-            s += v;
+            s.append(v);
 
-        file.writeFile(s);
+        file.writeFile(s.toString());
     }
 
     /**
@@ -120,7 +100,6 @@ public class PDataStorage {
      * <br>
      * Ignores Variables with no valid value
      *
-     * @param path
      * @throws IllegalArgumentException when file does not meet the expectations of this format
      */
     public void read(String path) throws IllegalArgumentException {
@@ -132,8 +111,8 @@ public class PDataStorage {
         boolean hasBeenDataType = false, hasBeenVariableName = false;
 
         DataType currentDataType = DataType.STRING;
-        String variableName = "";
-        String data = "";
+        StringBuilder variableName = new StringBuilder();
+        StringBuilder data = new StringBuilder();
 
         for (int i = 0; i < file.length(); i++) {
             char c = file.charAt(i);
@@ -162,23 +141,21 @@ public class PDataStorage {
                 i++; // jump over [
             } else if (!hasBeenVariableName) {
                 if (c != '[') {
-                    variableName += c;
+                    variableName.append(c);
                 } else {
                     hasBeenVariableName = true;
                 }
             } else { // data
                 if (c != ']') {
-                    data += c;
+                    data.append(c);
                 } else {
                     try {
-                        addData(currentDataType, variableName.replace("^<<^", "[").replace("^>>^", "]"),
-                                data.replace("^<<^", "[").replace("^>>^", "]"));
-                    } catch (IllegalArgumentException e) {
-                    } catch (Exception e) {
-                        throw e;
+                        addData(currentDataType, variableName.toString().replace("^<<^", "[").replace("^>>^", "]"),
+                                data.toString().replace("^<<^", "[").replace("^>>^", "]"));
+                    } catch (IllegalArgumentException ignored) {
                     }
-                    variableName = "";
-                    data = "";
+                    variableName = new StringBuilder();
+                    data = new StringBuilder();
                     hasBeenDataType = false;
                     hasBeenVariableName = false;
                     i++; // jump over second ]
@@ -192,25 +169,25 @@ public class PDataStorage {
             switch (type) {
                 case BOOLEAN:
                     if (data != null) {
-                        if (data.toLowerCase().equals("true"))
+                        if (data.equalsIgnoreCase("true"))
                             add(name, true);
-                        else if (data.toLowerCase().equals("false"))
+                        else if (data.equalsIgnoreCase("false"))
                             add(name, false);
                         else
                             throw new IllegalArgumentException("Could not find \"" + type + " " + name + "\"");
                         break;
                     }
                 case FLOAT:
-                    add(name, Float.valueOf(data));
+                    add(name, Float.parseFloat(data));
                     break;
                 case INTEGER:
-                    add(name, Integer.valueOf(data));
+                    add(name, Integer.parseInt(data));
                     break;
                 case LONG:
-                    add(name, Long.valueOf(data));
+                    add(name, Long.parseLong(data));
                     break;
                 case STRING:
-                    add(name, data == null ? "" : String.valueOf(data));
+                    add(name, data == null ? "" : data);
                     break;
                 default:
                     System.err.println("[DataStorage]::UNKNOWN datatype!");

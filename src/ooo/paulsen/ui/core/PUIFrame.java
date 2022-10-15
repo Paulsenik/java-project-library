@@ -19,7 +19,7 @@ public class PUIFrame extends JFrame {
     private int maxRepaintRate;
 
     // registered Elements for managing drawing elements
-    private volatile CopyOnWriteArrayList<PUICanvas> elements = new CopyOnWriteArrayList<>();
+    private final CopyOnWriteArrayList<PUICanvas> elements = new CopyOnWriteArrayList<>();
 
     private volatile PUIUpdatable updateElements;
     private volatile PUIPaintable backgroundPaint; // called by canvas
@@ -129,7 +129,7 @@ public class PUIFrame extends JFrame {
                 if (!hasInit) {
                     try {
                         Thread.sleep(100);
-                    } catch (InterruptedException e) {
+                    } catch (InterruptedException ignored) {
                     }
                     repaint();
                 }
@@ -175,33 +175,30 @@ public class PUIFrame extends JFrame {
     }
 
     private void initTimer() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (true) {
+        new Thread(() -> {
+            while (true) {
 
-                    // Draw as fast as possible
-                    if (continuousDraw) {
-                        canvas.repaint();
+                // Draw as fast as possible
+                if (continuousDraw) {
+                    canvas.repaint();
 
-                        // Draw only to the max-Repaint-Rate
-                    } else if (lastRepaint_End + minUpdateDelay < System.currentTimeMillis()) {
+                    // Draw only to the max-Repaint-Rate
+                } else if (lastRepaint_End + minUpdateDelay < System.currentTimeMillis()) {
 
-                        if (hasToRepaint) {
-                            if (canvas != null) {
-                                canvas.repaint();
-                            }
-                        } else {
-
-                            // wait for first repaint()-call
-                            try {
-                                Thread.sleep(minUpdateDelay);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
+                    if (hasToRepaint) {
+                        if (canvas != null) {
+                            canvas.repaint();
                         }
+                    } else {
 
+                        // wait for first repaint()-call
+                        try {
+                            Thread.sleep(minUpdateDelay);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     }
+
                 }
             }
         }).start();
@@ -317,19 +314,16 @@ public class PUIFrame extends JFrame {
      * sets Draw-Order
      */
     public void rearrangeElements() {
-        Comparator<PUICanvas> comp = new Comparator<>() {
-            @Override
-            public int compare(PUICanvas o1, PUICanvas o2) {
-                if (o1.getDrawLayer() < o2.getDrawLayer())
-                    return -1;
-                if (o1.getDrawLayer() > o2.getDrawLayer())
-                    return 1;
-
-                // same layer but different time
-                if (o1.getCreationID() < o2.getCreationID())
-                    return 1;
+        Comparator<PUICanvas> comp = (o1, o2) -> {
+            if (o1.getDrawLayer() < o2.getDrawLayer())
                 return -1;
-            }
+            if (o1.getDrawLayer() > o2.getDrawLayer())
+                return 1;
+
+            // same layer but different time
+            if (o1.getCreationID() < o2.getCreationID())
+                return 1;
+            return -1;
         };
         elements.sort(comp);
     }
@@ -362,7 +356,7 @@ public class PUIFrame extends JFrame {
      * @param comboBoxInput String-Array of Options
      * @return index from 0 to comboBoxInput.length. <b>If -1:</b> no valid Option was selected
      */
-    public int getUserSelection(String title, String comboBoxInput[]) {
+    public int getUserSelection(String title, String[] comboBoxInput) {
         JComboBox<String> box = new JComboBox<>(comboBoxInput);
         JOptionPane.showMessageDialog(canvas, box, title, JOptionPane.QUESTION_MESSAGE);
         return box.getSelectedIndex();
@@ -371,12 +365,11 @@ public class PUIFrame extends JFrame {
     /**
      * Creates a popup-window which lets u choose one of the Options
      *
-     * @param title
      * @param comboBoxInput String-ArrayList of Options
      * @return index from 0 to comboBoxInput.length
      */
     public int getUserSelection(String title, ArrayList<String> comboBoxInput) {
-        String s[] = new String[comboBoxInput.size()];
+        String[] s = new String[comboBoxInput.size()];
         for (int i = 0; i < s.length; i++)
             s[i] = comboBoxInput.get(i);
         return getUserSelection(title, s);

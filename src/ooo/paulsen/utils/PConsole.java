@@ -28,7 +28,7 @@ public class PConsole {
      */
     public static String run(File workingDir, String command) {
         ProcessBuilder pb = new ProcessBuilder();
-        String out = "";
+        StringBuilder out = new StringBuilder();
 
         try {
 
@@ -54,27 +54,27 @@ public class PConsole {
             String line = "";
             while (true) { // normal input
                 try {
-                    if (!((line = inputReader.readLine()) != null))
+                    if ((line = inputReader.readLine()) == null)
                         break;
 
-                    out += line + "\n";
-                } catch (IOException e) {
+                    out.append(line).append("\n");
+                } catch (IOException ignored) {
                 }
             }
             while (true) { // eror input
                 try {
-                    if (!((line = errorReader.readLine()) != null))
+                    if ((line = errorReader.readLine()) == null)
                         break;
 
-                    out += "ERROR>  " + line + "\n";
-                } catch (IOException e) {
+                    out.append("ERROR>  ").append(line).append("\n");
+                } catch (IOException ignored) {
                 }
             }
 
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return out;
+        return out.toString();
     }
 
 }

@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 public class PUISlider extends PUIElement {
 
-    private ArrayList<PUIAction> valueUpdateAction = new ArrayList<>();
+    private final ArrayList<PUIAction> valueUpdateAction = new ArrayList<>();
 
     private PUIElement sliderB;
     private ElementAlignment alignment = ElementAlignment.VERTICAL;
@@ -39,15 +39,12 @@ public class PUISlider extends PUIElement {
     private void init() {
 
         sliderB = new PUIElement(frame, getDrawLayer());
-        sliderB.setDraw(new PUIPaintable() {
-            @Override
-            public void paint(Graphics2D g, int x, int y, int w, int h) {
-                g.setColor(color(2));
-                g.fillRoundRect(x, y, w, h, arcWidth, arcHeight);
+        sliderB.setDraw((g, x, y, w, h) -> {
+            g.setColor(color(2));
+            g.fillRoundRect(x, y, w, h, arcWidth, arcHeight);
 
-                g.setColor(color(3));
-                g.drawRoundRect(x, y, w, h, arcWidth, arcHeight);
-            }
+            g.setColor(color(3));
+            g.drawRoundRect(x, y, w, h, arcWidth, arcHeight);
         });
         registeredElements.remove(sliderB);
 
@@ -63,13 +60,10 @@ public class PUISlider extends PUIElement {
                 }
             }
         });
-        mouseWheelListeners.add(new MouseWheelListener() {
-            @Override
-            public void mouseWheelMoved(MouseWheelEvent e) {
-                hovered = contains(e.getPoint());
-                if (useMouseWheel && isHovered()) {
-                    setValue((float) (e.getWheelRotation() * 0.1 + getValue()));
-                }
+        mouseWheelListeners.add(e -> {
+            hovered = contains(e.getPoint());
+            if (useMouseWheel && isHovered()) {
+                setValue((float) (e.getWheelRotation() * 0.1 + getValue()));
             }
         });
     }
@@ -127,7 +121,6 @@ public class PUISlider extends PUIElement {
     /**
      * Not USEABLE
      *
-     * @param fixPoints
      */
     public void setFixPoints(int fixPoints) {
         // TODO Feature
@@ -179,10 +172,9 @@ public class PUISlider extends PUIElement {
     }
 
     public void runAllValueUpdateActions() {
-        if (valueUpdateAction != null)
-            for (PUIAction r : valueUpdateAction)
-                if (r != null)
-                    r.run(this);
+        for (PUIAction r : valueUpdateAction)
+            if (r != null)
+                r.run(this);
 
         if (repaintFrameOnEvent && frame != null)
             frame.updateElements();

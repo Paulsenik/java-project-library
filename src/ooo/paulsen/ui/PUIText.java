@@ -26,7 +26,7 @@ public class PUIText extends PUIElement {
     public static final String[] selectableFonts = {"Consolas", "Courier New", "Lucida Console", "MingLiU-ExtB",
             "MingLiU_HKSCS-ExtB", "MS Gothic", "NSimSun", "SimSun", "SimSun-ExtB"};
 
-    private ArrayList<Runnable> markerUpdateActions = new ArrayList<Runnable>();
+    private final ArrayList<Runnable> markerUpdateActions = new ArrayList<>();
     private String text;
     private boolean isTextCropped = false;
     private int markerA = 0, markerB = 0;
@@ -136,7 +136,7 @@ public class PUIText extends PUIElement {
 
     protected void drawSelected(Graphics g) {
         g.setColor(color(3));
-        int tempX = 0, tempW = 0;
+        int tempX, tempW;
         if (markerA > markerB) {
             tempX = (int) (x + markerB * h * characterSpacingFactor - h / 10);
             tempW = (int) ((markerA - markerB) * h * characterSpacingFactor + (tempX < x ? 0 : h / 10));
@@ -145,7 +145,7 @@ public class PUIText extends PUIElement {
             tempW = (int) ((markerB - markerA) * h * characterSpacingFactor + (tempX < x ? 0 : h / 10));
         }
         tempW = (tempX + tempW > x + w ? (x + w - tempX) : tempW);
-        g.fillRect((tempX < x ? x : tempX) + 1, y + 1, tempW - 1, h - 1);
+        g.fillRect((Math.max(tempX, x)) + 1, y + 1, tempW - 1, h - 1);
 
         isTextCropped = false;
         g.setColor(getTextColor());
@@ -208,21 +208,21 @@ public class PUIText extends PUIElement {
     }
 
     public String getSelectedText() {
-        String s = "";
-        for (int i = (markerA < markerB ? markerA : markerB); i < (markerA < markerB ? markerB : markerA); i++)
-            s += text.charAt(i);
-        return s;
+        StringBuilder s = new StringBuilder();
+        for (int i = (Math.min(markerA, markerB)); i < (Math.max(markerA, markerB)); i++)
+            s.append(text.charAt(i));
+        return s.toString();
     }
 
     /**
      * @return Text without the selected part
      */
     public String getTextWithoutSelected() {
-        String s = "";
+        StringBuilder s = new StringBuilder();
         for (int i = 0; i < text.length(); i++)
-            if (!(i >= (markerA < markerB ? markerA : markerB) && i < (markerA < markerB ? markerB : markerA)))
-                s += text.charAt(i);
-        return s;
+            if (!(i >= (Math.min(markerA, markerB)) && i < (Math.max(markerA, markerB))))
+                s.append(text.charAt(i));
+        return s.toString();
     }
 
     public String getText() {
@@ -241,7 +241,7 @@ public class PUIText extends PUIElement {
 
     public void setMarkerA(int selectStart) {
         int prev = markerA;
-        this.markerA = selectStart > text.length() ? text.length() : (selectStart < 0 ? 0 : selectStart);
+        this.markerA = selectStart > text.length() ? text.length() : (Math.max(selectStart, 0));
         if (prev != markerA)
             runAllMarkerUpdateActions();
     }
@@ -252,7 +252,7 @@ public class PUIText extends PUIElement {
 
     public void setMarkerB(int selectEnd) {
         int prev = markerB;
-        this.markerB = selectEnd > text.length() ? text.length() : (selectEnd < 0 ? 0 : selectEnd);
+        this.markerB = selectEnd > text.length() ? text.length() : (Math.max(selectEnd, 0));
         if (prev != markerB)
             runAllMarkerUpdateActions();
     }
@@ -278,10 +278,9 @@ public class PUIText extends PUIElement {
     }
 
     public void runAllMarkerUpdateActions() {
-        if (markerUpdateActions != null)
-            for (Runnable r : markerUpdateActions)
-                if (r != null)
-                    r.run();
+        for (Runnable r : markerUpdateActions)
+            if (r != null)
+                r.run();
     }
 
     public ArrayList<Runnable> getMarkerUpdateActions() {

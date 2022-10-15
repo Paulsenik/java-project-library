@@ -18,7 +18,7 @@ public class PUIRotaryControl extends PUIElement {
     protected float rotationArea = 270; // in degrees
     protected float valueThickness = 20; // in degrees
     protected float mouseMultiplicator = 0.005f;
-    private CopyOnWriteArrayList<PUIAction> valueUpdateAction = new CopyOnWriteArrayList<>();
+    private final CopyOnWriteArrayList<PUIAction> valueUpdateAction = new CopyOnWriteArrayList<>();
     private float value = .5f;
     private ElementAlignment alignment = ElementAlignment.VERTICAL;
     private boolean useMouseWheel = true;
@@ -39,48 +39,39 @@ public class PUIRotaryControl extends PUIElement {
     }
 
     private void init() {
-        paint = new PUIPaintable() {
-            @Override
-            public void paint(Graphics2D g, int x, int y, int w, int h) {
-                if (w < 0)
-                    w = -w;
-                if (h < 0)
-                    h = -h;
+        paint = (g, x, y, w, h) -> {
+            if (w < 0)
+                w = -w;
+            if (h < 0)
+                h = -h;
 
-                // BG
-                g.setColor(getBackgroundColor());
-                g.fillOval(x, y, w, h);
+            // BG
+            g.setColor(getBackgroundColor());
+            g.fillOval(x, y, w, h);
 
-                // value-visual
-                g.setColor(getTextColor());
+            // value-visual
+            g.setColor(getTextColor());
 
-                // Value-Visual
-                g.fillArc(x, y, w, h, (int) (360 - ((rotationArea * value + (360 - rotationArea) / 2 + 90) + valueThickness / 2)), (int) valueThickness);
+            // Value-Visual
+            g.fillArc(x, y, w, h, (int) (360 - ((rotationArea * value + (360 - rotationArea) / 2 + 90) + valueThickness / 2)), (int) valueThickness);
 
-                // Overpaint part of ^ , to visualize valueLength
-                g.setColor(getBackgroundColor());
+            // Overpaint part of ^ , to visualize valueLength
+            g.setColor(getBackgroundColor());
 
-                g.fillOval((int) (x + (1.0f - valueLength) * (w / 2)), (int) (y + (1.0f - valueLength) * (h / 2)), (int) (w * (valueLength)), (int) (h * (valueLength)));
+            g.fillOval((int) (x + (1.0f - valueLength) * (w / 2)), (int) (y + (1.0f - valueLength) * (h / 2)), (int) (w * (valueLength)), (int) (h * (valueLength)));
 
-                // Outline
-                g.setColor(color(2));
-                g.drawOval(x, y, w, h);
+            // Outline
+            g.setColor(color(2));
+            g.drawOval(x, y, w, h);
 
-            }
         };
-        hoverOverlay = new PUIPaintable() {
-            @Override
-            public void paint(Graphics2D g, int x, int y, int w, int h) {
-                g.setColor(new Color(100, 100, 100, 100));
-                g.fillOval(x, y, w, h);
-            }
+        hoverOverlay = (g, x, y, w, h) -> {
+            g.setColor(new Color(100, 100, 100, 100));
+            g.fillOval(x, y, w, h);
         };
-        pressOverlay = new PUIPaintable() {
-            @Override
-            public void paint(Graphics2D g, int x, int y, int w, int h) {
-                g.setColor(new Color(100, 100, 100, 200));
-                g.fillOval(x, y, w, h);
-            }
+        pressOverlay = (g, x, y, w, h) -> {
+            g.setColor(new Color(100, 100, 100, 200));
+            g.fillOval(x, y, w, h);
         };
         mouseMotionListeners.add(new MouseMotionListener() {
             @Override
@@ -108,12 +99,9 @@ public class PUIRotaryControl extends PUIElement {
                 }
             }
         });
-        mouseWheelListeners.add(new MouseWheelListener() {
-            @Override
-            public void mouseWheelMoved(MouseWheelEvent e) {
-                if (useMouseWheel && isHovered()) {
-                    setValue((float) (e.getWheelRotation() * 0.1 + getValue()));
-                }
+        mouseWheelListeners.add(e -> {
+            if (useMouseWheel && isHovered()) {
+                setValue((float) (e.getWheelRotation() * 0.1 + getValue()));
             }
         });
     }
@@ -211,10 +199,9 @@ public class PUIRotaryControl extends PUIElement {
             frame.repaint();
         }
 
-        if (valueUpdateAction != null)
-            for (PUIAction r : valueUpdateAction)
-                if (r != null)
-                    r.run(this);
+        for (PUIAction r : valueUpdateAction)
+            if (r != null)
+                r.run(this);
     }
 
     public void addValueUpdateAction(PUIAction r) {
@@ -226,7 +213,7 @@ public class PUIRotaryControl extends PUIElement {
     }
 
     public ArrayList<PUIAction> getValueUpdateActions() {
-        return new ArrayList<PUIAction>(valueUpdateAction);
+        return new ArrayList<>(valueUpdateAction);
     }
 
 }

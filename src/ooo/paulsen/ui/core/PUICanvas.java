@@ -6,7 +6,7 @@ public class PUICanvas {
 
     private final long creationID = System.currentTimeMillis(); // creation time
 
-    protected PUIFrame frame;
+    protected final PUIFrame frame;
     protected PUIPaintable paint;
 
     protected boolean visible = true/*, blockRaycast = false*/;

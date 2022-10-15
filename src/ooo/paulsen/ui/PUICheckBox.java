@@ -11,23 +11,13 @@ public class PUICheckBox extends PUIElement {
 
     public PUICheckBox(PUIFrame l, int layer) {
         super(l);
-        addActionListener(new PUIAction() {
-            @Override
-            public void run(PUIElement that) {
-                activated = !activated;
-            }
-        });
+        addActionListener(that -> activated = !activated);
         setLayer(layer);
     }
 
     public PUICheckBox(PUIFrame l) {
         super(l);
-        addActionListener(new PUIAction() {
-            @Override
-            public void run(PUIElement that) {
-                activated = !activated;
-            }
-        });
+        addActionListener(that -> activated = !activated);
     }
 
     @Override

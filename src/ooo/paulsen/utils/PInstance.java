@@ -12,8 +12,8 @@ import java.net.Socket;
  */
 public class PInstance {
 
-    private int PORT;
-    private Runnable connectAction;
+    private final int PORT;
+    private final Runnable connectAction;
     private ServerSocket serverSocket;
 
     /**
@@ -51,26 +51,23 @@ public class PInstance {
 
         //Bind to localhost adapter with a zero connection queue
         serverSocket = new ServerSocket(PORT, 0, InetAddress.getByAddress(new byte[]{127, 0, 0, 1}));
-        Thread t = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (true) {
-                    try {
+        Thread t = new Thread(() -> {
+            while (true) {
+                try {
 
-                        // look for connection
-                        serverSocket.accept();
+                    // look for connection
+                    serverSocket.accept();
 
-                        // execute Function if some other program connected (to e.g. focus the older UI-Instance)
-                        if (connectAction != null)
-                            connectAction.run();
+                    // execute Function if some other program connected (to e.g. focus the older UI-Instance)
+                    if (connectAction != null)
+                        connectAction.run();
 
-                        // close and reopen server
-                        serverSocket.close();
-                        serverSocket = new ServerSocket(PORT, 0, InetAddress.getByAddress(new byte[]{127, 0, 0, 1}));
-                    } catch (IOException e) {
-                        // Address already in Use
-                        throw new RuntimeException(e);
-                    }
+                    // close and reopen server
+                    serverSocket.close();
+                    serverSocket = new ServerSocket(PORT, 0, InetAddress.getByAddress(new byte[]{127, 0, 0, 1}));
+                } catch (IOException e) {
+                    // Address already in Use
+                    throw new RuntimeException(e);
                 }
             }
         });
@@ -78,7 +75,6 @@ public class PInstance {
     }
 
     /**
-     * @param port
      * @return if a local Program, which reserves/uses a Port, is running.
      */
     public static boolean isInstanceRunning(int port) {
