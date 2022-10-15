@@ -25,7 +25,7 @@ public class Demo {
     PUICanvas canvas;
     PUIMatrix matrix;
     PUIText darkModeButton;
-    PUIList sp;
+    PUIList list;
     PUICheckBox cb;
     PUIRotaryControl rc;
     PUISlider slider;
@@ -41,15 +41,12 @@ public class Demo {
     public Demo() {
 
         try {
-            PInstance p = new PInstance(8123, new Runnable() {
-                @Override
-                public void run() {
-                    System.out.println("Focus that thing! Someone tried to open this exact program once again");
-                    f.setVisible(true);
-                    f.setState(JFrame.NORMAL);
-                    f.toFront();
-                    f.requestFocus();
-                }
+            PInstance p = new PInstance(8123, () -> {
+                System.out.println("Focus that thing! Someone tried to open this exact program once again");
+                f.setVisible(true);
+                f.setState(JFrame.NORMAL);
+                f.toFront();
+                f.requestFocus();
             });
         } catch (IOException e) {
             System.out.println("Already runs");
@@ -118,6 +115,8 @@ public class Demo {
                     otherMode = PUIElement.default_colors;
                     PUIElement.default_colors = temp;
 
+                    list.showSlider(false);
+
                     isDarkmode = false;
                     darkModeButton.setText("LIGHT");
                 } else {
@@ -127,6 +126,8 @@ public class Demo {
                     otherMode = PUIElement.default_colors;
                     PUIElement.default_colors = temp;
 
+                    list.showSlider(true);
+
                     isDarkmode = true;
                     darkModeButton.setText("DARK");
                 }
@@ -135,20 +136,20 @@ public class Demo {
         // if set to false: when pressed the eventchain doesnt stop => elements on layers behind this Button can be triggered as well
         darkModeButton.doBlockRaycast(false);
 
-        sp = new PUIList(f);
+        list = new PUIList(f);
 
         cb = new PUICheckBox(f);
         cb.addActionListener(new PUIAction() {
             @Override
             public void run(PUIElement that) {
-                if (sp.getAlignment() == ElementAlignment.VERTICAL) {
-                    sp.setAlignment(ElementAlignment.HORIZONTAL);
+                if (list.getAlignment() == ElementAlignment.VERTICAL) {
+                    list.setAlignment(ElementAlignment.HORIZONTAL);
 
                     setMatrixElements(true);
 
                     rc.setEnabled(false);
                 } else {
-                    sp.setAlignment(ElementAlignment.VERTICAL);
+                    list.setAlignment(ElementAlignment.VERTICAL);
 
                     setMatrixElements(false);
 
@@ -163,7 +164,7 @@ public class Demo {
             public void run(PUIElement that) {
                 // RotaryControl changes spacing between elements in PUIScrollPanel & PUIMatrix
                 int space = (int) (rc.getValue() * 7);
-                sp.setElementSpacing(space, space, space * 2, space * 2);
+                list.setElementSpacing(space, space, space * 2, space * 2);
                 matrix.setElementSpacing(space, space, space, space);
             }
         });
@@ -195,12 +196,12 @@ public class Demo {
                 public void run(PUIElement that) {
 
                     // automatically centers clicked Element in the UI
-                    sp.center(that);
+                    list.center(that);
 
                     that.sendUserInfo("You clicked List-Object: " + ((PUIText) that).getText());
                 }
             });
-            sp.addElement(t);
+            list.addElement(t);
         }
         // comment out if the size of the element inside of the panel should be further limited
 //        sp.setElementSpacing(6,0,3,3);
@@ -219,7 +220,7 @@ public class Demo {
 
                 cb.setBounds(w - 150, 50, 100, 100);// relative
                 rc.setBounds(w - 150, 200, 100, 100);// relative
-                sp.setBounds(50, h - 200, 300, 150); // relative
+                list.setBounds(50, h - 200, 300, 150); // relative
 
                 matrix.setBounds(390, 340, w - 440, h - 390);// relative
             }

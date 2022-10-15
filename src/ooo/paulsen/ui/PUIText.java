@@ -125,37 +125,41 @@ public class PUIText extends PUIElement {
             return;
 
         if (selectable) {
-            g.setColor(color(3));
-            int tempX = 0, tempW = 0;
-            if (markerA > markerB) {
-                tempX = (int) (x + markerB * h * characterSpacingFactor - h / 10);
-                tempW = (int) ((markerA - markerB) * h * characterSpacingFactor + (tempX < x ? 0 : h / 10));
-            } else {
-                tempX = (int) (x + markerA * h * characterSpacingFactor - h / 10);
-                tempW = (int) ((markerB - markerA) * h * characterSpacingFactor + (tempX < x ? 0 : h / 10));
-            }
-            tempW = (tempX + tempW > x + w ? (x + w - tempX) : tempW);
-            g.fillRect((tempX < x ? x : tempX) + 1, y + 1, tempW - 1, h - 1);
-
-            isTextCropped = false;
-            g.setColor(getTextColor());
-
-            g.setFont(new Font(selectFont, Font.PLAIN, h));
-            for (int i = 0; i < text.length(); i++) {
-                // prevent overflow
-                if (h * (i + 1) * characterSpacingFactor > w) {
-                    isTextCropped = true;
-                    break;
-                }
-
-                g.drawString(String.valueOf(text.charAt(i)), (int) (x + h * i * characterSpacingFactor),
-                        (int) (y + h * 0.85));
-            }
+            drawSelected(g);
         } else { // Normal Text Display with Clipping Area
 
             g.setColor(getTextColor());
-            g.setFont(new Font(normalFont, Font.PLAIN, h));
-            g.drawString(text, x, (int) (y + h * 0.85));
+            g.setFont(new Font(normalFont, Font.PLAIN, (int) (h * 0.8)));
+            g.drawString(text, x + h/10, (int) (y + h * 0.8));
+        }
+    }
+
+    protected void drawSelected(Graphics g) {
+        g.setColor(color(3));
+        int tempX = 0, tempW = 0;
+        if (markerA > markerB) {
+            tempX = (int) (x + markerB * h * characterSpacingFactor - h / 10);
+            tempW = (int) ((markerA - markerB) * h * characterSpacingFactor + (tempX < x ? 0 : h / 10));
+        } else {
+            tempX = (int) (x + markerA * h * characterSpacingFactor - h / 10);
+            tempW = (int) ((markerB - markerA) * h * characterSpacingFactor + (tempX < x ? 0 : h / 10));
+        }
+        tempW = (tempX + tempW > x + w ? (x + w - tempX) : tempW);
+        g.fillRect((tempX < x ? x : tempX) + 1, y + 1, tempW - 1, h - 1);
+
+        isTextCropped = false;
+        g.setColor(getTextColor());
+
+        g.setFont(new Font(selectFont, Font.PLAIN, h));
+        for (int i = 0; i < text.length(); i++) {
+            // prevent overflow
+            if (h * (i + 1) * characterSpacingFactor > w) {
+                isTextCropped = true;
+                break;
+            }
+
+            g.drawString(String.valueOf(text.charAt(i)), (int) (x + h * i * characterSpacingFactor),
+                    (int) (y + h * 0.85));
         }
     }
 

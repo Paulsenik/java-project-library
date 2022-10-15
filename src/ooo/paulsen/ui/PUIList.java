@@ -17,7 +17,7 @@ public class PUIList extends PUIElement {
     private CopyOnWriteArrayList<PUIAction> valueUpdateAction = new CopyOnWriteArrayList<>();
 
     private volatile CopyOnWriteArrayList<PUIElement> elements = new CopyOnWriteArrayList<>();
-    private boolean fixedElements = true, useMouseWheel = true;
+    private boolean fixedElements = true, useMouseWheel = true, showSlider = true;
     private int sliderWidth = 70;
     private int elementSpace_Left = 0, elementSpace_Right = 0, elementSpace_Top = 0, elementSpace_Bottom = 0;
 
@@ -104,15 +104,16 @@ public class PUIList extends PUIElement {
             int nShowIndex = (int) (slider.getValue() * maxShowIndex);
             showIndex = (nShowIndex < 0 ? 0 : nShowIndex);
 
-            if (!elements.isEmpty()) {
-                if (alignment == ElementAlignment.VERTICAL) {
-                    slider.setSliderSize((int) ((float) showedElements
-                            / (elements.size() > showedElements ? elements.size() : showedElements) * h));
-                } else if (alignment == ElementAlignment.HORIZONTAL) {
-                    slider.setSliderSize((int) ((float) showedElements
-                            / (elements.size() > showedElements ? elements.size() : showedElements) * w));
+            if (showSlider)
+                if (!elements.isEmpty()) {
+                    if (alignment == ElementAlignment.VERTICAL) {
+                        slider.setSliderSize((int) ((float) showedElements
+                                / (elements.size() > showedElements ? elements.size() : showedElements) * h));
+                    } else if (alignment == ElementAlignment.HORIZONTAL) {
+                        slider.setSliderSize((int) ((float) showedElements
+                                / (elements.size() > showedElements ? elements.size() : showedElements) * w));
+                    }
                 }
-            }
 
             float eHeight = (float) h / showedElements;
             float eWidth = (float) w / showedElements;
@@ -125,18 +126,18 @@ public class PUIList extends PUIElement {
                     if (alignment == ElementAlignment.VERTICAL) {
 
                         // Vertical
-                        e.setBounds(x + elementSpace_Left, (int) (y + eHeight * i) + elementSpace_Top, w - sliderWidth - elementSpace_Left - elementSpace_Right, (int) eHeight - elementSpace_Top - elementSpace_Bottom);
+                        e.setBounds(x + elementSpace_Left, (int) (y + eHeight * i) + elementSpace_Top, w - (showSlider ? sliderWidth : 0) - elementSpace_Left - elementSpace_Right, (int) eHeight - elementSpace_Top - elementSpace_Bottom);
 
                     } else if (alignment == ElementAlignment.HORIZONTAL) {
 
                         // Horizontal
-                        e.setBounds((int) (x + eWidth * i + elementSpace_Left), y + elementSpace_Top, (int) eWidth - elementSpace_Left - elementSpace_Right, h - sliderWidth - elementSpace_Top - elementSpace_Bottom);
+                        e.setBounds((int) (x + eWidth * i + elementSpace_Left), y + elementSpace_Top, (int) eWidth - elementSpace_Left - elementSpace_Right, h - (showSlider ? sliderWidth : 0) - elementSpace_Top - elementSpace_Bottom);
 
                     }
                     if (isEnabled())
                         elements.get(i + showIndex).setEnabled(true);
                 }
-            } else { // freely
+            } else { // TODO Feature
 
             }
         } catch (IndexOutOfBoundsException | ConcurrentModificationException e) {
@@ -192,10 +193,22 @@ public class PUIList extends PUIElement {
         return fixedElements;
     }
 
-    // Not implemented yet
+    // TODO Feature
 //	public void setFixedElements(boolean fixedElements) {
 //		this.fixedElements = fixedElements;
 //	}
+
+    public void showSlider(boolean value) {
+        if (showSlider != value) {
+            showSlider = value;
+            slider.setEnabled(value);
+            updateElements();
+        }
+    }
+
+    public boolean doesShowSlider() {
+        return showSlider;
+    }
 
     public boolean isUseMouseWheel() {
         return useMouseWheel;

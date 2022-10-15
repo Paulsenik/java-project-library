@@ -18,9 +18,9 @@ public class PUIElement extends PUICanvas { // PaulsenUserInterfaceIntegratedEle
     public static volatile boolean useGBC = false; // signals PUICore to use System.gbc()
     public static volatile CopyOnWriteArrayList<PUIElement> registeredElements = new CopyOnWriteArrayList<PUIElement>();
     public static volatile Color[] default_colors = new Color[]{
-            new Color(47, 47, 47), // BG
+            new Color(58, 58, 58), // BG
             new Color(196, 196, 196), // Text
-            new Color(57, 57, 57), // BG_accent
+            new Color(80, 80, 80), // BG_accent
             new Color(81, 81, 81) // Text_accent
     };
 

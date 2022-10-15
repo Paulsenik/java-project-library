@@ -63,7 +63,7 @@ public class PUIRotaryControl extends PUIElement {
                 g.fillOval((int) (x + (1.0f - valueLength) * (w / 2)), (int) (y + (1.0f - valueLength) * (h / 2)), (int) (w * (valueLength)), (int) (h * (valueLength)));
 
                 // Outline
-                g.setColor(getBackgroundColor());
+                g.setColor(color(2));
                 g.drawOval(x, y, w, h);
 
             }

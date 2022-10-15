@@ -130,7 +130,7 @@ public class PUISlider extends PUIElement {
      * @param fixPoints
      */
     public void setFixPoints(int fixPoints) {
-        // TODO
+        // TODO Feature
         this.fixPoints = fixPoints;
     }
 
@@ -169,7 +169,7 @@ public class PUISlider extends PUIElement {
     public void setValue(float sliderValue) {
         float nSliderValue = sliderValue > 1.0f ? 1.0f : (sliderValue < 0 ? 0 : sliderValue);
         if (useFixPoints) {
-            // TODO
+            // TODO Feature
         }
         if (nSliderValue != this.sliderValue) {
             this.sliderValue = nSliderValue;

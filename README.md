@@ -15,7 +15,7 @@
 
 - [Versions](https://github.com/realPaulsen/Java-Project-Library/releases)
 
-> **All Versions** compiled with **Java 11**
+> **All Versions** are compiled with **Java 11**
 
 ## Introduction
 
@@ -61,7 +61,7 @@ Use `write(data)` to send data to the device.
 
 ## How do I use it?
 
-1. **Download** the [latest `.jar` file](#downloads)
+1. **Download** the [latest `.jar` file](#Download)
 2. **Include** the library into your project
     - ***IntelliJ:*** `File > Project Structure > Libraries > +`
     - ***Eclipse:*** `Right-Click Project > Properties > Java Build Path > Add External JARs`
@@ -81,27 +81,24 @@ Use `write(data)` to send data to the device.
     * **Still** got **problems** or have issues adding yourself to the Groups:<br>
       Look up the **jSerialComm-[Troubleshooting-Wiki](https://github.com/Fazecast/jSerialComm/wiki/Troubleshooting)**
 
-## Credit
+## Credit & Status
 
 The Library [jSerialComm](https://github.com/Fazecast/jSerialComm) is used for USB/Serial communication.
 
-## Project status
-
-The Library is ***fully functional*** and ![Maintenance](https://img.shields.io/maintenance/yes/2022)
+It is ***fully functional*** and ![Maintenance](https://img.shields.io/maintenance/yes/2022)
 by [`Paulsen`](https://github.com/realPaulsen)
 
 ### TODOs & In-Progress
 
 - **BugFixes**
-  - ...
+  - Fix wrong snapping-point of PUIList at end of slider
 - **Changes**
-  - Make `run()` of **PConsole** _semi-blocking_ instead of _full-blocking_. In case the Console/Terminal wants an input the run() would be blocked forever
   - Make `PUIElement` **abstract** and create `PUIButton` to replace the parent-class of the other Elements
   - **FixPoints** on PUISlider
   - **Free** movable PUIElements on PUIScrollPanel (without snapped locations)
 - **Additions**
   - **Graph plotter**: Plot multiple graphs and analyze them
-  - **Built-In **File-Browser** based on PUIList
+  - **Built-In File-Browser** based on PUIList
   - **Comments**/JavaDoc still missing😬
 
 
