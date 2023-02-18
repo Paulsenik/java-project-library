@@ -96,9 +96,10 @@ public class PUIList extends PUIElement {
                 e.setEnabled(false);
             }
 
-            int maxShowIndex = elements.size() - showedElements;
+            int maxShowIndex = elements.size() + 1 - showedElements;
             int nShowIndex = (int) (slider.getValue() * maxShowIndex);
-            int showIndex = (Math.max(nShowIndex, 0));
+            int showIndex = Math.max(Math.min(nShowIndex,elements.size()-showedElements), 0);
+            System.out.println(showIndex);
 
             if (showSlider)
                 if (!elements.isEmpty()) {
@@ -189,9 +190,9 @@ public class PUIList extends PUIElement {
     }
 
     // TODO Feature
-	public void setFixedElements(boolean fixedElements) {
-		this.fixedElements = fixedElements;
-	}
+    public void setFixedElements(boolean fixedElements) {
+        this.fixedElements = fixedElements;
+    }
 
     public void showSlider(boolean value) {
         if (showSlider != value) {

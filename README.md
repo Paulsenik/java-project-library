@@ -19,13 +19,11 @@
 
 ## Introduction
 
-Features:
-
 - PUI-Engine
-    - `PUIFrame`(based on JFrame): simplifies creation of Frames and manages all Elements
+    - `PUIFrame`(based on JFrame): simplifies creation of UI and manages all Elements
     - Custom UI-Elements (e.g. `RotaryControl`: Digital Knob the user can rotate)
-    - Automatic scaling
     - Gives pixel-control over Window
+    - Automatic scaling
 - IO
     - `PFile` & `PFolder`: Advanced controls over Files & Folders
     - `PDataStorage`(similar to json): store/read basic attributes from/to files
@@ -59,6 +57,11 @@ You can also ***store basic attributes*** to files and later read them (similar 
 simply `connect()` and `disConnect()` a device and attach a `PSerialListener` to read Data from the USB-Attached Device.
 Use `write(data)` to send data to the device.
 
+## Projects built with JPL:
+- [JAudioController](https://github.com/realPaulsen/AudioController)
+- [FileManager](https://github.com/realPaulsen/FileManager)
+- [ButtonBox V2](https://github.com/realPaulsen/ButtonBox_V2)
+
 ## How do I use it?
 
 1. **Download** the [latest `.jar` file](#Download)
@@ -67,10 +70,8 @@ Use `write(data)` to send data to the device.
     - ***Eclipse:*** `Right-Click Project > Properties > Java Build Path > Add External JARs`
 3. **Start** with your project
 
-**For more see 
+**For more see my
 [included Demo](https://github.com/realPaulsen/Java-Project-Library/blob/main/src/com/paulsen/demo/Demo.java)**
-
-(Detailed Tutorial for using the Library coming soon)
 
 ## Troubleshooting
 
@@ -91,7 +92,7 @@ by [`Paulsen`](https://github.com/realPaulsen)
 ### TODOs & In-Progress
 
 - **BugFixes**
-  - Fix wrong snapping-point of PUIList at end of slider
+  - ...
 - **Changes**
   - Base `PUIElement` directly form JComponent and restructure PUICore/PUIFrame
   - **FixPoints** on PUISlider
