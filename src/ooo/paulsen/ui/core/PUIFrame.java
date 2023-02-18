@@ -185,7 +185,7 @@ public class PUIFrame extends JFrame {
                     // Draw only to the max-Repaint-Rate
                 } else if (lastRepaint_End + minUpdateDelay < System.currentTimeMillis()) {
 
-                    if (hasToRepaint) {
+                    if (hasToRepaint && isPaintable()) {
                         if (canvas != null) {
                             canvas.repaint();
                         }
@@ -213,6 +213,10 @@ public class PUIFrame extends JFrame {
                 }
             }
         }, 100, 10);
+    }
+
+    public boolean isPaintable(){
+        return getState() == Frame.NORMAL && isVisible();
     }
 
     public void updateElements() {

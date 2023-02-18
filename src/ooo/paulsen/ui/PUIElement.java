@@ -215,6 +215,7 @@ public class PUIElement extends PUICanvas { // PaulsenUserInterfaceIntegratedEle
         this.y = y;
         this.w = w;
         this.h = h;
+        frame.repaint();
     }
 
     public void setPosition(int x, int y) {

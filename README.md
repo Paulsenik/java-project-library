@@ -85,7 +85,7 @@ Use `write(data)` to send data to the device.
 
 The Library [jSerialComm](https://github.com/Fazecast/jSerialComm) is used for USB/Serial communication.
 
-It is ***fully functional*** and ![Maintenance](https://img.shields.io/maintenance/yes/2022)
+It is ***fully functional*** and ![Maintenance](https://img.shields.io/maintenance/yes/2023)
 by [`Paulsen`](https://github.com/realPaulsen)
 
 ### TODOs & In-Progress
@@ -93,7 +93,7 @@ by [`Paulsen`](https://github.com/realPaulsen)
 - **BugFixes**
   - Fix wrong snapping-point of PUIList at end of slider
 - **Changes**
-  - Make `PUIElement` **abstract** and create `PUIButton` to replace the parent-class of the other Elements
+  - Base `PUIElement` directly form JComponent and restructure PUICore/PUIFrame
   - **FixPoints** on PUISlider
   - **Free** movable PUIElements on PUIScrollPanel (without snapped locations)
 - **Additions**
