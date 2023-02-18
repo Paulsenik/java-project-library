@@ -81,8 +81,7 @@ public class PUIMatrix extends PUIElement {
             if (rows > row && row >= 0) {
                 synchronized (elements) {
                     elements[column][row] = e;
-                    if (frame != null)
-                        frame.repaint();
+                    updateElements();
                     return true;
                 }
             }

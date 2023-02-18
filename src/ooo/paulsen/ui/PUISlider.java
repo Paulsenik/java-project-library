@@ -40,7 +40,7 @@ public class PUISlider extends PUIElement {
 
         sliderB = new PUIElement(frame, getDrawLayer());
         sliderB.setDraw((g, x, y, w, h) -> {
-            g.setColor(color(2));
+            g.setColor(color(1));
             g.fillRoundRect(x, y, w, h, arcWidth, arcHeight);
 
             g.setColor(color(3));

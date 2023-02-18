@@ -52,6 +52,8 @@ public class PUIList extends PUIElement {
         slider.setAlignment(ElementAlignment.VERTICAL);
         slider.doPaintOverOnHover(false);
         slider.doPaintOverOnPress(false);
+        setBackgroundColor(new Color(0,0,0,0));
+        setColor(2,new Color(0,0,0,0));
         mouseWheelListeners.add(e -> {
             try {
                 if (!isEnabled())
@@ -99,7 +101,6 @@ public class PUIList extends PUIElement {
             int maxShowIndex = elements.size() + 1 - showedElements;
             int nShowIndex = (int) (slider.getValue() * maxShowIndex);
             int showIndex = Math.max(Math.min(nShowIndex,elements.size()-showedElements), 0);
-            System.out.println(showIndex);
 
             if (showSlider)
                 if (!elements.isEmpty()) {

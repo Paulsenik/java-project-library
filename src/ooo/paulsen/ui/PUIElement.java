@@ -18,9 +18,9 @@ public class PUIElement extends PUICanvas { // PaulsenUserInterfaceIntegratedEle
     public static volatile boolean useGBC = false; // signals PUICore to use System.gbc()
     public static final CopyOnWriteArrayList<PUIElement> registeredElements = new CopyOnWriteArrayList<>();
     public static volatile Color[] default_colors = new Color[]{
-            new Color(58, 58, 58), // BG
+            new Color(60, 60, 60), // BG
             new Color(196, 196, 196), // Text
-            new Color(80, 80, 80), // BG_accent
+            new Color(51, 51, 51), // BG_accent
             new Color(81, 81, 81) // Text_accent
     };
 
@@ -32,8 +32,8 @@ public class PUIElement extends PUICanvas { // PaulsenUserInterfaceIntegratedEle
     protected int y = 0;
     protected int w = 0;
     protected int h = 0;
-    protected final int arcWidth = 15;
-    protected final int arcHeight = 15;
+    protected final int arcWidth = 7;
+    protected final int arcHeight = 7;
     protected volatile Color[] colors = new Color[0];
     protected PUIPaintable hoverOverlay, pressOverlay;
     protected final PUIFrame frame;
