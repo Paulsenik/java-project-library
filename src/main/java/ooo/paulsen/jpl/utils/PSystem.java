@@ -1,4 +1,4 @@
-package ooo.paulsen.audiocontroller.utils;
+package ooo.paulsen.jpl.utils;
 
 import java.util.Locale;
 

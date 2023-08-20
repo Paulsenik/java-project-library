@@ -1,4 +1,4 @@
-package ooo.paulsen.audiocontroller.ui.core;
+package ooo.paulsen.jpl.ui.core;
 
 public interface PUIUpdatable {
 	/**

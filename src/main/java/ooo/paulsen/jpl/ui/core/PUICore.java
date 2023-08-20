@@ -1,7 +1,7 @@
-package ooo.paulsen.audiocontroller.ui.core;
+package ooo.paulsen.jpl.ui.core;
 
-import ooo.paulsen.audiocontroller.ui.PUIElement;
-import ooo.paulsen.audiocontroller.ui.PUIText;
+import ooo.paulsen.jpl.ui.PUIElement;
+import ooo.paulsen.jpl.ui.PUIText;
 
 import javax.management.InvalidAttributeValueException;
 import java.awt.event.*;

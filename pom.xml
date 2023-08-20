@@ -38,7 +38,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>ooo.paulsen.audiocontroller.demo.Demo</mainClass>
+                            <mainClass>ooo.paulsen.jpl.demo.Demo</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

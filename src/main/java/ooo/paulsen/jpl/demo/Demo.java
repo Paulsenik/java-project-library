@@ -1,12 +1,12 @@
-package ooo.paulsen.audiocontroller.demo;
+package ooo.paulsen.jpl.demo;
 
-import ooo.paulsen.audiocontroller.ui.*;
-import ooo.paulsen.audiocontroller.ui.core.PUICanvas;
-import ooo.paulsen.audiocontroller.ui.core.PUIFrame;
-import ooo.paulsen.audiocontroller.utils.PSystem;
-import ooo.paulsen.audiocontroller.io.serial.PSerialConnection;
-import ooo.paulsen.audiocontroller.ui.PUIElement.ElementAlignment;
-import ooo.paulsen.audiocontroller.utils.PInstance;
+import ooo.paulsen.jpl.ui.*;
+import ooo.paulsen.jpl.ui.core.PUICanvas;
+import ooo.paulsen.jpl.ui.core.PUIFrame;
+import ooo.paulsen.jpl.utils.PSystem;
+import ooo.paulsen.jpl.io.serial.PSerialConnection;
+import ooo.paulsen.jpl.ui.PUIElement.ElementAlignment;
+import ooo.paulsen.jpl.utils.PInstance;
 
 import javax.swing.*;
 import java.awt.*;

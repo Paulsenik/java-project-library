@@ -1,6 +1,6 @@
-package ooo.paulsen.audiocontroller.ui;
+package ooo.paulsen.jpl.ui;
 
-import ooo.paulsen.audiocontroller.ui.core.PUIFrame;
+import ooo.paulsen.jpl.ui.core.PUIFrame;
 
 import java.awt.*;
 

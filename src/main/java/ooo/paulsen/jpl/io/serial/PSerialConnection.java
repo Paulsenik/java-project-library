@@ -1,4 +1,4 @@
-package ooo.paulsen.audiocontroller.io.serial;
+package ooo.paulsen.jpl.io.serial;
 
 import com.fazecast.jSerialComm.SerialPort;
 import com.fazecast.jSerialComm.SerialPortDataListener;
