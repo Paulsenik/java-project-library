@@ -1,21 +1,14 @@
 # Java Project Library
 
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/realPaulsen/Java-Project-Library)
+[![](https://jitpack.io/v/realPaulsen/java-project-library.svg)](https://jitpack.io/#realPaulsen/java-project-library)
+![GitHub](https://img.shields.io/github/license/realPaulsen/Java-Project-Library)
+
 ![GitHub Release Date](https://img.shields.io/github/release-date/realPaulsen/Java-Project-Library?label=last%20RELEASE)
 ![GitHub last commit](https://img.shields.io/github/last-commit/realPaulsen/Java-Project-Library?label=last%20COMMIT)
 
-![GitHub](https://img.shields.io/github/license/realPaulsen/Java-Project-Library)
-![Lines of code](https://img.shields.io/tokei/lines/github/realPaulsen/Java-Project-Library)
+The `Java-Project-Library` is a library for making small ***Coding-Projects*** of any kind really **fast**.
 
-`Java-Project-Library` is a library for making small ***Coding-Projects*** of any kind really **fast**.
-
-## Download
-
-<!--  TODO: Update D-Link after every new Release  -->
-
-- [Versions](https://github.com/realPaulsen/Java-Project-Library/releases)
-
-> **All Versions** are compiled with **Java 11**
 
 ## Introduction
 
@@ -32,6 +25,7 @@
 - Utility
     - `PSystem`: Provides **System-Information** and functions (e.g. find out the OS-Type)
     - `PConsole`: Run a given Command in the Terminal/Console (Linux/Windows) and get the response
+
 
 ## Why should I use this Library?
 
@@ -57,21 +51,47 @@ You can also ***store basic attributes*** to files and later read them (similar 
 simply `connect()` and `disConnect()` a device and attach a `PSerialListener` to read Data from the USB-Attached Device.
 Use `write(data)` to send data to the device.
 
+**For more see my
+[included Demo](https://github.com/realPaulsen/Java-Project-Library/blob/main/src/com/paulsen/demo/Demo.java)**
+
+
 ## Projects built with JPL:
 - [JAudioController](https://github.com/realPaulsen/AudioController)
 - [FileManager](https://github.com/realPaulsen/FileManager)
 - [ButtonBox V2](https://github.com/realPaulsen/ButtonBox_V2)
 
-## How do I use it?
 
-1. **Download** the [latest `.jar` file](#Download)
+## Usage
+This library can be loaded using [JitPack](https://jitpack.io/#realPaulsen/java-project-library)
+```xml
+<repositories>
+    <repository>
+        <id>jitpack.io</id>
+        <url>https://jitpack.io</url>
+    </repository>
+</repositories>
+```
+
+Include the dependency (change version *[version](https://github.com/realPaulsen/Java-Project-Library/releases)* if needed)
+
+```xml
+<dependencies>
+  <dependency>
+      <groupId>com.github.realPaulsen</groupId>
+      <artifactId>java-project-library</artifactId>
+      <version>[1.1.6,1.1.7)</version>
+    </dependency>
+</dependencies>
+```
+
+### Alternatively using jar
+
+1. **Download / Build** the latest Version
 2. **Include** the library into your project
     - ***IntelliJ:*** `File > Project Structure > Libraries > +`
     - ***Eclipse:*** `Right-Click Project > Properties > Java Build Path > Add External JARs`
 3. **Start** with your project
 
-**For more see my
-[included Demo](https://github.com/realPaulsen/Java-Project-Library/blob/main/src/com/paulsen/demo/Demo.java)**
 
 ## Troubleshooting
 
@@ -81,6 +101,7 @@ Use `write(data)` to send data to the device.
       `uucp` `dialout` `lock` `tty` *(Some might not exist on your distro)*
     * **Still** got **problems** or have issues adding yourself to the Groups:<br>
       Look up the **jSerialComm-[Troubleshooting-Wiki](https://github.com/Fazecast/jSerialComm/wiki/Troubleshooting)**
+
 
 ## Credit & Status
 
@@ -92,8 +113,10 @@ by [`Paulsen`](https://github.com/realPaulsen)
 ### TODOs & In-Progress
 
 - **BugFixes**
-  - ...
+  - Resizing Window to Fullscreen does not always draw/update to latest size
 - **Changes**
+  - Optimize draw call by only redrawing region of parent that intersects with the updated Element
+  - Use JSON as DataStorage
   - Base `PUIElement` directly form JComponent and restructure PUICore/PUIFrame
   - **FixPoints** on PUISlider
   - **Free** movable PUIElements on PUIScrollPanel (without snapped locations)
@@ -101,10 +124,3 @@ by [`Paulsen`](https://github.com/realPaulsen)
   - **Graph plotter**: Plot multiple graphs and analyze them
   - **Built-In File-Browser** based on PUIList
   - **Comments**/JavaDoc still missing😬
-
-
-
-## Build-Notes
-
-* Import the latest Build of external library [jSerialComm](https://github.com/Fazecast/jSerialComm) for serial/USB-Connection
-
