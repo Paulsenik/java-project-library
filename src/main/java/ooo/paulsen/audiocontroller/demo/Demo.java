@@ -16,8 +16,6 @@ import java.io.IOException;
 
 public class Demo {
 
-    public static final String version = "v1.1.6";
-
     public static void main(String[] args) {
         new Demo();
     }
@@ -57,7 +55,7 @@ public class Demo {
             System.exit(0);
         }
 
-        frameTitle = "JPL-Demo "+version+" - " + PSystem.getUserName() + "'s " + PSystem.getOSType() + "-System from " + PSystem.getUserDisplayLocation();
+        frameTitle = "JPL-Demo - " + PSystem.getUserName() + "'s " + PSystem.getOSType() + "-System from " + PSystem.getUserDisplayLocation();
 
         // initialize frame before creating Elements
         f = new PUIFrame(frameTitle, 600, 600);

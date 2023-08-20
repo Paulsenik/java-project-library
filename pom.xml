@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>ooo.paulsen</groupId>
-    <artifactId>Java-Project-Library</artifactId>
+    <artifactId>java-project-library</artifactId>
     <version>1.1.6</version>
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
