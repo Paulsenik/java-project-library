@@ -1,11 +1,11 @@
 # Java Project Library
 
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/realPaulsen/Java-Project-Library)
-[![](https://jitpack.io/v/realPaulsen/java-project-library.svg)](https://jitpack.io/#realPaulsen/java-project-library)
-![GitHub](https://img.shields.io/github/license/realPaulsen/Java-Project-Library)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/paulsenik/java-project-library)
+[![](https://jitpack.io/v/paulsenik/java-project-library.svg)](https://jitpack.io/#paulsenik/java-project-library)
+![GitHub](https://img.shields.io/github/license/paulsenik/java-project-library)
 
-![GitHub Release Date](https://img.shields.io/github/release-date/realPaulsen/Java-Project-Library?label=last%20RELEASE)
-![GitHub last commit](https://img.shields.io/github/last-commit/realPaulsen/Java-Project-Library?label=last%20COMMIT)
+![GitHub Release Date](https://img.shields.io/github/release-date/paulsenik/java-project-library?label=last%20RELEASE)
+![GitHub last commit](https://img.shields.io/github/last-commit/paulsenik/java-project-library?label=last%20COMMIT)
 
 The `Java-Project-Library` is a library for making small ***Coding-Projects*** of any kind really **fast**.
 
@@ -52,17 +52,17 @@ simply `connect()` and `disConnect()` a device and attach a `PSerialListener` to
 Use `write(data)` to send data to the device.
 
 **For more see my
-[included Demo](https://github.com/realPaulsen/Java-Project-Library/blob/main/src/com/paulsen/demo/Demo.java)**
+[included Demo](https://github.com/paulsenik/java-project-library/blob/main/src/com/paulsen/demo/Demo.java)**
 
 
 ## Projects built with JPL:
-- [JAudioController](https://github.com/realPaulsen/AudioController)
-- [FileManager](https://github.com/realPaulsen/FileManager)
-- [ButtonBox V2](https://github.com/realPaulsen/ButtonBox_V2)
+- [JAudioController](https://github.com/paulsenik/AudioController)
+- [FileManager](https://github.com/paulsenik/FileManager)
+- [ButtonBox V2](https://github.com/paulsenik/ButtonBox_V2)
 
 
 ## Usage
-This library can be loaded using [JitPack](https://jitpack.io/#realPaulsen/java-project-library)
+This library can be loaded using [JitPack](https://jitpack.io/#paulsenik/java-project-library)
 ```xml
 <repositories>
     <repository>
@@ -72,12 +72,12 @@ This library can be loaded using [JitPack](https://jitpack.io/#realPaulsen/java-
 </repositories>
 ```
 
-Include the dependency (change version *[version](https://github.com/realPaulsen/Java-Project-Library/releases)* if needed)
+Include the dependency (change version *[version](https://github.com/paulsenik/java-project-library/releases)* if needed)
 
 ```xml
 <dependencies>
   <dependency>
-      <groupId>com.github.realPaulsen</groupId>
+      <groupId>com.github.paulsenik</groupId>
       <artifactId>java-project-library</artifactId>
       <version>[1.1.6,1.1.7)</version>
     </dependency>
@@ -108,7 +108,7 @@ Include the dependency (change version *[version](https://github.com/realPaulsen
 The Library [jSerialComm](https://github.com/Fazecast/jSerialComm) is used for USB/Serial communication.
 
 It is ***fully functional*** and ![Maintenance](https://img.shields.io/maintenance/yes/2023)
-by [`Paulsen`](https://github.com/realPaulsen)
+by [`Paulsen`](https://github.com/paulsenik)
 
 ### TODOs & In-Progress
 
