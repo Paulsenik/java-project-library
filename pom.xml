@@ -4,9 +4,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>ooo.paulsen</groupId>
+    <groupId>de.paulsenik</groupId>
     <artifactId>java-project-library</artifactId>
-    <version>1.1.6</version>
+    <version>1.1.6a</version>
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
@@ -38,7 +38,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>ooo.paulsen.jpl.demo.Demo</mainClass>
+                            <mainClass>de.paulsenik.jpl.demo.Demo</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
