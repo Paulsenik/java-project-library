@@ -40,64 +40,23 @@ public class PFile extends File {
   }
 
   /**
-   * copys file if directory is a new one and renames it
+   * copys file to a new location and replaces the existing one
    *
-   * @param file   is path of File
+   * @param source is path of File
    * @param target is new Path to File
    * @return success
    */
-  public static boolean copyFile(String file, String target, boolean replaceIfExists) {
-
-    String nPath = target;
-
-    if (!replaceIfExists) {
-      String addon = " - copy"; // l=8
-      int copyCount = 0;
-      while (nPath != null && new File(nPath).exists()) {
-        if (copyCount > 0) { // remove " - copy0"
-          String nnP = remove(nPath,
-              nPath.length() - (addon.length() + PFile.getFileType(nPath).length()) - 2,
-              nPath.length() + PFile.getFileType(nPath).length());
-          nPath = nnP + "." + PFile.getFileType(nPath);
-        }
-        nPath = new PFile(nPath).getParent() + "/" + new PFile(nPath).getName() + addon + copyCount
-            + '.'
-            + PFile.getFileType(nPath);
-        copyCount++;
-      }
-    }
-
+  public static boolean copyFile(File source, File target) {
     try {
-      Files.copy(new File(file).toPath(), new File(nPath).toPath(),
+      Files.copy(source.toPath(), target.toPath(),
           StandardCopyOption.REPLACE_EXISTING);
     } catch (IOException | NullPointerException e) {
       return false;
     }
-
     return true;
   }
 
-  private static String remove(String s, int a, int b) {
-    return s.substring(0, a) + s.substring(b);
-  }
-
-  /**
-   * @param file path
-   * @return filetype (e.g. "txt" "png" "wav" ...)
-   */
-  public static String getFileType(String file) {
-    StringBuilder fileType = new StringBuilder();
-    for (int i = file.length() - 1; i >= 0; i--) {
-      if (file.charAt(i) == '.') {
-        return fileType.toString();
-      } else {
-        fileType.insert(0, file.charAt(i));
-      }
-    }
-    return null;
-  }
-
-  public static String[] getParagraphs(String s) {
+  private static String[] getParagraphs(String s) {
     ArrayList<String> out = new ArrayList<>();
 
     StringBuilder lastword = new StringBuilder();
