@@ -12,14 +12,15 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
- * Class for easier file-access and handling filedata
+ * Class for easier file-access and handling file data
  *
- * @author Paul Seidel
- * @version 1.0.5
- * @since 2019-01-01 : Updated 2022-03-14
+ * @since 2019-01-01
  */
 
 public class PFile extends File {
+
+  private String name;
+  private String type;
 
   private PFile() {
     super("");
@@ -27,40 +28,15 @@ public class PFile extends File {
 
   public PFile(String path) {
     super(path);
+
+    setNameAndType();
   }
 
-  /**
-   * @return Filename without ending and folders, where its located
-   */
-  public static String getName(String path) {
-    StringBuilder s = new StringBuilder();
-    boolean hasBeenType = false;
-    for (int i = path.length() - 1; i >= 0; i--) {
-      if (hasBeenType) {
-        if (path.charAt(i) == '/' || path.charAt(i) == ((char) 92)) {
-          return s.toString();
-        } else {
-          s.insert(0, path.charAt(i));
-        }
-      } else {
-        if (path.charAt(i) == '.') {
-          hasBeenType = true;
-        }
-      }
-    }
-    return s.toString();
-  }
-
-  public static String getNameAndType(String path) {
-    StringBuilder s = new StringBuilder();
-    for (int i = path.length() - 1; i >= 0; i--) {
-      if (path.charAt(i) == '/' || path.charAt(i) == ((char) 92)) {
-        return s.toString();
-      } else {
-        s.insert(0, path.charAt(i));
-      }
-    }
-    return s.toString();
+  public static void main(String[] args) {
+    System.out.println(new PFile("test.txt").getName());
+    System.out.println(new PFile("test.txt").getType());
+    System.out.println(new PFile("").getName());
+    System.out.println(new PFile("").getType());
   }
 
   /**
@@ -84,7 +60,8 @@ public class PFile extends File {
               nPath.length() + PFile.getFileType(nPath).length());
           nPath = nnP + "." + PFile.getFileType(nPath);
         }
-        nPath = new PFile(nPath).getParent() + "/" + PFile.getName(nPath) + addon + copyCount + '.'
+        nPath = new PFile(nPath).getParent() + "/" + new PFile(nPath).getName() + addon + copyCount
+            + '.'
             + PFile.getFileType(nPath);
         copyCount++;
       }
@@ -94,24 +71,14 @@ public class PFile extends File {
       Files.copy(new File(file).toPath(), new File(nPath).toPath(),
           StandardCopyOption.REPLACE_EXISTING);
     } catch (IOException | NullPointerException e) {
-      System.err.println(
-          "[PFile] :: copyFile :: an error occured trying to copy from " + file + " to " + target);
       return false;
     }
-
-//		System.out.println("[PFile] :: copyFile :: from " + file + " to " + target);
 
     return true;
   }
 
   private static String remove(String s, int a, int b) {
-    StringBuilder sN = new StringBuilder();
-    for (int i = 0; i < s.length(); i++) {
-      if (!(i >= a && i < b)) {
-        sN.append(s.charAt(i));
-      }
-    }
-    return sN.toString();
+    return s.substring(0, a) + s.substring(b);
   }
 
   /**
@@ -152,6 +119,39 @@ public class PFile extends File {
       array[i] = out.get(i);
     }
     return array;
+  }
+
+  private void setNameAndType() {
+    StringBuilder s = new StringBuilder();
+    for (int i = getPath().length() - 1; i >= 0; i--) {
+      if (getPath().charAt(i) == File.separatorChar) {
+        break;
+      } else if (getPath().charAt(i) == '.') {
+        if (!s.isEmpty()) {
+          type = s.toString();
+          s = new StringBuilder();
+        }
+      } else {
+        s.insert(0, getPath().charAt(i));
+      }
+    }
+    if (!s.isEmpty()) {
+      name = s.toString();
+    }
+  }
+
+  /**
+   * E.g. "/home/user/test.txt".getName() -> "test"
+   *
+   * @return Only the Filename without the filetype or folder-location
+   */
+  @Override
+  public String getName() {
+    return name;
+  }
+
+  public String getType() {
+    return type;
   }
 
   /**
