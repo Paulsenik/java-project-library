@@ -28,15 +28,16 @@ public class PFile extends File {
 
   public PFile(String path) {
     super(path);
-
-    setNameAndType();
+    initVars();
   }
 
   public static void main(String[] args) {
-    System.out.println(new PFile("test.txt").getName());
-    System.out.println(new PFile("test.txt").getType());
-    System.out.println(new PFile("").getName());
-    System.out.println(new PFile("").getType());
+    PFile f = new PFile("heyho");
+    f.writeFile("");
+    System.out.println(f.getName());
+    System.out.println(f.getType());
+
+    System.out.println(copyFile(f, new File("temp")));
   }
 
   /**
@@ -80,7 +81,10 @@ public class PFile extends File {
     return array;
   }
 
-  private void setNameAndType() {
+  /**
+   * Initializes type and name of the file
+   */
+  private void initVars() {
     StringBuilder s = new StringBuilder();
     for (int i = getPath().length() - 1; i >= 0; i--) {
       if (getPath().charAt(i) == File.separatorChar) {
