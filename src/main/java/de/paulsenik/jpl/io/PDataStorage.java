@@ -1,254 +1,116 @@
 package de.paulsenik.jpl.io;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Set;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class PDataStorage {
 
-    public enum DataType {
-        STRING, LONG, INTEGER, FLOAT, BOOLEAN
+  private final Map<String, Object> variables = new HashMap<>();
+
+  public void save(String fileLocation) {
+    PFile file = new PFile(fileLocation);
+    JSONArray array = new JSONArray();
+
+    for (String key : variables.keySet()) {
+      JSONObject obj = new JSONObject();
+      obj.put(key, variables.get(key));
+      array.put(obj);
     }
 
-    public static class DataVariable {
+    file.writeFile(array.toString(2));
+  }
 
-        private final String name;
-        private final Object obj;
-        private final DataType dt;
-
-        public DataVariable(String name, String d) {
-            this.name = name;
-            obj = d;
-            dt = DataType.STRING;
-        }
-
-        public DataVariable(String name, long d) {
-            this.name = name;
-            obj = d;
-            dt = DataType.LONG;
-        }
-
-        public DataVariable(String name, int d) {
-            this.name = name;
-            obj = d;
-            dt = DataType.INTEGER;
-        }
-
-        public DataVariable(String name, float d) {
-            this.name = name;
-            obj = d;
-            dt = DataType.FLOAT;
-        }
-
-        public DataVariable(String name, boolean d) {
-            this.name = name;
-            obj = d;
-            dt = DataType.BOOLEAN;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public DataType getDataType() {
-            return dt;
-        }
-
-        @Override
-        public String toString() {
-            String s = "";
-            switch (dt) {
-                case BOOLEAN:
-                    s += "b";
-                    break;
-                case FLOAT:
-                    s += "f";
-                    break;
-                case INTEGER:
-                    s += "i";
-                    break;
-                case LONG:
-                    s += "l";
-                    break;
-                case STRING:
-                    s += "s";
-                    break;
-                default:
-                    System.err.println("[DataStorage]::UNKNOWN datatype!");
-                    break;
-            }
-
-            s += "[" + (name.replace("[", "^<<^").replace("]", "^>>^")) + "["
-                    + (String.valueOf(obj).replace("[", "^<<^").replace("]", "^>>^")) + "]]";
-            return s;
-        }
-
+  /**
+   * Reads dataStorage-file and stores all Data in this object.
+   * <br>
+   * Ignores Variables with no valid value
+   *
+   * @throws IllegalArgumentException when file does not meet the expectations of this format
+   */
+  public void read(String fileLocation) throws JSONException {
+    if (PFolder.isFolder(fileLocation)) {
+      return;
     }
 
-    private final ArrayList<DataVariable> variables = new ArrayList<>();
+    String file = new PFile(fileLocation).getFileAsString();
 
-    public void save(String path) {
-        PFile file = new PFile(path);
-        StringBuilder s = new StringBuilder();
+    JSONArray json = new JSONArray(file);
 
-        for (DataVariable v : variables)
-            s.append(v);
-
-        file.writeFile(s.toString());
+    for (Object obj : json) {
+      JSONObject o = (JSONObject) obj;
+      try {
+        String key = o.keySet().iterator().next();
+        variables.put(key, o.get(key));
+      } catch (NoSuchElementException e) {
+        // Ignore empty Elements
+        //throw new JSONException("No valid JSON-Key!");
+      }
     }
+  }
 
-    /**
-     * Reads dataStorage-file and stores all Data in this object.
-     * <br>
-     * Ignores Variables with no valid value
-     *
-     * @throws IllegalArgumentException when file does not meet the expectations of this format
-     */
-    public void read(String path) throws IllegalArgumentException {
-        if (PFolder.isFolder(path))
-            return;
+  public Set<String> getVariableKeys() {
+    return variables.keySet();
+  }
 
-        String file = new PFile(path).getFileAsString();
+  public void put(String name, String data) {
+    variables.put(name, data);
+  }
 
-        boolean hasBeenDataType = false, hasBeenVariableName = false;
+  public void put(String name, long data) {
+    variables.put(name, data);
+  }
 
-        DataType currentDataType = DataType.STRING;
-        StringBuilder variableName = new StringBuilder();
-        StringBuilder data = new StringBuilder();
+  public void put(String name, int data) {
+    variables.put(name, data);
+  }
 
-        for (int i = 0; i < file.length(); i++) {
-            char c = file.charAt(i);
+  public void put(String name, float data) {
+    variables.put(name, data);
+  }
 
-            if (!hasBeenDataType) {
-                switch (c) {
-                    case 's':
-                        currentDataType = DataType.STRING;
-                        break;
-                    case 'l':
-                        currentDataType = DataType.LONG;
-                        break;
-                    case 'i':
-                        currentDataType = DataType.INTEGER;
-                        break;
-                    case 'f':
-                        currentDataType = DataType.FLOAT;
-                        break;
-                    case 'b':
-                        currentDataType = DataType.BOOLEAN;
-                        break;
-                    default:
-                        throw new IllegalArgumentException("could not identify datatype '\" + c + \"' at pos " + i);
-                }
-                hasBeenDataType = true;
-                i++; // jump over [
-            } else if (!hasBeenVariableName) {
-                if (c != '[') {
-                    variableName.append(c);
-                } else {
-                    hasBeenVariableName = true;
-                }
-            } else { // data
-                if (c != ']') {
-                    data.append(c);
-                } else {
-                    try {
-                        addData(currentDataType, variableName.toString().replace("^<<^", "[").replace("^>>^", "]"),
-                                data.toString().replace("^<<^", "[").replace("^>>^", "]"));
-                    } catch (IllegalArgumentException ignored) {
-                    }
-                    variableName = new StringBuilder();
-                    data = new StringBuilder();
-                    hasBeenDataType = false;
-                    hasBeenVariableName = false;
-                    i++; // jump over second ]
-                }
-            }
-        }
-    }
+  public void put(String name, double data) {
+    variables.put(name, data);
+  }
 
-    public boolean addData(DataType type, String name, String data) throws IllegalArgumentException {
-        try {
-            switch (type) {
-                case BOOLEAN:
-                    if (data != null) {
-                        if (data.equalsIgnoreCase("true"))
-                            add(name, true);
-                        else if (data.equalsIgnoreCase("false"))
-                            add(name, false);
-                        else
-                            throw new IllegalArgumentException("Could not find \"" + type + " " + name + "\"");
-                        break;
-                    }
-                case FLOAT:
-                    add(name, Float.parseFloat(data));
-                    break;
-                case INTEGER:
-                    add(name, Integer.parseInt(data));
-                    break;
-                case LONG:
-                    add(name, Long.parseLong(data));
-                    break;
-                case STRING:
-                    add(name, data == null ? "" : data);
-                    break;
-                default:
-                    System.err.println("[DataStorage]::UNKNOWN datatype!");
-                    return false;
-            }
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Can not parse the data into this DataType!");
-        }
-        return true;
-    }
+  public void put(String name, boolean data) {
+    variables.put(name, data);
+  }
 
-    public void add(String name, String data) {
-        variables.add(new DataVariable(name, data));
-    }
+  public Object get(String name) {
+    return variables.get(name);
+  }
 
-    public void add(String name, long data) {
-        variables.add(new DataVariable(name, data));
-    }
+  public String getString(String name) throws ClassCastException, NullPointerException {
+    return variables.get(name).toString();
+  }
 
-    public void add(String name, int data) {
-        variables.add(new DataVariable(name, data));
-    }
+  public Long getLong(String name) throws ClassCastException, NullPointerException {
+    return Long.valueOf(variables.get(name).toString());
+  }
 
-    public void add(String name, float data) {
-        variables.add(new DataVariable(name, data));
-    }
+  public Integer getInteger(String name) throws ClassCastException, NullPointerException {
+    return Integer.valueOf(variables.get(name).toString());
+  }
 
-    public void add(String name, boolean data) {
-        variables.add(new DataVariable(name, data));
-    }
+  public Float getFloat(String name) throws ClassCastException, NullPointerException {
+    return Float.valueOf(variables.get(name).toString());
+  }
 
-    public Object get(DataType type, String name) throws IllegalArgumentException {
-        for (DataVariable v : variables) {
-            if (v.dt == type && v.name.equals(name))
-                return v.obj;
-        }
-        throw new IllegalArgumentException("Could not find \"" + type + " " + name + "\"");
-    }
+  public Double getDouble(String name) throws ClassCastException, NullPointerException {
+    return Double.valueOf(variables.get(name).toString());
+  }
 
-    public String getString(String name) throws IllegalArgumentException {
-        return (String) get(DataType.STRING, name);
-    }
+  public Boolean getBoolean(String name) throws ClassCastException, NullPointerException {
+    return Boolean.valueOf(variables.get(name).toString());
+  }
 
-    public long getLong(String name) throws IllegalArgumentException {
-        return (long) get(DataType.LONG, name);
-    }
-
-    public int getInteger(String name) throws IllegalArgumentException {
-        return (int) get(DataType.INTEGER, name);
-    }
-
-    public float getFloat(String name) throws IllegalArgumentException {
-        return (float) get(DataType.FLOAT, name);
-    }
-
-    public boolean getBoolean(String name) throws IllegalArgumentException {
-        return (boolean) get(DataType.BOOLEAN, name);
-    }
-
-    public void clear() {
-        variables.clear();
-    }
+  public void clear() {
+    variables.clear();
+  }
 
 }

@@ -6,7 +6,7 @@
 
     <groupId>de.paulsenik</groupId>
     <artifactId>java-project-library</artifactId>
-    <version>1.1.6a</version>
+    <version>1.1.6b</version>
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
@@ -17,6 +17,11 @@
             <groupId>com.fazecast</groupId>
             <artifactId>jSerialComm</artifactId>
             <version>[2.0.0,3.0.0)</version>
+        </dependency>
+        <dependency>
+            <artifactId>json</artifactId>
+            <groupId>org.json</groupId>
+            <version>20230618</version>
         </dependency>
         <dependency>
             <groupId>org.apache.maven.plugins</groupId>
