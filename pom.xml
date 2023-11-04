@@ -1,64 +1,70 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <artifactId>java-project-library</artifactId>
 
-    <groupId>de.paulsenik</groupId>
-    <artifactId>java-project-library</artifactId>
-    <version>1.1.6b</version>
-    <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
-    </properties>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <appendAssemblyId>false</appendAssemblyId> <!--only compiles to jar with dependency-->
+          <archive>
+            <manifest>
+              <mainClass>de.paulsenik.jpl.demo.Demo</mainClass>
+            </manifest>
+          </archive>
+          <descriptorRefs>
+            <descriptorRef>jar-with-dependencies</descriptorRef>
+          </descriptorRefs>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <id>make-assembly</id>
+            <phase>package</phase>
+          </execution>
+        </executions>
+        <groupId>org.apache.maven.plugins</groupId>
+      </plugin>
+    </plugins>
+  </build>
+  <dependencies>
+    <dependency>
+      <artifactId>jSerialComm</artifactId>
+      <groupId>com.fazecast</groupId>
+      <version>[2.0.0,3.0.0)</version>
+    </dependency>
+    <dependency>
+      <artifactId>json</artifactId>
+      <groupId>org.json</groupId>
+      <version>20230618</version>
+    </dependency>
+    <dependency>
+      <artifactId>maven-assembly-plugin</artifactId>
+      <groupId>org.apache.maven.plugins</groupId>
+      <type>maven-plugin</type>
+      <version>3.6.0</version>
+    </dependency>
+    <dependency>
+      <artifactId>junit</artifactId>
+      <groupId>junit</groupId>
+      <scope>test</scope>
+      <version>4.13.1</version>
+    </dependency>
+  </dependencies>
+  <groupId>de.paulsenik</groupId>
+  <modelVersion>4.0.0</modelVersion>
 
-    <dependencies>
-        <dependency>
-            <groupId>com.fazecast</groupId>
-            <artifactId>jSerialComm</artifactId>
-            <version>[2.0.0,3.0.0)</version>
-        </dependency>
-        <dependency>
-            <artifactId>json</artifactId>
-            <groupId>org.json</groupId>
-            <version>20230618</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-assembly-plugin</artifactId>
-            <version>3.6.0</version>
-            <type>maven-plugin</type>
-        </dependency>
-    </dependencies>
+  <properties>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
+  </properties>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <configuration>
-                    <appendAssemblyId>false</appendAssemblyId> <!--only compiles to jar with dependency-->
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                    <archive>
-                        <manifest>
-                            <mainClass>de.paulsenik.jpl.demo.Demo</mainClass>
-                        </manifest>
-                    </archive>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>make-assembly</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
+  <version>1.1.6b</version>
 
 
 </project>

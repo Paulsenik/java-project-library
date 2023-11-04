@@ -31,15 +31,6 @@ public class PFile extends File {
     initVars();
   }
 
-  public static void main(String[] args) {
-    PFile f = new PFile("heyho");
-    f.writeFile("");
-    System.out.println(f.getName());
-    System.out.println(f.getType());
-
-    System.out.println(copyFile(f, new File("temp")));
-  }
-
   /**
    * copys file to a new location and replaces the existing one
    *
