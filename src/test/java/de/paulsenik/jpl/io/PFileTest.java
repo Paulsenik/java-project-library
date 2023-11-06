@@ -24,6 +24,13 @@ public class PFileTest {
   }
 
   @Test
+  public void test_multipleTypePath() {
+    PFile f = new PFile("test123.rc.old.md.txt");
+    Assert.assertEquals(f.getName(), "test123.rc.old.md");
+    Assert.assertEquals(f.getType(), "txt");
+  }
+
+  @Test
   public void test_noTypePath() {
     PFile f = new PFile("test123");
     Assert.assertEquals(f.getName(), "test123");
@@ -59,6 +66,7 @@ public class PFileTest {
     f.writeFile("test");
     Assert.assertTrue(PFile.copyFile(f, f2));
     Assert.assertTrue(f.delete());
+    Assert.assertTrue(f2.delete());
   }
 
   @Test

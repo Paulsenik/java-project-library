@@ -13,6 +13,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
 /**
  * Class for easier file-access and handling file data
@@ -61,22 +62,13 @@ public class PFile extends File {
    * Initializes type and name of the file
    */
   private void initVars() {
-    StringBuilder s = new StringBuilder();
-    for (int i = getPath().length() - 1; i >= 0; i--) {
-      if (getPath().charAt(i) == File.separatorChar) {
-        break;
-      } else if (getPath().charAt(i) == '.') {
-        if (!s.isEmpty()) {
-          type = s.toString();
-          s = new StringBuilder();
-        }
-      } else {
-        s.insert(0, getPath().charAt(i));
-      }
-    }
-    if (!s.isEmpty()) {
-      name = s.toString();
-    }
+    String[] parts = super.getName().split("\\.");
+    int len = parts.length;
+    String s = Arrays.stream(parts, 0, len <= 1 ? len : len - 1)
+        .collect(Collectors.joining("."));
+
+    name = s.isBlank() ? null : s;
+    type = parts.length < 2 ? null : parts[len - 1];
   }
 
   /**
