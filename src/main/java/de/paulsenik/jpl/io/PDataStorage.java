@@ -34,7 +34,7 @@ public class PDataStorage {
    * @throws IllegalArgumentException when file does not meet the expectations of this format
    */
   public void read(String fileLocation) throws JSONException, IOException {
-    if (PFolder.isFolder(fileLocation)) {
+    if (new PFile(fileLocation).isFolder()) {
       return;
     }
 

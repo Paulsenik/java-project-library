@@ -85,6 +85,10 @@ public class PFile extends File {
     return type;
   }
 
+  public boolean isFolder() {
+    return !isFile();
+  }
+
   /**
    * @return Array of Strings that were seperated with SPACE and not with lines
    */
