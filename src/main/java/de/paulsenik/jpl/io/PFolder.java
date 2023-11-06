@@ -23,26 +23,21 @@ public class PFolder {
   }
 
   /**
-   * @param folder Fileobject of folderlocation
    * @return All folders and their childfolders recursively inside of it
    */
-  public static List<File> getAllFoldersOfRoot(File folder) {
-    // TODO refactor with List of Strings
-    if (folder != null) {
-      File[] children = folder.listFiles((dir, name) -> new PFile(name).isFolder());
-      if (children != null) {
-        ArrayList<File> sum = new ArrayList<>();
+  public List<String> getAllFoldersOfRoot() {
+    String[] children = file.list((dir, name) -> (!dir.isFile()));
+    if (children != null) {
+      List<String> sum = new ArrayList<>();
+      Collections.addAll(sum, children);
 
-        Collections.addAll(sum, children);
-
-        for (File temp : children) {
-          List<File> tempFiles = getAllFoldersOfRoot(temp); // recursion
-          if (tempFiles != null) {
-            sum.addAll(tempFiles);
-          }
+      for (String temp : children) {
+        List<String> tempFiles = new PFolder(temp).getAllFoldersOfRoot(); // recursion
+        if (tempFiles != null) {
+          sum.addAll(tempFiles);
         }
-        return sum;
       }
+      return sum;
     }
     return null;
   }
