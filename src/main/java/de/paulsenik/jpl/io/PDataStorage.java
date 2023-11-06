@@ -1,5 +1,6 @@
 package de.paulsenik.jpl.io;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -32,7 +33,7 @@ public class PDataStorage {
    *
    * @throws IllegalArgumentException when file does not meet the expectations of this format
    */
-  public void read(String fileLocation) throws JSONException {
+  public void read(String fileLocation) throws JSONException, IOException {
     if (PFolder.isFolder(fileLocation)) {
       return;
     }

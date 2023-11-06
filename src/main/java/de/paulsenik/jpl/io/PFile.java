@@ -1,11 +1,15 @@
 package de.paulsenik.jpl.io;
 
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
@@ -111,7 +115,7 @@ public class PFile extends File {
   /**
    * @return Array of Strings that were seperated with SPACE and not with lines
    */
-  public synchronized String[] getParagraphs() {
+  public synchronized String[] getParagraphs() throws IOException {
     return getParagraphs(getFileAsString());
   }
 
@@ -150,18 +154,16 @@ public class PFile extends File {
   /**
    * @return File as one String
    */
-  public synchronized String getFileAsString() {
+  public synchronized String getFileAsString() throws FileNotFoundException, IOException {
     StringBuilder s = new StringBuilder();
-    if (exists()) {
-      Scanner scn;
-      try {
-        scn = new Scanner(this);
-        while (scn.hasNextLine()) {
-          s.append(scn.nextLine());
-        }
-        scn.close();
-      } catch (FileNotFoundException ignored) {
-      }
+    BufferedReader reader = new BufferedReader(
+        new InputStreamReader(
+            new FileInputStream(this),
+            StandardCharsets.UTF_8));
+    int c;
+    while ((c = reader.read()) != -1) {
+      char character = (char) c;
+      s.append(character);
     }
     return s.toString();
   }
