@@ -12,8 +12,7 @@ import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.Arrays;
 
 /**
  * Class for easier file-access and handling file data
@@ -53,27 +52,9 @@ public class PFile extends File {
   }
 
   private static String[] getParagraphs(String s) {
-    ArrayList<String> out = new ArrayList<>();
-
-    StringBuilder lastword = new StringBuilder();
-    for (int i = 0; i < s.length(); i++) {
-      if (!(s.charAt(i) == ' ')) {
-        lastword.append(s.charAt(i));
-      } else if (!lastword.toString().trim().isEmpty()) {
-        out.add(lastword.toString());
-        lastword = new StringBuilder();
-      } else {
-        lastword = new StringBuilder();
-      }
-    }
-    if (lastword.length() != 0) {
-      out.add(lastword.toString());
-    }
-    String[] array = new String[out.size()];
-    for (int i = 0; i < out.size(); i++) {
-      array[i] = out.get(i);
-    }
-    return array;
+    return Arrays.stream(s.split("[ \\t]"))
+        .filter(x -> (!"".equals(x)))
+        .toArray(String[]::new);
   }
 
   /**
@@ -122,33 +103,11 @@ public class PFile extends File {
   /**
    * @return Array of Strings that were seperated with SPACE and LINES
    */
-  public synchronized String[] getAllParagraphs() {
-    if (exists()) {
-      String[] s = getLines();
-      ArrayList<String> out = new ArrayList<>();
-
-      for (String line : s) {
-        StringBuilder lastword = new StringBuilder();
-        for (int i = 0; i < line.length(); i++) {
-          if (!(line.charAt(i) == ' ')) {
-            lastword.append(line.charAt(i));
-          } else {
-            out.add(lastword.toString());
-            lastword = new StringBuilder();
-          }
-        }
-        if (lastword.length() != 0) {
-          out.add(lastword.toString());
-        }
-      }
-
-      String[] array = new String[out.size()];
-      for (int i = 0; i < out.size(); i++) {
-        array[i] = out.get(i);
-      }
-      return array;
-    }
-    return null;
+  public synchronized String[] getAllParagraphs() throws IOException {
+    String s = getFileAsString();
+    return Arrays.stream(s.split("[ \\n\\r\\t]"))
+        .filter(x -> (!"".equals(x)))
+        .toArray(String[]::new);
   }
 
   /**
@@ -171,26 +130,11 @@ public class PFile extends File {
   /**
    * @return Array of Strings that were seperated with LINES and not with space
    */
-  public synchronized String[] getLines() {
-    ArrayList<String> lines = new ArrayList<>();
-
-    if (exists()) {
-      Scanner scn;
-      try {
-        scn = new Scanner(this);
-        while (scn.hasNextLine()) {
-          lines.add(scn.nextLine());
-        }
-        scn.close();
-      } catch (FileNotFoundException ignored) {
-      }
-    }
-
-    String[] l = new String[lines.size()];
-    for (int i = 0; i < lines.size(); i++) {
-      l[i] = lines.get(i);
-    }
-    return l;
+  public synchronized String[] getLines() throws IOException {
+    String s = getFileAsString();
+    return Arrays.stream(s.split("[\\n]"))
+        .filter(x -> (!"".equals(x)))
+        .toArray(String[]::new);
   }
 
   /**
