@@ -2,7 +2,35 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="http://maven.apache.org/POM/4.0.0"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>de.paulsenik</groupId>
   <artifactId>java-project-library</artifactId>
+  <version>1.1.6b</version>
+
+  <properties>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <artifactId>jSerialComm</artifactId>
+      <groupId>com.fazecast</groupId>
+      <version>[2.0.0,3.0.0)</version>
+    </dependency>
+    <dependency>
+      <artifactId>json</artifactId>
+      <groupId>org.json</groupId>
+      <version>20230618</version>
+    </dependency>
+    <dependency>
+      <artifactId>junit</artifactId>
+      <groupId>junit</groupId>
+      <scope>test</scope>
+      <version>4.13.1</version>
+    </dependency>
+  </dependencies>
 
   <build>
     <plugins>
@@ -32,33 +60,5 @@
       </plugin>
     </plugins>
   </build>
-  <dependencies>
-    <dependency>
-      <artifactId>jSerialComm</artifactId>
-      <groupId>com.fazecast</groupId>
-      <version>[2.0.0,3.0.0)</version>
-    </dependency>
-    <dependency>
-      <artifactId>json</artifactId>
-      <groupId>org.json</groupId>
-      <version>20230618</version>
-    </dependency>
-    <dependency>
-      <artifactId>junit</artifactId>
-      <groupId>junit</groupId>
-      <scope>test</scope>
-      <version>4.13.1</version>
-    </dependency>
-  </dependencies>
-  <groupId>de.paulsenik</groupId>
-  <modelVersion>4.0.0</modelVersion>
-
-  <properties>
-    <maven.compiler.source>17</maven.compiler.source>
-    <maven.compiler.target>17</maven.compiler.target>
-  </properties>
-
-  <version>1.1.6b</version>
-
 
 </project>
