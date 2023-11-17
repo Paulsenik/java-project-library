@@ -66,7 +66,7 @@ Use `write(data)` to send data to the device.
 
 ## Projects built with JPL:
 
-- [JAudioController](https://github.com/paulsenik/AudioController)
+- [Ryolith (AudioController)](https://github.com/paulsenik/ryolith)
 - [FileManager](https://github.com/paulsenik/FileManager)
 - [ButtonBox V2](https://github.com/paulsenik/ButtonBox_V2)
 
