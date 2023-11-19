@@ -61,13 +61,13 @@ USB-Attached Device.
 Use `write(data)` to send data to the device.
 
 **For more see my
-[included Demo](https://github.com/paulsenik/java-project-library/blob/main/src/com/paulsen/demo/Demo.java)
+[included Demo](src/main/java/de/paulsenik/jpl/demo/Demo.java)
 **
 
 ## Projects built with JPL:
 
 - [Ryolith (AudioController)](https://github.com/paulsenik/ryolith)
-- [FileManager](https://github.com/paulsenik/FileManager)
+- [Presentation Karaoke](https://github.com/paulsenik/ppt-karaoke)
 - [ButtonBox V2](https://github.com/paulsenik/ButtonBox_V2)
 
 ## Usage
@@ -85,7 +85,7 @@ This library can be loaded using [JitPack](https://jitpack.io/#paulsenik/java-pr
 ```
 
 Include the dependency (change version
-*[version](https://github.com/paulsenik/java-project-library/releases)* if needed)
+*[version](https://github.com/paulsenik/ryolith/releases)* if needed)
 
 ```xml
 
@@ -114,7 +114,8 @@ Include the dependency (change version
       `uucp` `dialout` `lock` `tty` *(Some might not exist on your distro)*
     * **Still** got **problems** or have issues adding yourself to the Groups:<br>
       Look up the *
-      *jSerialComm-[Troubleshooting-Wiki](https://github.com/Fazecast/jSerialComm/wiki/Troubleshooting)
+        *
+      jSerialComm-[Troubleshooting-Wiki](https://github.com/Fazecast/jSerialComm/wiki/Troubleshooting)
       **
 
 ## Credit & Status
@@ -125,17 +126,11 @@ communication.
 It is ***fully functional*** and ![Maintenance](https://img.shields.io/maintenance/yes/2023)
 by [`Paulsen`](https://github.com/paulsenik)
 
-### TODOs & In-Progress
+## Build
 
-- **BugFixes**
-    - Resizing Window to Fullscreen does not always draw/update to latest size
-- **Changes**
-    - Optimize draw call by only redrawing region of parent that intersects with the updated Element
-    - Use JSON as DataStorage
-    - Base `PUIElement` directly form JComponent and restructure PUICore/PUIFrame
-    - **FixPoints** on PUISlider
-    - **Free** movable PUIElements on PUIScrollPanel (without snapped locations)
-- **Additions**
-    - **Graph plotter**: Plot multiple graphs and analyze them
-    - **Built-In File-Browser** based on PUIList
-    - **Comments**/JavaDoc still missing😬
+### Codestyle
+
+- Using Maven
+- Using Google-Codestyle
+- Max-Line-Length 100
+- Reformat & Optimize Imports before Commit (on Save)
