@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -15,15 +14,13 @@ public class PDataStorage {
 
   public void save(String fileLocation) {
     PFile file = new PFile(fileLocation);
-    JSONArray array = new JSONArray();
+    JSONObject obj = new JSONObject();
 
     for (String key : variables.keySet()) {
-      JSONObject obj = new JSONObject();
       obj.put(key, variables.get(key));
-      array.put(obj);
     }
 
-    file.writeFile(array.toString(2));
+    file.writeFile(obj.toString(2));
   }
 
   /**
@@ -38,15 +35,11 @@ public class PDataStorage {
       return;
     }
 
-    String file = new PFile(fileLocation).getFileAsString();
+    JSONObject json = new JSONObject(new PFile(fileLocation).getFileAsString());
 
-    JSONArray json = new JSONArray(file);
-
-    for (Object obj : json) {
-      JSONObject o = (JSONObject) obj;
+    for (String key : json.keySet()) {
       try {
-        String key = o.keySet().iterator().next();
-        variables.put(key, o.get(key));
+        variables.put(key, json.get(key));
       } catch (NoSuchElementException e) {
         // Ignore empty Elements
         //throw new JSONException("No valid JSON-Key!");
