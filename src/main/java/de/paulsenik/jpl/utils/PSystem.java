@@ -4,82 +4,82 @@ import java.util.Locale;
 
 public class PSystem {
 
-    public enum OSType {
-        WINDOWS, MACOS, LINUX, SOLARIS, OTHER
+  public enum OSType {
+    WINDOWS, MACOS, LINUX, SOLARIS, OTHER
+  }
+
+  public static OSType getOSType() {
+    String osName = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH);
+
+    if (osName.contains("mac") || osName.contains("darwin")) {
+      return OSType.MACOS;
+    } else if (osName.contains("win")) {
+      return OSType.WINDOWS;
+    } else if (osName.contains("nix") || osName.contains("nux")
+        || osName.contains("aix")) {
+      return OSType.LINUX;
+    } else if (osName.contains("sunos")) {
+      return OSType.SOLARIS;
     }
 
-    public static OSType getOSType() {
-        String osName = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH);
+    return OSType.OTHER;
+  }
 
-        if (osName.contains("mac") || osName.contains("darwin")) {
-            return OSType.MACOS;
-        } else if (osName.contains("win")) {
-            return OSType.WINDOWS;
-        } else if (osName.contains("nix") || osName.contains("nux")
-                || osName.contains("aix")) {
-            return OSType.LINUX;
-        } else if (osName.contains("sunos")) {
-            return OSType.SOLARIS;
-        }
+  private PSystem() {
+  }
 
-        return OSType.OTHER;
-    }
+  /**
+   * Character that separates components of a file path.
+   *
+   * @return '/' on UNIX-based and '\' on Windows-based Systems
+   */
+  public static char getFileSeparator() {
+    return System.getProperty("file.separator").charAt(0);
+  }
 
-    private PSystem() {
-    }
+  /**
+   * @return username
+   */
+  public static String getUserName() {
+    return System.getProperty("user.name");
+  }
 
-    /**
-     * Character that separates components of a file path.
-     *
-     * @return '/' on UNIX-based and '\' on Windows-based Systems
-     */
-    public static char getFileSeparator() {
-        return System.getProperty("file.separator").charAt(0);
-    }
+  /**
+   * Uses os-specific folder-separators in path-string
+   *
+   * @return Path of the Folder, where the java-program is run from
+   */
+  public static String getWorkingDirectory() {
+    return System.getProperty("user.dir");
+  }
 
-    /**
-     * @return username
-     */
-    public static String getUserName() {
-        return System.getProperty("user.name");
-    }
+  /**
+   * @return encoding of files (e.g. UTF-8)
+   */
+  public static String getEncoding() {
+    return System.getProperty("file.encoding");
+  }
 
-    /**
-     * Uses os-specific folder-separators in path-string
-     *
-     * @return Path of the Folder, where the java-program is run from
-     */
-    public static String getWorkingDirectory() {
-        return System.getProperty("user.dir");
-    }
+  /**
+   * @return "\r\n" for windows or "\n" for Unix/Mac OS X
+   */
+  public static String getLineSeparators() {
+    return System.getProperty("line.separator");
+  }
 
-    /**
-     * @return encoding of files (e.g. UTF-8)
-     */
-    public static String getEncoding() {
-        return System.getProperty("file.encoding");
-    }
+  /**
+   * @return The Language-Name of the current system spelled <b>in the language</b> of the system
+   */
+  public static String getUserDisplayLanguage() {
+    return Locale.getDefault().getDisplayLanguage();
+  }
 
-    /**
-     * @return "\r\n" for windows or "\n" for Unix/Mac OS X
-     */
-    public static String getLineSeparators() {
-        return System.getProperty("line.separator");
-    }
-
-    /**
-     * @return The Language-Name of the current system spelled <b>in the language</b> of the system
-     */
-    public static String getUserDisplayLanguage() {
-        return Locale.getDefault().getDisplayLanguage();
-    }
-
-    /**
-     * @return The Country-Name of the current system spelled <b>in the language</b> of the system
-     */
-    public static String getUserDisplayLocation() {
-        return Locale.getDefault().getDisplayCountry();
-    }
+  /**
+   * @return The Country-Name of the current system spelled <b>in the language</b> of the system
+   */
+  public static String getUserDisplayLocation() {
+    return Locale.getDefault().getDisplayCountry();
+  }
 
 
 }
